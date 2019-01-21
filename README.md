@@ -13,6 +13,16 @@ personal health status, preferences, and social standings (Ex: student).
   
 It also provides alternatives to users’ current preference to help them start
 eating healthily.
+
+## To start development on android (for windows):
+1. install [chotolatey](https://chocolatey.org/)
+2. install Node.js python2 JDK8 using `choco install -y nodejs.install python2 jdk8`
+3. install React Native CLI using `npm install -g react-native-cli`
+4. install [Android Studio](https://developer.android.com/studio/)
+5. configure Android Studio: Make sure you installed **Android SDK Platform 27** and **Intel x86 Atom_64 System Image or Google APIs Intel x86 Atom System Image**
+6. Configure the ANDROID_HOME environment variable (default path: `c:\Users\YOUR_USERNAME\AppData\Local\Android\Sdk`)
+  
+For more detailed infomation, please refer to [React Native Docs](https://facebook.github.io/react-native/docs/getting-started)
 ## To apply your changes on App.js and run it on android:
 copy the following and paste on the command line:
   
