@@ -21,6 +21,7 @@ eating healthily.
 4. install [Android Studio](https://developer.android.com/studio/)
 5. configure Android Studio: Make sure you installed **Android SDK Platform 27** and **Intel x86 Atom_64 System Image or Google APIs Intel x86 Atom System Image**
 6. Configure the ANDROID_HOME environment variable (default path: `c:\Users\YOUR_USERNAME\AppData\Local\Android\Sdk`)
+7. Execute the following command at the project file to prevent possible error when executing the android application ```mkdir android/app/src/main/assets```
   
 For more detailed infomation, please refer to [React Native Docs](https://facebook.github.io/react-native/docs/getting-started)
 ## To apply your changes on App.js and run it on android:
