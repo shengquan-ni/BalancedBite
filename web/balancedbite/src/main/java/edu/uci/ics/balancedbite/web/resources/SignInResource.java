@@ -3,6 +3,7 @@ package edu.uci.ics.balancedbite.web.resources;
 import java.io.IOException;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -42,9 +43,21 @@ public class SignInResource {
 		this.port = port;
 	}
 	
+	@GET
+	@Timed
+	public JsonNode test(String a) {
+		System.out.println("Testing get");
+		System.out.println(a);
+		ObjectNode response = new ObjectMapper().createObjectNode();
+		return response;
+	}
+	
 	@POST
 	@Timed
 	public JsonNode checkLoginInformationExist(String userInformationJson) throws JsonParseException, JsonMappingException, IOException {
+		
+		System.out.println("show user information string");
+		System.out.println(userInformationJson);
 		
 		// parse json string
 		UserLoginInfo userInfo = new ObjectMapper().readValue(userInformationJson, UserLoginInfo.class);

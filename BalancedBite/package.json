@@ -4,11 +4,15 @@
   "private": true,
   "scripts": {
     "start": "node node_modules/react-native/local-cli/cli.js start",
-    "test": "jest"
+    "test": "jest",
+    "android-build": "react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle --assets-dest android/app/src/main/res",
+    "android-start": "react-native run-android --port 9988" 
   },
   "dependencies": {
     "react": "16.6.3",
-    "react-native": "0.58.1"
+    "react-native": "0.58.1",
+    "react-native-gesture-handler": "^1.0.15",
+    "react-navigation": "^3.0.9"
   },
   "devDependencies": {
     "babel-core": "7.0.0-bridge.0",
