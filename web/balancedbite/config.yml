@@ -1,0 +1,4 @@
+logging:
+  level: INFO
+  loggers:
+    edu.uci.ics.balancedbite.web: DEBUG
