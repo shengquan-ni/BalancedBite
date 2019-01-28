@@ -5,6 +5,15 @@ import {
 
 import Logo from "../BalancedBiteLogo";
 
+// the http url is the IPv4 address of your machine, different developers should use different address
+// IPv4 will be constantly changing based on your local and DNS server, you should modify this whenever
+//  you switch a location (as well as the development port used by android studio)
+
+const HOST = "169.234.31.93";
+
+
+const SERVER_URL = "http://" + HOST + ":8080/sign-in";
+
 class UserLoginPanel extends Component {
 
     state = { username: "", password : ""};
@@ -20,8 +29,7 @@ class UserLoginPanel extends Component {
                 text: "Okay"
             }]);
         } else {
-            // the http url is the IPv4 address of your machine, different developers should use different address
-            fetch("http://192.168.1.18:8080/sign-in", {
+            fetch(SERVER_URL, {
                 method: "POST",
                 body: JSON.stringify({username: username, password: password}),
                 headers: {
