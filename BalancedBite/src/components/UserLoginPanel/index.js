@@ -9,7 +9,7 @@ import Logo from "../BalancedBiteLogo";
 // IPv4 will be constantly changing based on your local and DNS server, you should modify this whenever
 //  you switch a location (as well as the development port used by android studio)
 
-const HOST = "169.234.31.93";
+const HOST = "192.168.0.3";
 
 
 const SERVER_URL = "http://" + HOST + ":8080/sign-in";
@@ -52,6 +52,12 @@ class UserLoginPanel extends Component {
         }
     }
 
+    signup() {
+
+        this.props.navigation.navigate("signupPanel");
+
+    }
+
 	render(){
 		return(
             <View style={styles.container}>
@@ -79,7 +85,7 @@ class UserLoginPanel extends Component {
 
                 <View style={styles.signupTextCont}>
                     <Text style={styles.signupText}>Don't have an account yet?</Text>
-                    <TouchableOpacity onPress={this.signup}>
+                    <TouchableOpacity onPress={() => this.signup()}>
                         <Text style={styles.signupButton}> Signup</Text>
                     </TouchableOpacity>
                 </View>
