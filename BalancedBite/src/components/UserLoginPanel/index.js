@@ -9,7 +9,7 @@ import Logo from "../BalancedBiteLogo";
 // IPv4 will be constantly changing based on your local and DNS server, you should modify this whenever
 //  you switch a location (as well as the development port used by android studio)
 
-const HOST = "169.234.31.93";
+const HOST = "192.168.1.18";
 
 
 const SERVER_URL = "http://" + HOST + ":8080/sign-in";
@@ -19,7 +19,7 @@ class UserLoginPanel extends Component {
     state = { username: "", password : ""};
 
     static navigationOptions = {
-
+        header: null
     }
 
     onClickLogin() {
@@ -52,6 +52,10 @@ class UserLoginPanel extends Component {
         }
     }
 
+    onClickSignup() {
+        this.props.navigation.navigate("userSignupPanel");
+    }
+
 	render(){
 		return(
             <View style={styles.container}>
@@ -73,14 +77,14 @@ class UserLoginPanel extends Component {
                         onChangeText={(text)=> this.setState({password : text})}
                         />  
                     <TouchableOpacity style={styles.button} onPress={() => this.onClickLogin()}>
-                        <Text style={styles.buttonText}>Sign In</Text>
+                        <Text style={styles.buttonText}> Sign In</Text>
                     </TouchableOpacity>     
                 </View>
 
                 <View style={styles.signupTextCont}>
-                    <Text style={styles.signupText}>Don't have an account yet?</Text>
-                    <TouchableOpacity onPress={this.signup}>
-                        <Text style={styles.signupButton}> Signup</Text>
+                    <Text style={styles.signupText}>Don't have an account yet? </Text>
+                    <TouchableOpacity onPress={() => this.onClickSignup()}>
+                        <Text style={styles.signupButton}>Signup</Text>
                     </TouchableOpacity>
                 </View>
             </View> 
