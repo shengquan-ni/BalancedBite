@@ -9,7 +9,7 @@ import Logo from "../BalancedBiteLogo";
 // IPv4 will be constantly changing based on your local and DNS server, you should modify this whenever
 //  you switch a location (as well as the development port used by android studio)
 
-const HOST = "192.168.1.18";
+const HOST = "169.234.105.57";
 
 
 const SERVER_URL = "http://" + HOST + ":8080/sign-in";
@@ -64,7 +64,7 @@ class UserLoginPanel extends Component {
                     <TextInput style={styles.inputBox} 
                         underlineColorAndroid='rgba(0,0,0,0)' 
                         placeholder="Username"
-                        placeholderTextColor = "#ffffff"
+                        placeholderTextColor = "black"
                         selectionColor="#fff"
                         keyboardType="email-address"
                         onChangeText={(text) => this.setState({username: text})}
@@ -73,7 +73,7 @@ class UserLoginPanel extends Component {
                         underlineColorAndroid='rgba(0,0,0,0)' 
                         placeholder="Password"
                         secureTextEntry={true}
-                        placeholderTextColor = "#ffffff"
+                        placeholderTextColor = "black"
                         onChangeText={(text)=> this.setState({password : text})}
                         />  
                     <TouchableOpacity style={styles.button} onPress={() => this.onClickLogin()}>
@@ -94,6 +94,8 @@ class UserLoginPanel extends Component {
 
 export default UserLoginPanel;
 
+const font_size = 18;
+
 const styles = StyleSheet.create({
   formContainer : {
     flexGrow: 1,
@@ -103,28 +105,30 @@ const styles = StyleSheet.create({
 
   inputBox: {
     width:300,
-    backgroundColor:'rgba(255, 255,255,0.2)',
+    backgroundColor: "white",
     borderRadius: 25,
     paddingHorizontal:16,
-    fontSize:16,
-    color:'#ffffff',
+    fontSize: font_size,
+    color:'black',
     marginVertical: 10
   },
+
   button: {
     width:300,
-    backgroundColor:'#1c313a',
+    backgroundColor:'#1A8900',
     borderRadius: 25,
     marginVertical: 10,
     paddingVertical: 13
   },
+
   buttonText: {
-    fontSize:16,
-    fontWeight:'500',
+    fontSize: font_size,
+    fontWeight:'bold',
     color:'#ffffff',
     textAlign:'center'
   },
   container : {
-    backgroundColor:'#455a64',
+    backgroundColor:'#d9fff2',
     flex: 1,
     alignItems:'center',
     justifyContent :'center'
@@ -137,13 +141,13 @@ const styles = StyleSheet.create({
     flexDirection:'row'
   },
   signupText: {
-    color:'rgba(255,255,255,0.6)',
-    fontSize:16
+    color:'black',
+    fontSize: font_size
   },
   signupButton: {
-    color:'#ffffff',
-    fontSize:16,
-    fontWeight:'500'
+    color: '#1C74CA',
+    fontSize: font_size,
+    fontWeight: 'bold'
   }
   
 });
