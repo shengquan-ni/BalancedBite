@@ -47,7 +47,6 @@ public class SignUpResource {
 		UserInfo userInfo = new ObjectMapper().readValue(newUserMetaData, UserInfo.class);
 		String username = userInfo.getUsername();
 		String password = userInfo.getPassword();
-		System.out.println("Username = " + username + " , password = " + password);
 		
 		// establish mongodb connection
 		
@@ -64,14 +63,44 @@ public class SignUpResource {
 		if (currUserInfo == null) {
 			// if the user does not exist, insert the user into the database
 			collection.insertOne(userInfo);
-			
 			response.put("code", 1);
-			client.close();
-			return response;
+
+		} else {
+			response.put("code", 0);
 		}
 		
-		response.put("code", 0);
 		client.close();
 		return response;
+	}
+	
+	public static void main(String[] args) throws JsonParseException, JsonMappingException, IOException {
+		String test = "{\"username\":\"sushi\",\"password\":\"sushi\",\"weight\":\"20\",\"height\":\"30\",\"workoutBoolean\":true,\"sexes\":\"female\",\"age\":\"14\",\"bodyFat\":\"1\",\"foodRestriction\":\"Vegan\",\"workoutFrequency\":\"7\",\"workoutType\":\"Cardio\",\"healthProblems\":[\"diabetes\",\" sushiSickness\"],\"allergies\":[\"human\"],\"dislikeFoods\":[\"you\"]}";
+		UserInfo info = new ObjectMapper().readValue(test, UserInfo.class);
+		
+		System.out.println(new ObjectMapper().writeValueAsString(info));
+		
+		
+		UserInfo userInfo = new ObjectMapper().readValue(test, UserInfo.class);
+		String username = userInfo.getUsername();
+		String password = userInfo.getPassword();
+		System.out.println("Username = " + username + " , password = " + password);
+		
+		// establish mongodb connection
+		
+		MongoClient client = MongoDBRequest.getInstance().connectToMongoDB("localhost", 27017);
+		MongoDatabase database = MongoDBRequest.getInstance().getMongoDatabase(client);
+		MongoCollection<UserInfo> collection = MongoDBRequest.getInstance().getUserInfoCollection(database);
+		
+		// check if the user exists in the database
+		UserInfo currUserInfo = collection.find(and(eq("username", username), eq("password", password))).first();
+		
+		// generate response
+		ObjectNode response = new ObjectMapper().createObjectNode();
+		
+		if (currUserInfo == null) {
+			// if the user does not exist, insert the user into the database
+			collection.insertOne(userInfo);
+			response.put("code", 1);
+		} 
 	}
 }

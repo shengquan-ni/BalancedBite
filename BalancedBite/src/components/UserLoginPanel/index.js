@@ -3,16 +3,15 @@ import {
   StyleSheet, Text, View, TextInput, TouchableOpacity, Alert
 } from 'react-native';
 
+import { SERVER_URL } from "../../commons/serverRequest";
+
 import Logo from "../BalancedBiteLogo";
 
 // the http url is the IPv4 address of your machine, different developers should use different address
 // IPv4 will be constantly changing based on your local and DNS server, you should modify this whenever
 //  you switch a location (as well as the development port used by android studio)
 
-const HOST = "192.168.1.18";
-
-
-const SERVER_URL = "http://" + HOST + ":8080/sign-in";
+const SIGNIN_URL = SERVER_URL +　"/sign-in";
 
 class UserLoginPanel extends Component {
 
@@ -29,7 +28,8 @@ class UserLoginPanel extends Component {
                 text: "Okay"
             }]);
         } else {
-            fetch(SERVER_URL, {
+            console.warn(SIGNIN_URL);
+            fetch(SIGNIN_URL, {
                 method: "POST",
                 body: JSON.stringify({username: username, password: password}),
                 headers: {

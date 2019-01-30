@@ -79,7 +79,7 @@ public class UserInfo {
 	}
 	
 	@JsonProperty
-	public List<String> getDisklikeFoods() {
+	public List<String> getDislikeFoods() {
 		return dislikeFoods;
 	}
 	
@@ -154,7 +154,7 @@ public class UserInfo {
 	}
 	
 	@JsonProperty
-	public void getDisklikeFoods(List<String> dislikeFoods) {
+	public void getDislikeFoods(List<String> dislikeFoods) {
 		this.dislikeFoods =  dislikeFoods;
 	}
 	

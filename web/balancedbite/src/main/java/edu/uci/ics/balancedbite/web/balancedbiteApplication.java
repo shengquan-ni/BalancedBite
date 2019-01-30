@@ -34,9 +34,14 @@ public class balancedbiteApplication extends Application<balancedbiteConfigurati
     				configuration.getDatabaseConfiguration().getPort()
     			);
     	
+    	final SignUpResource signUpResource = new SignUpResource(
+    				configuration.getDatabaseConfiguration().getHost(),
+    				configuration.getDatabaseConfiguration().getPort()
+    			);
     	
     	
     	environment.jersey().register(signInResource);
+    	environment.jersey().register(signUpResource);
     	
     	
     	// health checks

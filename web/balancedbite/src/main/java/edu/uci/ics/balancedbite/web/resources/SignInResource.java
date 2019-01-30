@@ -72,11 +72,13 @@ public class SignInResource {
 		// if the user does not exist, then return a code 0
 		if (currUserInfo == null) {
 			response.put("code", 0);
-			
+			client.close();
+
 			return response;
 		}
 		
 		response.put("code", 1);
+		client.close();
 		return response;
 	}
 	
