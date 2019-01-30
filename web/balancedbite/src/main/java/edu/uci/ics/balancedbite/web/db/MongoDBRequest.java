@@ -19,7 +19,7 @@ import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 
-import edu.uci.ics.balancedbite.web.api.UserLoginInfo;
+import edu.uci.ics.balancedbite.web.api.UserInfo;
 
 
 public class MongoDBRequest {
@@ -63,8 +63,8 @@ public class MongoDBRequest {
 		return client.getDatabase(dbname);
 	}
 	
-	public MongoCollection<UserLoginInfo> getUserInfoCollection(MongoDatabase database) {
-		return database.getCollection("UserInfo", UserLoginInfo.class);
+	public MongoCollection<UserInfo> getUserInfoCollection(MongoDatabase database) {
+		return database.getCollection("UserInfo", UserInfo.class);
 	}
 
 }

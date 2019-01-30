@@ -5,7 +5,7 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class UserLoginInfo {
+public class UserInfo {
 	
 	private String username;	
 	private String password;
@@ -25,9 +25,9 @@ public class UserLoginInfo {
 	private String workoutType = "None";
 
 	
-	public UserLoginInfo() {}
+	public UserInfo() {}
 	
-	public UserLoginInfo(String username, String password) {
+	public UserInfo(String username, String password) {
 		this.username = username;
 		this.password = password;
 	}
