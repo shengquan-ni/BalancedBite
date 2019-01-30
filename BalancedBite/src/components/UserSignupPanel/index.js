@@ -16,11 +16,11 @@ class UserSignupPanel extends Component{
 
 
 	onClickSignup(){
-		//put data into database
+		
 
 
 		
-		this.props.navigation.navigate("loginPanel");
+		this.props.navigation.navigate("infoFillOut");
 	}
 
 	goback(){
