@@ -8,7 +8,7 @@ import UserSignupPanel from "../UserSignupPanel";
 const AppStackNavigator = createStackNavigator(
     {
         loginPanel : UserLoginPanel,
-        userSignupPanel: UserInfoFillOut,
+        userSignupPanel: UserSignupPanel,
         clickSuggestionPanel: ClickSuggestionPanel
     }
 )

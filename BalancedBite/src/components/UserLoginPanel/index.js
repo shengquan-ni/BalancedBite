@@ -108,7 +108,7 @@ const styles = StyleSheet.create({
     paddingHorizontal:16,
     fontSize: font_size,
     color:'black',
-    marginVertical: 10
+    marginVertical: 8
   },
 
   button: {
@@ -133,9 +133,7 @@ const styles = StyleSheet.create({
   },
   signupTextCont : {
     flexGrow: 1,
-    alignItems:'flex-end',
     justifyContent :'center',
-    paddingVertical:16,
     flexDirection:'row'
   },
   signupText: {
