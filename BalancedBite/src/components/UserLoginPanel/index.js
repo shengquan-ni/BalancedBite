@@ -110,6 +110,7 @@ const styles = StyleSheet.create({
     color:'black',
     marginVertical: 10
   },
+
   button: {
     width:300,
     backgroundColor:'#1A8900',
@@ -117,6 +118,7 @@ const styles = StyleSheet.create({
     marginVertical: 10,
     paddingVertical: 13
   },
+
   buttonText: {
     fontSize: font_size,
     fontWeight:'bold',

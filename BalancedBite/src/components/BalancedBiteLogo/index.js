@@ -8,7 +8,7 @@ class Logo extends Component {
 		return(
 				<View style={styles.container}>
 					<Image style={{width:70, height: 85}}
-									source={require('../../images/logo.png')}/>
+									source={require('../../images/BBLogo.png')}/>
           		<Text style={styles.logoText}>BalancedBites</Text>	
   			</View>
 			)

@@ -89,27 +89,33 @@ public class SignInResource {
 	
 	
 	public static void main(String[] args) throws IOException {
-		System.out.println("Hello world");
-		UserLoginInfo test = new UserLoginInfo("herny", "henry123");
-		String t1 = new ObjectMapper().writeValueAsString(test);
-		System.out.println(t1);
-		UserLoginInfo t2 = new ObjectMapper().readValue(t1, UserLoginInfo.class);
-		System.out.println(t2.getUsername());
-		System.out.println(t2.getPassword());
+//		System.out.println("Hello world");
+//		UserLoginInfo test = new UserLoginInfo("herny", "henry123");
+//		String t1 = new ObjectMapper().writeValueAsString(test);
+//		System.out.println(t1);
+//		UserLoginInfo t2 = new ObjectMapper().readValue(t1, UserLoginInfo.class);
+//		System.out.println(t2.getUsername());
+//		System.out.println(t2.getPassword());
+//		
+//		MongoClient client = MongoDBRequest.getInstance().connectToMongoDB("localhost", 27017);
+//		MongoDatabase database = MongoDBRequest.getInstance().getMongoDatabase(client);
+//		MongoCollection<UserLoginInfo> collection = MongoDBRequest.getInstance().getUserInfoCollection(database);
+//		
+////		UserLoginInfo user1 = new UserLoginInfo("sampleUser", "samplePassword");
+////		collection.insertOne(user1);
+//		
+//		UserLoginInfo t = collection.find(and(eq("username", "sampleUser"), eq("password", "samplePassword"))).first();
+//		System.out.println(new ObjectMapper().writeValueAsString(t));
+//		
+//		FindIterable<UserLoginInfo> a = collection.find(and(eq("username", "sampleUser"), eq("password", "samplePassword")));
+//		for (UserLoginInfo userInfo : a) {
+//			System.out.println(new ObjectMapper().writeValueAsString(userInfo));
+//		}
 		
-		MongoClient client = MongoDBRequest.getInstance().connectToMongoDB("localhost", 27017);
-		MongoDatabase database = MongoDBRequest.getInstance().getMongoDatabase(client);
-		MongoCollection<UserLoginInfo> collection = MongoDBRequest.getInstance().getUserInfoCollection(database);
+		String test = "{\"username\":\"herny\",\"password\":\"henry123\"}";
 		
-//		UserLoginInfo user1 = new UserLoginInfo("sampleUser", "samplePassword");
-//		collection.insertOne(user1);
+		UserLoginInfo t = new ObjectMapper().readValue(test, UserLoginInfo.class);
 		
-		UserLoginInfo t = collection.find(and(eq("username", "sampleUser"), eq("password", "samplePassword"))).first();
 		System.out.println(new ObjectMapper().writeValueAsString(t));
-		
-		FindIterable<UserLoginInfo> a = collection.find(and(eq("username", "sampleUser"), eq("password", "samplePassword")));
-		for (UserLoginInfo userInfo : a) {
-			System.out.println(new ObjectMapper().writeValueAsString(userInfo));
-		}
 	}
 }
