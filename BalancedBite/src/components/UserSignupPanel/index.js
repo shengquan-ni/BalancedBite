@@ -11,10 +11,15 @@ class UserSignupPanel extends Component {
 
     state = {
         username : "",
+        usernameError : "",
         password : "",
+        passwordError: "",
         weight: null,
+        weightError: "",
         height: null,
+        heightError: "",
         age: null,
+        ageError: "",
         sexes: "male",
         bodyFat: null,
         foodRestriction: "None",
@@ -27,12 +32,69 @@ class UserSignupPanel extends Component {
     }
 
     static navigationOptions = {
-
+        title: "Sign Up",
+        headerStyle: {
+            backgroundColor: "#3A8BC9"
+        },
+        headerTintColor: '#fff',
+        headerTitleStyle: {
+          fontWeight: 'bold',
+        }
     }
 
     onSubmitSignUpForm() {
+        let noErrorEncountered = true;
+
+        if (this.state.username.trim().length < 8) {
+            this.setState({usernameError : "Username must be at least 8 characters"});
+            noErrorEncountered = false;
+        } else {
+            this.setState({usernameError: ""});
+        }
+
+        if (this.state.password.trim().length < 8) {
+            this.setState({passwordError: "Password must be at least 8 characters"});
+            noErrorEncountered = false;
+        } else {
+            this.setState({passwordError: ""});
+        }
+
+        if (this.state.weight == null) {
+            this.setState({weightError: "Weight field is required"});
+            noErrorEncountered = false;
+        } else {
+            this.setState({weightError: ""});
+        }
+
+        if (this.state.height == null) {
+            this.setState({heightError: "Height field is required"});
+            noErrorEncountered = false;
+        } else {
+            this.setState({heightError: ""});
+        }
+
+        if (this.state.age == null) {
+            this.setState({ageError : "Age field is required"});
+            noErrorEncountered = false;
+        } else {
+            this.setState({ageError: ""});
+        }
+
+        if (!noErrorEncountered) {
+            return;
+        }
         let currentState = {
-            ...this.state,
+            username : this.state.username,
+            password : this.state.password,
+            weight: this.weight,
+            height: this.height,
+            age: this.age,
+            sexes: this.sexes,
+            bodyFat: this.bodyFat,
+            foodRestriction: this.foodRestriction,
+            workoutBoolean: this.workoutBoolean,
+            workoutFrequency: this.workoutFrequency,
+            workoutType: this.workoutType,            
             allergies: this.state.allergies.split(",").filter(element => element.trim().length > 0),
             dislikeFoods: this.state.dislikeFoods.split(",").filter(element => element.trim().length > 0),
             healthProblems: this.state.healthProblems.split(",").filter(element => element.trim().length > 0)
@@ -64,125 +126,183 @@ class UserSignupPanel extends Component {
 
     render() {
         return (
-            <ScrollView>
-                <Text h4>Account Information</Text>
-                <Input
-                    placeholder=" User Name"
-                    leftIcon={{type: "material-community", name:"account-box"}}
-                    onChangeText = {(text) => this.setState({username: text})}
-                ></Input>
+            <ScrollView style={styles.scrollViewContainer}>
+                <View style={styles.sectionView}>
+                    <Text h4
+                        style={styles.sectionTitle}
+                    >Account Information</Text>
 
-                <Input
-                    placeholder=" Password"
-                    leftIcon={{type: "material-community", name:"lock"}}
-                    onChangeText = {(text) => this.setState({password: text})}
-                    secureTextEntry= {true}
-                ></Input>
+                    <Input
+                        placeholder=" Username"
+                        leftIcon={{type: "material-community", name:"account-box"}}
+                        onChangeText = {(text) => this.setState({username: text})}
+                        containerStyle={styles.inputBox}
+                        inputContainerStyle={styles.inputBoxContainer}
+                        errorStyle={{ color: 'red' }}
+                        errorMessage={this.state.usernameError}
+                    ></Input>
 
-                <Text h4>Personal Information</Text>
-                <Input
-                    placeholder=" Weight"
-                    leftIcon={{type: "material-community", name: "weight-kilogram"}}
-                    onChangeText = {(text) => this.setState({weight: text})}
-                    keyboardType="numeric"
-                ></Input>
+                    <Input
+                        placeholder=" Password"
+                        leftIcon={{type: "material-community", name:"lock"}}
+                        onChangeText = {(text) => this.setState({password: text})}
+                        secureTextEntry= {true}
+                        containerStyle={styles.inputBox}
+                        inputContainerStyle={styles.inputBoxContainer}
+                        errorStyle={{ color: 'red' }}
+                        errorMessage={this.state.passwordError}
+                    ></Input>
+                </View>
 
-                <Input
-                    placeholder=" Height"
-                    leftIcon={{type: "material-community", name: "human-male"}}
-                    onChangeText = {(text) => this.setState({height : text})}
-                    keyboardType="numeric"
-                ></Input>
+                <View style={styles.sectionView}>
+                    <Text h4
+                        style={styles.sectionTitle}                
+                    >Personal Information</Text>
+                    <Input
+                        placeholder=" Weight (kg)"
+                        leftIcon={{type: "material-community", name: "weight-kilogram"}}
+                        onChangeText = {(text) => this.setState({weight: text})}
+                        keyboardType="numeric"
+                        containerStyle={styles.inputBox}
+                        inputContainerStyle={styles.inputBoxContainer}
+                        errorStyle={{ color: 'red' }}
+                        errorMessage={this.state.weightError}
+                    ></Input>
 
-                <Input
-                    placeholder=" Age"
-                    leftIcon={{type: "material-community", name: "clock-outline"}}
-                    onChangeText= {(text) => this.setState({age: text})}
-                    keyboardType="numeric"
-                >
-                </Input>
+                    <Input
+                        placeholder=" Height (cm)"
+                        leftIcon={{type: "material-community", name: "human-male"}}
+                        onChangeText = {(text) => this.setState({height : text})}
+                        keyboardType="numeric"
+                        containerStyle={styles.inputBox}
+                        inputContainerStyle={styles.inputBoxContainer}
+                        errorStyle={{ color: 'red' }}
+                        errorMessage={this.state.heightError}
+                    ></Input>
 
-                <Input
-                    placeholder=" Body Fat Percentage"
-                    leftIcon={{type: "material-community", name: "dumbbell"}}
-                    onChangeText= {(text) => this.setState({bodyFat: text})}
-                    keyboardType="numeric"
-                >
-                </Input>
+                    <Input
+                        placeholder=" Age"
+                        leftIcon={{type: "material-community", name: "clock-outline"}}
+                        onChangeText= {(text) => this.setState({age: text})}
+                        keyboardType="numeric"
+                        containerStyle={styles.inputBox}
+                        inputContainerStyle={styles.inputBoxContainer}
+                        errorStyle={{ color: 'red' }}
+                        errorMessage={this.state.ageError}
+                    >
+                    </Input>
 
-                <Input
-                    placeholder=" Health Problems (separate by commas)"
-                    leftIcon={{type: "material-community", name: "pharmacy"}}
-                    onChangeText={(text) => this.setState({healthProblems: text})}
-                ></Input>
+                    <Input
+                        placeholder=" Body Fat %"
+                        leftIcon={{type: "material-community", name: "dumbbell"}}
+                        onChangeText= {(text) => this.setState({bodyFat: text})}
+                        keyboardType="numeric"
+                        containerStyle={styles.inputBox}
+                        inputContainerStyle={styles.inputBoxContainer}
 
-                <Picker
-                    selectedValue={this.state.sexes}
-                    onValueChange={(itemValue, itemIndex) => {
-                        this.setState({sexes: itemValue})
-                    }}
-                >
-                    <Picker.Item label="Male" value="male"></Picker.Item>
-                    <Picker.Item label="Female" value="female"></Picker.Item>
-                </Picker>
+                    >
+                    </Input>
 
-                <Text h4>Food Restrictions</Text>
-                <Picker
-                    selectedValue={this.state.foodRestriction}
-                    onValueChange={(itemValue, itemIndex) => {
-                        this.setState({foodRestriction: itemValue})
-                    }}
-                >
-                    <Picker.Item label="None" value="None"></Picker.Item>  
-                    <Picker.Item label="Vegetarian" value="Vegetarian"></Picker.Item>
-                    <Picker.Item label="Vegan" value="Vegan"></Picker.Item>
-                </Picker>
+                    <Input
+                        placeholder=" Health Problems (separate by commas)"
+                        leftIcon={{type: "material-community", name: "pharmacy"}}
+                        onChangeText={(text) => this.setState({healthProblems: text})}
+                        containerStyle={styles.inputBox}
+                        inputContainerStyle={styles.inputBoxContainer}
 
-                <Input
-                    placeholder=" Allergies (separate by commas)"
-                    leftIcon={{type: "material-community", name:"food-variant"}}
-                    onChangeText={(text) => this.setState({allergies: text})}
-                ></Input>
+                    ></Input>
 
-                <Input
-                    placeholder=" Dislike Foods (separate by commas)"
-                    leftIcon={{type: "material-community", name:"food-off"}}
-                    onChangeText={(text) => this.setState({dislikeFoods: text})}
-                ></Input>
+                    <Text>Select Gender</Text>
+                    <Picker
+                        selectedValue={this.state.sexes}
+                        onValueChange={(itemValue, itemIndex) => {
+                            this.setState({sexes: itemValue})
+                        }}
+                        style={styles.pickerBox}
+                    >
+                        <Picker.Item label="Male" value="male"></Picker.Item>
+                        <Picker.Item label="Female" value="female"></Picker.Item>
+                    </Picker>
+                </View>
+                <View style={styles.sectionView}>
+                    <Text h4
+                        style={styles.sectionTitle}
+                    >Food Restrictions</Text>
+                    <Text>Select Restriction Type</Text>
+                    <Picker
+                        selectedValue={this.state.foodRestriction}
+                        onValueChange={(itemValue, itemIndex) => {
+                            this.setState({foodRestriction: itemValue})
+                        }}
+                        style = {styles.pickerBox}
+                    >
+                        <Picker.Item label="None" value="None"></Picker.Item>  
+                        <Picker.Item label="Vegetarian" value="Vegetarian"></Picker.Item>
+                        <Picker.Item label="Vegan" value="Vegan"></Picker.Item>
+                    </Picker>
 
-                <Text h4>Workout Information</Text>
+                    <Input
+                        placeholder=" Allergies (separate by commas)"
+                        leftIcon={{type: "material-community", name:"food-variant"}}
+                        onChangeText={(text) => this.setState({allergies: text})}
+                        containerStyle={styles.inputBox}
+                        inputContainerStyle={styles.inputBoxContainer}
 
-                <CheckBox
-                    title="Do Workout Regularly"
-                    center={true}
-                    checked={this.state.workoutBoolean}
-                    onPress={() => this.setState({workoutBoolean: !this.state.workoutBoolean})}
-                ></CheckBox>
+                    ></Input>
 
-                <Input
-                    placeholder=" Workout Frequency"
-                    leftIcon={{type : "material-community", name:"timelapse"}}
-                    onChangeText={(text)=> this.setState({workoutFrequency: text})}
-                    keyboardType="numeric"
-                ></Input>
+                    <Input
+                        placeholder=" Dislike Foods (separate by commas)"
+                        leftIcon={{type: "material-community", name:"food-off"}}
+                        onChangeText={(text) => this.setState({dislikeFoods: text})}
+                        containerStyle={styles.inputBox}
+                        inputContainerStyle={styles.inputBoxContainer}
 
-                <Picker
-                    selectedValue={this.state.workoutType}
-                    onValueChange={(itemValue, itemIndex) => {
-                        this.setState({workoutType: itemValue})
-                    }}
-                >
-                    <Picker.Item label="None" value="None"></Picker.Item>
-                    <Picker.Item label="Weight Training" value="Weight"></Picker.Item>  
-                    <Picker.Item label="Cardio Training" value="Cardio"></Picker.Item>
-                    <Picker.Item label="Both" value="Both"></Picker.Item>
-                </Picker>
+                    ></Input>
+                </View>
+                <View style={styles.sectionView}>
+                    <Text h4
+                        style={styles.sectionTitle}
+                    >Workout Information</Text>
 
+                    <CheckBox
+                        title="Do Workout Regularly"
+                        center={true}
+                        checked={this.state.workoutBoolean}
+                        onPress={() => this.setState({workoutBoolean: !this.state.workoutBoolean})}
+                        containerStyle={styles.checkBox}
+                    ></CheckBox>
+
+                    <Input
+                        placeholder=" Workout Frequency Weekly (days)"
+                        leftIcon={{type : "material-community", name:"timelapse"}}
+                        onChangeText={(text)=> this.setState({workoutFrequency: text})}
+                        keyboardType="numeric"
+                        containerStyle={styles.inputBox}
+                        inputContainerStyle={styles.inputBoxContainer}
+
+                    ></Input>
+
+                    <Text>Select Training Type</Text>
+                    <Picker
+                        selectedValue={this.state.workoutType}
+                        onValueChange={(itemValue, itemIndex) => {
+                            this.setState({workoutType: itemValue})
+                        }}
+                        style = {styles.pickerBox}
+                    >
+                        <Picker.Item label="None" value="None"></Picker.Item>
+                        <Picker.Item label="Weight Training" value="Weight"></Picker.Item>  
+                        <Picker.Item label="Cardio Training" value="Cardio"></Picker.Item>
+                        <Picker.Item label="Both" value="Both"></Picker.Item>
+                    </Picker>
+                </View>
                 <Button
                     raised
-                    icon={{name: 'send', color: "white"}}
+                    icon={{type: 'material-community', name: 'account-check', color: "white"}}
                     title='Submit'
                     buttonStyle={styles.submitButton}
+                    containerStyle={styles.submitButtonContainer}
+                    titleStyle={styles.submitButtonTitle}
                     onPress={() => this.onSubmitSignUpForm()}
                 ></Button>
             </ScrollView>
@@ -193,8 +313,47 @@ class UserSignupPanel extends Component {
 
 export default UserSignupPanel
 
+const borderRadius = 25;
 const styles = StyleSheet.create({
+    sectionView: {
+        padding: 12,
+        borderColor: 'black',
+        borderBottomWidth: 1
+    },
     submitButton: {
-        backgroundColor : '#254A91'
+        backgroundColor : '#254A91',
+        borderRadius: borderRadius
+    },
+    submitButtonTitle: {
+        fontSize: 18,
+        fontWeight: 'bold'
+    },
+    submitButtonContainer: {
+        marginVertical: 15
+    },
+    scrollViewContainer: {
+        backgroundColor: "#d9fff2"
+    },
+    inputBox : {
+        backgroundColor: 'white',
+        borderRadius: borderRadius,
+        marginVertical: 10
+    },
+    inputBoxContainer: {
+        borderBottomColor: 'transparent'
+    },
+    sectionTitle: {
+        color: 'black'
+    },
+    checkBox : {
+        backgroundColor: "white",
+        borderRadius: borderRadius
+    },
+    pickerBox: {
+        backgroundColor: 'white',
+        color: 'black',
+        borderColor: 'black',
+        borderWidth: 10,
+        marginVertical: 5
     }
 })
