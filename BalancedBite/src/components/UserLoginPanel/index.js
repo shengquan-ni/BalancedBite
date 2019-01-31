@@ -1,7 +1,10 @@
 import React, { Component } from 'react';
 import {
-  StyleSheet, Text, View, TextInput, TouchableOpacity, Alert
+  StyleSheet, Text, View, TextInput, TouchableOpacity, 
+  Alert, TouchableWithoutFeedback, Keyboard
 } from 'react-native';
+
+import { Input } from "react-native-elements";
 
 import { SERVER_URL } from "../../commons/serverRequest";
 
@@ -22,6 +25,7 @@ class UserLoginPanel extends Component {
     }
 
     onClickLogin() {
+        Keyboard.dismiss();
         const { username, password } = this.state;
         if (username.length == 0 || password.length == 0) {
             Alert.alert("Error", "Username or Password is empty", [{
@@ -58,36 +62,40 @@ class UserLoginPanel extends Component {
 
 	render(){
 		return(
-            <View style={styles.container}>
-                <Logo/>
-                <View style={styles.formContainer}>
-                    <TextInput style={styles.inputBox} 
-                        underlineColorAndroid='rgba(0,0,0,0)' 
-                        placeholder="Username"
-                        placeholderTextColor = "black"
-                        selectionColor="#fff"
-                        keyboardType="email-address"
-                        onChangeText={(text) => this.setState({username: text})}
-                        />
-                    <TextInput style={styles.inputBox} 
-                        underlineColorAndroid='rgba(0,0,0,0)' 
-                        placeholder="Password"
-                        secureTextEntry={true}
-                        placeholderTextColor = "black"
-                        onChangeText={(text)=> this.setState({password : text})}
-                        />  
-                    <TouchableOpacity style={styles.button} onPress={() => this.onClickLogin()}>
-                        <Text style={styles.buttonText}> Sign In</Text>
-                    </TouchableOpacity>     
-                </View>
+            <TouchableWithoutFeedback onPress={()=> Keyboard.dismiss()}>
+                <View style={styles.container}>
+                    <Logo/>
+                    <View style={styles.formContainer}>
+                        <Input
+                            placeholder="Username"
+                            placeholderTextColor = "black"
+                            leftIcon={{type: "material-community", name:"account-box"}}
+                            onChangeText = {(text) => this.setState({username: text})}
+                            containerStyle={styles.inputBox}
+                            inputContainerStyle={styles.inputBoxContainer}
+                        ></Input>
+                        <Input
+                            placeholder="Password"
+                            placeholderTextColor = "black"
+                            leftIcon={{type: "material-community", name:"lock"}}
+                            onChangeText={(text)=> this.setState({password : text})}
+                            containerStyle={styles.inputBox}
+                            inputContainerStyle={styles.inputBoxContainer}
+                        ></Input>
 
-                <View style={styles.signupTextCont}>
-                    <Text style={styles.signupText}>Don't have an account yet? </Text>
-                    <TouchableOpacity onPress={() => this.onClickSignup()}>
-                        <Text style={styles.signupButton}>Signup</Text>
-                    </TouchableOpacity>
+                        <TouchableOpacity style={styles.button} onPress={() => this.onClickLogin()}>
+                            <Text style={styles.buttonText}> Sign In</Text>
+                        </TouchableOpacity>     
+                    </View>
+
+                    <View style={styles.signupTextCont}>
+                        <Text style={styles.signupText}>Don't have an account yet? </Text>
+                        <TouchableOpacity onPress={() => this.onClickSignup()}>
+                            <Text style={styles.signupButton}>Signup</Text>
+                        </TouchableOpacity>
+                    </View>
                 </View>
-            </View> 
+            </TouchableWithoutFeedback>
 		);
 	}
 }
@@ -96,53 +104,54 @@ export default UserLoginPanel;
 
 const font_size = 18;
 const styles = StyleSheet.create({
-  formContainer : {
-    flexGrow: 1,
-    justifyContent:'center',
-    alignItems: 'center'
-  },
-  inputBox: {
-    width:300,
-    backgroundColor: "white",
-    borderRadius: 25,
-    paddingHorizontal:16,
-    fontSize: font_size,
-    color:'black',
-    marginVertical: 8
-  },
+    inputBoxContainer: {
+        borderBottomColor: 'transparent' 
+    },
+    formContainer : {
+        flexGrow: 1,
+        justifyContent:'center',
+        alignItems: 'center'
+    },
+    inputBox: {
+        width:300,
+        backgroundColor: "white",
+        borderRadius: 25,
+        paddingHorizontal:16,
+        marginVertical: 8
+    },
 
-  button: {
-    width:300,
-    backgroundColor:'#1A8900',
-    borderRadius: 25,
-    marginVertical: 10,
-    paddingVertical: 13
-  },
+    button: {
+        width:300,
+        backgroundColor:'#1A8900',
+        borderRadius: 25,
+        marginVertical: 10,
+        paddingVertical: 13
+    },
 
-  buttonText: {
-    fontSize: font_size,
-    fontWeight:'bold',
-    color:'#ffffff',
-    textAlign:'center'
-  },
-  container : {
-    backgroundColor:'#d9fff2',
-    flex: 1,
-    alignItems:'center',
-    justifyContent :'center'
-  },
-  signupTextCont : {
-    flexGrow: 1,
-    justifyContent :'center',
-    flexDirection:'row'
-  },
-  signupText: {
-    color:'black',
-    fontSize: font_size
-  },
-  signupButton: {
-    color: '#1C74CA',
-    fontSize: font_size,
-    fontWeight: 'bold'
-  }
+    buttonText: {
+        fontSize: font_size,
+        fontWeight:'bold',
+        color:'#ffffff',
+        textAlign:'center'
+    },
+    container : {
+        backgroundColor:'#d9fff2',
+        flex: 1,
+        alignItems:'center',
+        justifyContent :'center'
+    },
+    signupTextCont : {
+        flexGrow: 1,
+        justifyContent :'center',
+        flexDirection:'row'
+    },
+    signupText: {
+        color:'black',
+        fontSize: font_size
+    },
+    signupButton: {
+        color: '#1C74CA',
+        fontSize: font_size,
+        fontWeight: 'bold'
+    }
 });

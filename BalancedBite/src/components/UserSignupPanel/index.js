@@ -34,7 +34,7 @@ class UserSignupPanel extends Component {
     static navigationOptions = {
         title: "Sign Up",
         headerStyle: {
-            backgroundColor: "#3A8BC9"
+            backgroundColor: "#1A8900"
         },
         headerTintColor: '#fff',
         headerTitleStyle: {
