@@ -26,8 +26,7 @@ import com.mongodb.client.MongoDatabase;
 import static com.mongodb.client.model.Filters.*;
 import static com.mongodb.client.model.Updates.*;
 
-
-import edu.uci.ics.balancedbite.web.api.UserLoginInfo;
+import edu.uci.ics.balancedbite.web.api.UserInfo;
 import edu.uci.ics.balancedbite.web.db.MongoDBRequest;
 
 @Path("/sign-in")
@@ -43,15 +42,6 @@ public class SignInResource {
 		this.port = port;
 	}
 	
-	@GET
-	@Timed
-	public JsonNode test(String a) {
-		System.out.println("Testing get");
-		System.out.println(a);
-		ObjectNode response = new ObjectMapper().createObjectNode();
-		return response;
-	}
-	
 	@POST
 	@Timed
 	public JsonNode checkLoginInformationExist(String userInformationJson) throws JsonParseException, JsonMappingException, IOException {
@@ -60,7 +50,7 @@ public class SignInResource {
 		System.out.println(userInformationJson);
 		
 		// parse json string
-		UserLoginInfo userInfo = new ObjectMapper().readValue(userInformationJson, UserLoginInfo.class);
+		UserInfo userInfo = new ObjectMapper().readValue(userInformationJson, UserInfo.class);
 		String username = userInfo.getUsername();
 		String password = userInfo.getPassword();
 		System.out.println("Username = " + username + " , password = " + password);
@@ -69,10 +59,12 @@ public class SignInResource {
 		
 		MongoClient client = MongoDBRequest.getInstance().connectToMongoDB(host, port);
 		MongoDatabase database = MongoDBRequest.getInstance().getMongoDatabase(client);
-		MongoCollection<UserLoginInfo> collection = MongoDBRequest.getInstance().getUserInfoCollection(database);
+		MongoCollection<UserInfo> collection = MongoDBRequest.getInstance().getUserInfoCollection(database);
 		
 		// check if the user exists in the database
-		UserLoginInfo currUserInfo = collection.find(and(eq("username", username), eq("password", password))).first();
+		UserInfo currUserInfo = collection.find(and(eq("username", username), eq("password", password))).first();
+		
+		client.close();
 		
 		// return json object
 		ObjectNode response = new ObjectMapper().createObjectNode();
@@ -80,36 +72,45 @@ public class SignInResource {
 		// if the user does not exist, then return a code 0
 		if (currUserInfo == null) {
 			response.put("code", 0);
+			client.close();
+
 			return response;
 		}
 		
 		response.put("code", 1);
+		client.close();
 		return response;
 	}
 	
 	
 	public static void main(String[] args) throws IOException {
-		System.out.println("Hello world");
-		UserLoginInfo test = new UserLoginInfo("herny", "henry123");
-		String t1 = new ObjectMapper().writeValueAsString(test);
-		System.out.println(t1);
-		UserLoginInfo t2 = new ObjectMapper().readValue(t1, UserLoginInfo.class);
-		System.out.println(t2.getUsername());
-		System.out.println(t2.getPassword());
+//		System.out.println("Hello world");
+//		UserInfo test = new UserInfo("herny", "henry123");
+//		String t1 = new ObjectMapper().writeValueAsString(test);
+//		System.out.println(t1);
+//		UserInfo t2 = new ObjectMapper().readValue(t1, UserInfo.class);
+//		System.out.println(t2.getUsername());
+//		System.out.println(t2.getPassword());
+//		
+//		MongoClient client = MongoDBRequest.getInstance().connectToMongoDB("localhost", 27017);
+//		MongoDatabase database = MongoDBRequest.getInstance().getMongoDatabase(client);
+//		MongoCollection<UserInfo> collection = MongoDBRequest.getInstance().getUserInfoCollection(database);
+//		
+////		UserLoginInfo user1 = new UserLoginInfo("sampleUser", "samplePassword");
+////		collection.insertOne(user1);
+//		
+//		UserInfo t = collection.find(and(eq("username", "sampleUser"), eq("password", "samplePassword"))).first();
+//		System.out.println(new ObjectMapper().writeValueAsString(t));
+//		
+//		FindIterable<UserInfo> a = collection.find(and(eq("username", "sampleUser"), eq("password", "samplePassword")));
+//		for (UserInfo userInfo : a) {
+//			System.out.println(new ObjectMapper().writeValueAsString(userInfo));
+//		}
 		
-		MongoClient client = MongoDBRequest.getInstance().connectToMongoDB("localhost", 27017);
-		MongoDatabase database = MongoDBRequest.getInstance().getMongoDatabase(client);
-		MongoCollection<UserLoginInfo> collection = MongoDBRequest.getInstance().getUserInfoCollection(database);
-		
-//		UserLoginInfo user1 = new UserLoginInfo("sampleUser", "samplePassword");
-//		collection.insertOne(user1);
-		
-		UserLoginInfo t = collection.find(and(eq("username", "sampleUser"), eq("password", "samplePassword"))).first();
-		System.out.println(new ObjectMapper().writeValueAsString(t));
-		
-		FindIterable<UserLoginInfo> a = collection.find(and(eq("username", "sampleUser"), eq("password", "samplePassword")));
-		for (UserLoginInfo userInfo : a) {
-			System.out.println(new ObjectMapper().writeValueAsString(userInfo));
-		}
+//		String test = "{\"username\":\"herny\",\"password\":\"henry123\"}";
+//		
+//		UserInfo t = new ObjectMapper().readValue(test, UserInfo.class);
+//		
+//		System.out.println(new ObjectMapper().writeValueAsString(t));
 	}
 }
