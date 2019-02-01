@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { View, StyleSheet, ScrollView, Picker, Alert } from "react-native";
 
-import { Avatar, Button, CheckBox, Input, Icon, Text } from "react-native-elements";
+import { Button, CheckBox, Input, Text } from "react-native-elements";
 
 import { SERVER_URL } from "../../commons/serverRequest";
 
@@ -34,7 +34,7 @@ class UserSignupPanel extends Component {
     static navigationOptions = {
         title: "Sign Up",
         headerStyle: {
-            backgroundColor: "#1A8900"
+            backgroundColor: "#808080"
         },
         headerTintColor: '#fff',
         headerTitleStyle: {
@@ -111,9 +111,7 @@ class UserSignupPanel extends Component {
         .then(res => res.json())
         .then(res => {
             if (res.code == 1) {
-                Alert.alert("Success", "User was added successfully", [{
-                    text: "Okay"
-                }])
+                this.props.navigation.navigate("clickSuggestionPanel");
             } else {
                 Alert.alert("Error", "User was not added successfully", [{
                     text: "Okay"
@@ -321,7 +319,7 @@ const styles = StyleSheet.create({
         borderBottomWidth: 1
     },
     submitButton: {
-        backgroundColor : '#254A91',
+        backgroundColor : '#1A8900',
         borderRadius: borderRadius
     },
     submitButtonTitle: {

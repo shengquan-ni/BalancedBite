@@ -32,7 +32,6 @@ class UserLoginPanel extends Component {
                 text: "Okay"
             }]);
         } else {
-            console.warn(SIGNIN_URL);
             fetch(SIGNIN_URL, {
                 method: "POST",
                 body: JSON.stringify({username: username, password: password}),
@@ -81,6 +80,7 @@ class UserLoginPanel extends Component {
                             onChangeText={(text)=> this.setState({password : text})}
                             containerStyle={styles.inputBox}
                             inputContainerStyle={styles.inputBoxContainer}
+                            secureTextEntry={true}
                         ></Input>
 
                         <TouchableOpacity style={styles.button} onPress={() => this.onClickLogin()}>
