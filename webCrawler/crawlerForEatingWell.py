@@ -10,9 +10,9 @@ dinner_file="D:\\dinner.json"
 lunch_file="D:\\lunch.json"
 breakfast_file="D:\\breakfast.json"
 other_file="D:\\other.json"
-cache_filename="D:\\cache.tmp"
 max_try=5
 img_src_full_star="https://images.media-allrecipes.com/EatingWellAssets/assets/svg/icon/recipe-rating-stars/eating-well-star-full.svg"
+img_null="http://images.media-allrecipes.com/images/82126.jpg"
 
 def getDataFromPage(page,dinner,lunch,breakfast,other):
     p=requests.get(page)
@@ -52,7 +52,15 @@ def getDataFromPage(page,dinner,lunch,breakfast,other):
         author=temp.text.strip()
     except:
         print("no author! url = ",page)
-        author=None
+        author="EatingWell Kitchen"
+    temp=soup.find("div",{"class":"recipeDetailSummaryImageContainer"})
+    try:
+        img_url=temp.find("a")['href']
+        if img_url==img_null:
+            img_url=None
+    except:
+        print("image not found! url = ",page)
+        img_url=None
     tags=[i.text.strip() for i in soup.find_all("span",{"class":"nutritionTag"})]
     ingredients=[i.text.strip() for i in soup.find_all("span",{"itemprop":"ingredients"})]
     try:
@@ -102,7 +110,7 @@ def getDataFromPage(page,dinner,lunch,breakfast,other):
         avg_rating/=len(comments)
     json_obj={"index":index,"title":title,"avg_rating":avg_rating,"comments":comments,\
              "related":related,"tips":tips,"cals":cals,"total_time":total_time,"prep_time":prep_time,\
-             "servings":servings,"ingredients":ingredients,"tags":tags,"summary":summary,"author":author,"source":source,"instructions":instructions}
+             "servings":servings,"ingredients":ingredients,"tags":tags,"summary":summary,"author":author,"source":source,"instructions":instructions, "image_url":img_url}
     small_index="".join(i.lower() for i in index)
     if "dinner" in small_index:
         dinner.append(json_obj)
