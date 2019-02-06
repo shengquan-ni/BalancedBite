@@ -42,7 +42,7 @@ class UserLoginPanel extends Component {
             .then(res => res.json())
             .then(res => {
                 if (res.code == 1) {
-                    this.props.navigation.navigate("clickSuggestionPanel");
+                    this.props.navigation.navigate("dishInformationPanel",{"dish_name":"apple pie","cal":345});
                 } else {
                     Alert.alert("Error", "Username or Password does not match", [{
                         text : "Okay"

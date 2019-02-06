@@ -99,7 +99,6 @@ class UserSignupPanel extends Component {
             dislikeFoods: this.state.dislikeFoods.split(",").filter(element => element.trim().length > 0),
             healthProblems: this.state.healthProblems.split(",").filter(element => element.trim().length > 0)
         }
-        
 
         fetch(SIGNUP_URL, {
             method : "POST",
