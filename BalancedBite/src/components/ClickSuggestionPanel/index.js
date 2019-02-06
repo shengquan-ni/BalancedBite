@@ -3,10 +3,6 @@ import { View, Text } from "react-native";
 
 
 class ClickSuggestionPanel extends Component {
-
-    static navigationOptions = {
-        title: "ClickSuggestion"
-    }
     
     render() {
         return (

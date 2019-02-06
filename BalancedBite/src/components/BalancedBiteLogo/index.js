@@ -6,9 +6,9 @@ import {
 class Logo extends Component {
 	render(){
 		return(
-				<View style={styles.container}>
-					<Image style={{width:70, height: 85}}
-									source={require('../../images/BBLogo.png')}/>
+			<View style={styles.container}>
+				<Image style={{width:40, height: 70}}
+          			source={require('../../images/logo.png')}/>
           		<Text style={styles.logoText}>BalancedBites</Text>	
   			</View>
 			)
@@ -25,9 +25,7 @@ const styles = StyleSheet.create({
   },
   logoText : {
   	marginVertical: 15,
-  	fontSize: 28,
-		color: 'black',
-		fontFamily: 'cursive',
-		fontWeight : "bold"
+  	fontSize:18,
+  	color:'rgba(255, 255, 255, 0.7)'
   }
 });

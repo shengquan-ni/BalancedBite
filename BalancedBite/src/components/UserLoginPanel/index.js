@@ -1,38 +1,27 @@
 import React, { Component } from 'react';
 import {
-  StyleSheet, Text, View, TextInput, TouchableOpacity, 
-  Alert, TouchableWithoutFeedback, Keyboard
+  StyleSheet, Text, View, TextInput, TouchableOpacity, Alert
 } from 'react-native';
 
-import { Input } from "react-native-elements";
-
-import { SERVER_URL } from "../../commons/serverRequest";
-
 import Logo from "../BalancedBiteLogo";
-
-// the http url is the IPv4 address of your machine, different developers should use different address
-// IPv4 will be constantly changing based on your local and DNS server, you should modify this whenever
-//  you switch a location (as well as the development port used by android studio)
-
-const SIGNIN_URL = SERVER_URL +　"/sign-in";
 
 class UserLoginPanel extends Component {
 
     state = { username: "", password : ""};
 
     static navigationOptions = {
-        header: null
+
     }
 
     onClickLogin() {
-        Keyboard.dismiss();
         const { username, password } = this.state;
         if (username.length == 0 || password.length == 0) {
             Alert.alert("Error", "Username or Password is empty", [{
                 text: "Okay"
             }]);
         } else {
-            fetch(SIGNIN_URL, {
+            // the http url is the IPv4 address of your machine, different developers should use different address
+            fetch("http://192.168.1.18:8080/sign-in", {
                 method: "POST",
                 body: JSON.stringify({username: username, password: password}),
                 headers: {
@@ -42,7 +31,7 @@ class UserLoginPanel extends Component {
             .then(res => res.json())
             .then(res => {
                 if (res.code == 1) {
-                    this.props.navigation.navigate("dishInformationPanel",{"dish_name":"apple pie","cal":345});
+                    this.props.navigation.navigate("clickSuggestionPanel");
                 } else {
                     Alert.alert("Error", "Username or Password does not match", [{
                         text : "Okay"
@@ -55,103 +44,94 @@ class UserLoginPanel extends Component {
         }
     }
 
-    onClickSignup() {
-        this.props.navigation.navigate("userSignupPanel");
-    }
-
 	render(){
 		return(
-            <TouchableWithoutFeedback onPress={()=> Keyboard.dismiss()}>
-                <View style={styles.container}>
-                    <Logo/>
-                    <View style={styles.formContainer}>
-                        <Input
-                            placeholder="Username"
-                            placeholderTextColor = "black"
-                            leftIcon={{type: "material-community", name:"account-box"}}
-                            onChangeText = {(text) => this.setState({username: text})}
-                            containerStyle={styles.inputBox}
-                            inputContainerStyle={styles.inputBoxContainer}
-                        ></Input>
-                        <Input
-                            placeholder="Password"
-                            placeholderTextColor = "black"
-                            leftIcon={{type: "material-community", name:"lock"}}
-                            onChangeText={(text)=> this.setState({password : text})}
-                            containerStyle={styles.inputBox}
-                            inputContainerStyle={styles.inputBoxContainer}
-                            secureTextEntry={true}
-                        ></Input>
-
-                        <TouchableOpacity style={styles.button} onPress={() => this.onClickLogin()}>
-                            <Text style={styles.buttonText}> Sign In</Text>
-                        </TouchableOpacity>     
-                    </View>
-
-                    <View style={styles.signupTextCont}>
-                        <Text style={styles.signupText}>Don't have an account yet? </Text>
-                        <TouchableOpacity onPress={() => this.onClickSignup()}>
-                            <Text style={styles.signupButton}>Signup</Text>
-                        </TouchableOpacity>
-                    </View>
+            <View style={styles.container}>
+                <Logo/>
+                <View style={styles.formContainer}>
+                    <TextInput style={styles.inputBox} 
+                        underlineColorAndroid='rgba(0,0,0,0)' 
+                        placeholder="Username"
+                        placeholderTextColor = "#ffffff"
+                        selectionColor="#fff"
+                        keyboardType="email-address"
+                        onChangeText={(text) => this.setState({username: text})}
+                        />
+                    <TextInput style={styles.inputBox} 
+                        underlineColorAndroid='rgba(0,0,0,0)' 
+                        placeholder="Password"
+                        secureTextEntry={true}
+                        placeholderTextColor = "#ffffff"
+                        onChangeText={(text)=> this.setState({password : text})}
+                        />  
+                    <TouchableOpacity style={styles.button} onPress={() => this.onClickLogin()}>
+                        <Text style={styles.buttonText}>Sign In</Text>
+                    </TouchableOpacity>     
                 </View>
-            </TouchableWithoutFeedback>
+
+                <View style={styles.signupTextCont}>
+                    <Text style={styles.signupText}>Don't have an account yet?</Text>
+                    <TouchableOpacity onPress={this.signup}>
+                        <Text style={styles.signupButton}> Signup</Text>
+                    </TouchableOpacity>
+                </View>
+            </View> 
 		);
 	}
 }
+
 export default UserLoginPanel;
 
-
-const font_size = 18;
 const styles = StyleSheet.create({
-    inputBoxContainer: {
-        borderBottomColor: 'transparent' 
-    },
-    formContainer : {
-        flexGrow: 1,
-        justifyContent:'center',
-        alignItems: 'center'
-    },
-    inputBox: {
-        width:300,
-        backgroundColor: "white",
-        borderRadius: 25,
-        paddingHorizontal:16,
-        marginVertical: 8
-    },
+  formContainer : {
+    flexGrow: 1,
+    justifyContent:'center',
+    alignItems: 'center'
+  },
 
-    button: {
-        width:300,
-        backgroundColor:'#1A8900',
-        borderRadius: 25,
-        marginVertical: 10,
-        paddingVertical: 13
-    },
-
-    buttonText: {
-        fontSize: font_size,
-        fontWeight:'bold',
-        color:'#ffffff',
-        textAlign:'center'
-    },
-    container : {
-        backgroundColor:'#d9fff2',
-        flex: 1,
-        alignItems:'center',
-        justifyContent :'center'
-    },
-    signupTextCont : {
-        flexGrow: 1,
-        justifyContent :'center',
-        flexDirection:'row'
-    },
-    signupText: {
-        color:'black',
-        fontSize: font_size
-    },
-    signupButton: {
-        color: '#1C74CA',
-        fontSize: font_size,
-        fontWeight: 'bold'
-    }
+  inputBox: {
+    width:300,
+    backgroundColor:'rgba(255, 255,255,0.2)',
+    borderRadius: 25,
+    paddingHorizontal:16,
+    fontSize:16,
+    color:'#ffffff',
+    marginVertical: 10
+  },
+  button: {
+    width:300,
+    backgroundColor:'#1c313a',
+    borderRadius: 25,
+    marginVertical: 10,
+    paddingVertical: 13
+  },
+  buttonText: {
+    fontSize:16,
+    fontWeight:'500',
+    color:'#ffffff',
+    textAlign:'center'
+  },
+  container : {
+    backgroundColor:'#455a64',
+    flex: 1,
+    alignItems:'center',
+    justifyContent :'center'
+  },
+  signupTextCont : {
+    flexGrow: 1,
+    alignItems:'flex-end',
+    justifyContent :'center',
+    paddingVertical:16,
+    flexDirection:'row'
+  },
+  signupText: {
+    color:'rgba(255,255,255,0.6)',
+    fontSize:16
+  },
+  signupButton: {
+    color:'#ffffff',
+    fontSize:16,
+    fontWeight:'500'
+  }
+  
 });
