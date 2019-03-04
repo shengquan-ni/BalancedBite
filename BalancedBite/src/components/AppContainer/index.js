@@ -9,6 +9,8 @@ const AppStackNavigator = createStackNavigator(
         loginPanel : UserLoginPanel,
         userSignupPanel: UserSignupPanel,
         clickSuggestionPanel: ClickSuggestionPanel
+    },{
+        initialRouteName: 'clickSuggestionPanel'
     }
 )
 
