@@ -111,7 +111,7 @@ class UserSignupPanel extends Component {
         .then(res => res.json())
         .then(res => {
             if (res.code == 1) {
-                this.props.navigation.navigate("clickSuggestionPanel");
+                this.props.navigation.navigate("mainTab");
             } else {
                 Alert.alert("Error", "User was not added successfully", [{
                     text: "Okay"

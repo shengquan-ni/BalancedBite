@@ -65,7 +65,7 @@ const AppTabNavigator = createMaterialTopTabNavigator({
 
 const AppTabContainer = createAppContainer(AppTabNavigator)
 
-class ClickSuggestionPanel extends Component {
+class MainTab extends Component {
 
     static navigationOptions = {
         header: null
@@ -80,7 +80,7 @@ class ClickSuggestionPanel extends Component {
     }
 }
 
-export default ClickSuggestionPanel;
+export default MainTab;
 
 const styles = StyleSheet.create({
     container: {
