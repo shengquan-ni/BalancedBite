@@ -9,8 +9,12 @@ import React, { Component } from 'react';
 import { createStore } from "redux";
 import { Provider } from "react-redux";
 import EntireApp from "./src/components/EntireApp";
+
+
 /**
  * Redux
+ * 
+ * https://www.youtube.com/watch?v=KcC8KZ_Ga2M
  * 
  * store - hold our state (only one state) (readonly state)
  * state - can only modified using action (through reducer)
@@ -23,6 +27,7 @@ const initialState = {
   currentUserName : "defaultName"
 }
 
+// when the dispatcher is called, it will map action to reducers to update store state
 const reducer = (state = initialState, action) => {
   switch(action.type) {
     case 'CHANGE_USER':
