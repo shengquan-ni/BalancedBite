@@ -1,51 +1,35 @@
 import React, { Component } from "react";
-import { View, Text, StyleSheet, SafeAreaView } from "react-native";
+import { View, Text, StyleSheet, SafeAreaView, AsyncStorage, Button } from "react-native";
 
 import { createMaterialTopTabNavigator, createAppContainer } from "react-navigation";
 
 import Icon from "react-native-vector-icons/Ionicons";
 
-class HomeComponent extends Component {
+import { SERVER_URL } from "../../commons/serverRequest";
 
-    render() {
-        return (
-            <View style={styles.container}>
-                <Text>HomeComponent panel</Text>
-            </View>
-        );
-    }
-}
+import UserInformationComponent from "../UserInformationPanel";
+import ClickSuggestionComponent from "../ClickSuggestionPanel";
 
-
-class SettingComponent extends Component {
-
-    render() {
-        return (
-            <View style={styles.container}>
-                <Text>SettingComponent panel</Text>
-            </View>
-        );
-    }
-}
+const SESSION_URL = SERVER_URL + "/check-session";
 
 const AppTabNavigator = createMaterialTopTabNavigator({
-    Home: {
-        screen: HomeComponent,
+    UserInformation: {
+        screen: UserInformationComponent,
         navigationOptions: {
-            tabBarLabel: 'Home',
-            tabBarIcon: ({ tintColor }) => <Icon name="md-home" color={tintColor} size={24}></Icon>
+            tabBarLabel: 'User',
+            tabBarIcon: ({ tintColor }) => <Icon name="md-user" color={tintColor} size={24}></Icon>
         }
     },
-    Setting: {
-        screen: SettingComponent,
+    ClickSuggestion: {
+        screen: ClickSuggestionComponent,
         navigationOptions: {
-            tabBarLabel: "Setting",
-            tabBarIcon: ({ tintColor }) => <Icon name="md-settings" color={tintColor} size={24}></Icon>
+            tabBarLabel: "Suggest",
+            tabBarIcon: ({ tintColor }) => <Icon name="md-search" color={tintColor} size={24}></Icon>
         }
     }
 },
 {
-    initialRouteName: 'Setting',
+    initialRouteName: 'UserInformation',
     tabBarPosition: 'bottom',
     tabBarOptions: {
         activeTintColor : '#2A67BF',
@@ -69,6 +53,48 @@ class MainTab extends Component {
 
     static navigationOptions = {
         header: null
+    }
+
+    componentWillMount() {
+        // fetch user data
+        const fetchAsyncTokenData = async () => {
+            let token = 'none';
+            try {
+              token = await AsyncStorage.getItem('token') || 'none';
+            } catch (error) {
+              // Error retrieving data
+              console.warn(error.message);
+            }
+            return token;
+        }
+
+        fetchAsyncTokenData().then(res => {
+            if (res == 'none'){
+                this.props.navigation.navigate("loginPanel");
+            } else {
+                // check token exist in db
+                fetch(SESSION_URL, {
+                    method: "POST",
+                    body : JSON.stringify({"token": res}),
+                    headers: {
+                        "Content-Type" : "application/json"
+                    }
+                })
+                .then(res => res.json())
+                .then(res => {
+                    if (res.code == 0) {
+                        this.props.navigation.navigate("loginPanel");
+                    } else {
+                        // console.warn("Request sent");
+                        // // contains username, 
+                        // console.warn(res.token);
+                    }
+                })
+                .catch(error => {
+                    throw error;
+                });
+            }
+        });
     }
     
     render() {

@@ -3,6 +3,8 @@ package edu.uci.ics.balancedbite.web.api;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bson.types.ObjectId;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class UserInfo {
@@ -31,6 +33,7 @@ public class UserInfo {
 		this.username = username;
 		this.password = password;
 	}
+	
 	
 	@JsonProperty
 	public String getUsername() {
@@ -105,8 +108,7 @@ public class UserInfo {
 	
 	
 	// serialize
-	
-	
+
 	@JsonProperty
 	public void setUsername(String username) {
 		this.username = username;

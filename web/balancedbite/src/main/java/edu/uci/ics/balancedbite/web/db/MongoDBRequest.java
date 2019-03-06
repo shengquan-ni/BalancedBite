@@ -20,6 +20,7 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 
 import edu.uci.ics.balancedbite.web.api.UserInfo;
+import edu.uci.ics.balancedbite.web.api.UserToken;
 
 
 public class MongoDBRequest {
@@ -65,6 +66,10 @@ public class MongoDBRequest {
 	
 	public MongoCollection<UserInfo> getUserInfoCollection(MongoDatabase database) {
 		return database.getCollection("UserInfo", UserInfo.class);
+	}
+	
+	public MongoCollection<UserToken> getUserTokenCollection(MongoDatabase database) {
+		return database.getCollection("TokenCollection", UserToken.class);
 	}
 
 }
