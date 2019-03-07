@@ -26,6 +26,9 @@ import edu.uci.ics.balancedbite.web.db.MongoDBRequest;
 import static com.mongodb.client.model.Filters.*;
 import static com.mongodb.client.model.Updates.*;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -89,19 +92,11 @@ public class CheckSessionResource {
 	
 	
 	public static void main(String[] args) throws JsonParseException, JsonMappingException, IOException, ParseException {
-//		String test = "{\"token\":\"e47f1186-f548-4d02-aa62-95e17e1bfd08\"}";
-//		UserToken frontendToken = new ObjectMapper().readValue(test, UserToken.class);
-//		
-//		System.out.println(new ObjectMapper().writeValueAsString(frontendToken));
-		
-//		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd_HHmmss");
-//		Date currentTime = Calendar.getInstance().getTime();
-//		Date tokenCreateTime = dateFormat.parse("20190305_095500");
-//		
-//		long timeDifferenceInMinutes = (currentTime.getTime() - tokenCreateTime.getTime()) / (1000 * 60) % 60;
-//		System.out.println(timeDifferenceInMinutes);
-//		System.out.println(currentTime.getTime());
-//		System.out.println(currentTime.getTime() - tokenCreateTime.getTime());
-		
+		File file = new File("src/main/resources/foodData/available_tags.json");
+		BufferedReader reader = new BufferedReader(new FileReader(file));
+		String line;
+		while ((line = reader.readLine()) != null) {
+			System.out.println(line);
+		}
 	}
 }
