@@ -6,6 +6,7 @@ import edu.uci.ics.balancedbite.web.health.SampleHealthCheck;
 import edu.uci.ics.balancedbite.web.resources.CheckSessionResource;
 import edu.uci.ics.balancedbite.web.resources.SignInResource;
 import edu.uci.ics.balancedbite.web.resources.SignUpResource;
+import edu.uci.ics.balancedbite.web.resources.UserDataResource;
 import edu.uci.ics.balancedbite.web.resources.testResource;
 import io.dropwizard.Application;
 import io.dropwizard.setup.Bootstrap;
@@ -47,10 +48,16 @@ public class balancedbiteApplication extends Application<balancedbiteConfigurati
     				configuration.getDatabaseConfiguration().getHost(),
     				configuration.getDatabaseConfiguration().getPort()
     			);
+    	
+    	final UserDataResource userDataResource = new UserDataResource(
+    				configuration.getDatabaseConfiguration().getHost(),
+    				configuration.getDatabaseConfiguration().getPort()
+    			);
 
     	environment.jersey().register(signInResource);
     	environment.jersey().register(signUpResource);
     	environment.jersey().register(checkSessionResource);
+    	environment.jersey().register(userDataResource);
     	
     	// health checks
     	final SampleHealthCheck sampleHealthCheck = new SampleHealthCheck();

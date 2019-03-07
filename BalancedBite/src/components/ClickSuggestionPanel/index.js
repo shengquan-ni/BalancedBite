@@ -6,7 +6,7 @@ import { connect } from "react-redux";
 
 const mapStateToProps = (state) => {
     return {
-      currentUserName : state.currentUserName
+        currentToken: state.currentToken
     }
 }
 
@@ -16,7 +16,7 @@ class ClickSuggestionComponent extends Component {
         return (
             <View style={styles.container}>
                 <Text>ClickSuggestionComponent panel</Text>
-                <Text>{this.props.currentUserName}</Text>
+                <Text>{this.props.currentToken}</Text>
             </View>
         );
     }

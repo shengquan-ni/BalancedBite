@@ -1,14 +1,16 @@
 import React, { Component } from "react";
 import { View, Text, StyleSheet, SafeAreaView, AsyncStorage, Button } from "react-native";
 
-import { createMaterialTopTabNavigator, createAppContainer } from "react-navigation";
+import { createMaterialTopTabNavigator, createAppContainer, withNavigation } from "react-navigation";
 
-import Icon from "react-native-vector-icons/Ionicons";
+import Icon from "react-native-vector-icons/FontAwesome5";
 
 import { SERVER_URL } from "../../commons/serverRequest";
 
 import UserInformationComponent from "../UserInformationPanel";
 import ClickSuggestionComponent from "../ClickSuggestionPanel";
+
+import { connect } from "react-redux";
 
 const SESSION_URL = SERVER_URL + "/check-session";
 
@@ -17,14 +19,14 @@ const AppTabNavigator = createMaterialTopTabNavigator({
         screen: UserInformationComponent,
         navigationOptions: {
             tabBarLabel: 'User',
-            tabBarIcon: ({ tintColor }) => <Icon name="md-user" color={tintColor} size={24}></Icon>
+            tabBarIcon: ({ tintColor }) => <Icon name="user-circle" color={tintColor} size={24}></Icon>
         }
     },
     ClickSuggestion: {
         screen: ClickSuggestionComponent,
         navigationOptions: {
             tabBarLabel: "Suggest",
-            tabBarIcon: ({ tintColor }) => <Icon name="md-search" color={tintColor} size={24}></Icon>
+            tabBarIcon: ({ tintColor }) => <Icon name="search" color={tintColor} size={24}></Icon>
         }
     }
 },
@@ -55,7 +57,7 @@ class MainTab extends Component {
         header: null
     }
 
-    componentWillMount() {
+    handleUserSessionCall() {
         // fetch user data
         const fetchAsyncTokenData = async () => {
             let token = 'none';
@@ -68,26 +70,29 @@ class MainTab extends Component {
             return token;
         }
 
-        fetchAsyncTokenData().then(res => {
-            if (res == 'none'){
+        fetchAsyncTokenData().then(UItoken => {
+            if (UItoken == 'none'){
                 this.props.navigation.navigate("loginPanel");
             } else {
                 // check token exist in db
                 fetch(SESSION_URL, {
                     method: "POST",
-                    body : JSON.stringify({"token": res}),
+                    body : UItoken,
                     headers: {
-                        "Content-Type" : "application/json"
+                        "Content-Type" : "text/plain"
                     }
                 })
-                .then(res => res.json())
-                .then(res => {
-                    if (res.code == 0) {
+                .then(backendRes => backendRes.json())
+                .then(backendRes => {
+                    if (backendRes.code == 0) {
                         this.props.navigation.navigate("loginPanel");
                     } else {
                         // console.warn("Request sent");
-                        // // contains username, 
+                        // // // contains username, 
                         // console.warn(res.token);
+                        // this.props.changeCurrentUser(res.token.username);
+
+                        this.props.changeCurrentToken(UItoken);
                     }
                 })
                 .catch(error => {
@@ -97,6 +102,18 @@ class MainTab extends Component {
         });
     }
     
+    componentDidMount(){
+        const { navigation } = this.props;
+        // listen to navigation focus on this screen
+        this.focusListener = navigation.addListener("didFocus", () => {
+            this.handleUserSessionCall();
+        })
+    }
+
+    componentWillUnmount() {
+        this.focusListener.remove();
+    }
+
     render() {
         return (
             <SafeAreaView style={{flex : 1, backgroundColor: '#f2f2f2' }}>
@@ -106,7 +123,19 @@ class MainTab extends Component {
     }
 }
 
-export default MainTab;
+const mapStateToProps = (state) => {
+    return {
+        currentToken: state.currentToken
+    }
+}
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        changeCurrentToken: (token) => dispatch({type : 'CHANGE_TOKEN', token: token})
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(withNavigation(MainTab));
 
 const styles = StyleSheet.create({
     container: {

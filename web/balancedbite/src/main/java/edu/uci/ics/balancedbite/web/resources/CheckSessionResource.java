@@ -33,7 +33,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 @Path("/check-session")
-@Consumes(MediaType.APPLICATION_JSON)
+@Consumes(MediaType.TEXT_PLAIN)
 @Produces(MediaType.APPLICATION_JSON)
 public class CheckSessionResource {
 	
@@ -49,12 +49,7 @@ public class CheckSessionResource {
 	@Timed
 	public JsonNode checkSessionTokenExist(String tokenInformation) throws JsonParseException, JsonMappingException, 
 			IOException, ParseException {
-		System.out.println("Get info : " + tokenInformation);
-		UserToken frontendToken = new ObjectMapper().readValue(tokenInformation, UserToken.class);
-		
-		System.out.println(new ObjectMapper().writeValueAsString(frontendToken));
-		
-		String currToken = frontendToken.getToken();
+		String currToken = tokenInformation;
 		
 		MongoClient client = MongoDBRequest.getInstance().connectToMongoDB(host, port);
 		MongoDatabase database = MongoDBRequest.getInstance().getMongoDatabase(client);
@@ -64,8 +59,6 @@ public class CheckSessionResource {
 		ObjectNode response = new ObjectMapper().createObjectNode();
 		if (foundToken == null) {
 			response.put("code", 0);
-			System.out.println("No token found");
-			System.out.println(response);
 			
 			client.close();
 			return response;
@@ -77,23 +70,18 @@ public class CheckSessionResource {
 		
 		long timeDifferenceInMinutes = (currentTime.getTime() - tokenCreateTime.getTime()) / (1000 * 60) % 60;
 		
+		System.out.println("Time diff = " + timeDifferenceInMinutes);
+		
 		// if token is 30 minutes old:
 		if (timeDifferenceInMinutes >= 30) {
 			tokenCollection.deleteOne(eq("token", currToken));
 			response.put("code", 0);
 			client.close();
 			
-			System.out.println("30 minutes old token");
-			System.out.println(response);
 			return response;
 		}
 		
-		ObjectNode tokenObject = new ObjectMapper().valueToTree(foundToken);
 		response.put("code", 1);
-		response.set("token", tokenObject);
-		
-		System.out.println("Regular token");
-		System.out.println(response);
 		
 		client.close();
 		return response;
@@ -106,14 +94,14 @@ public class CheckSessionResource {
 //		
 //		System.out.println(new ObjectMapper().writeValueAsString(frontendToken));
 		
-		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd_HHmmss");
-		Date currentTime = Calendar.getInstance().getTime();
-		Date tokenCreateTime = dateFormat.parse("20190305_095500");
-		
-		long timeDifferenceInMinutes = (currentTime.getTime() - tokenCreateTime.getTime()) / (1000 * 60) % 60;
-		System.out.println(timeDifferenceInMinutes);
-		System.out.println(currentTime.getTime());
-		System.out.println(currentTime.getTime() - tokenCreateTime.getTime());
+//		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd_HHmmss");
+//		Date currentTime = Calendar.getInstance().getTime();
+//		Date tokenCreateTime = dateFormat.parse("20190305_095500");
+//		
+//		long timeDifferenceInMinutes = (currentTime.getTime() - tokenCreateTime.getTime()) / (1000 * 60) % 60;
+//		System.out.println(timeDifferenceInMinutes);
+//		System.out.println(currentTime.getTime());
+//		System.out.println(currentTime.getTime() - tokenCreateTime.getTime());
 		
 	}
 }

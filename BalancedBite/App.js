@@ -24,14 +24,14 @@ import EntireApp from "./src/components/EntireApp";
  */
 
 const initialState = {
-  currentUserName : "defaultName"
+  currentToken : ""
 }
 
 // when the dispatcher is called, it will map action to reducers to update store state
 const reducer = (state = initialState, action) => {
   switch(action.type) {
-    case 'CHANGE_USER':
-      return {currentUserName: action.name};
+    case "CHANGE_TOKEN":
+      return {currentToken : action.token};
   }
   
   return state;

@@ -2,12 +2,18 @@ import React, { Component } from "react";
 
 import { View, Text, Button, Input, StyleSheet } from "react-native";
 import { connect } from "react-redux";
+import { withNavigation } from "react-navigation";
+
+import { SERVER_URL } from "../../commons/serverRequest";
+
+const FETCH_URL  = SERVER_URL + "/user/fetch-user";
+const UPDATE_URL = SERVER_URL + "/user/update-user";
 
 // get the current user name from the redux store, and put it
 //  into a new props call 'currentUserName'
 const mapStateToProps = (state) => {
     return {
-      currentUserName : state.currentUserName
+        currentToken : state.currentToken
     }
 }
 
@@ -16,21 +22,41 @@ const mapStateToProps = (state) => {
 //  will occur.
 const mapDispatchToProps = (dispatch) => {
     return {
-        changeCurrentUser: (name) => dispatch({type : 'CHANGE_USER', name: name})
+        changeCurrentToken: (token) => dispatch({type : 'CHANGE_TOKEN', token: token})
     }
 }
 
 class UserInformationComponent extends Component {
 
+    componentWillReceiveProps(nextProps) {
+        console.warn(nextProps.currentToken);
+        fetch(FETCH_URL, {
+            method: "POST",
+            body: nextProps.currentToken,
+            headers : {
+                "Content-Type" : "text/plain"
+            }
+        })
+        .then(res => res.json())
+        .then(res => {
+            if (res.code == 0) {
+                console.warn("Error in getting user info");
+            } else {
+                console.warn("Get user");
+                console.warn(res);
+            }
+        })
+    }
+
     testFunc() {
-        this.props.changeCurrentUser("Henry");
+        // this.props.changeCurrentUser("Henry");
     }
 
     render() {
         return (
             <View style={styles.container}>
                 <Text>UserInformationComponent panel</Text>
-                <Text>a {this.props.currentUserName} a</Text>
+                <Text>a {this.props.currentToken} a</Text>
                 <Button
                     title="test"
                     onPress={() => this.testFunc()}
@@ -42,7 +68,7 @@ class UserInformationComponent extends Component {
 }
 
 // connecting props defined in mapState to the component
-export default connect(mapStateToProps, mapDispatchToProps)(UserInformationComponent);
+export default connect(mapStateToProps, mapDispatchToProps)(withNavigation(UserInformationComponent));
 
 
 const styles = StyleSheet.create({

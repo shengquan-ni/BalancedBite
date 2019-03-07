@@ -51,7 +51,7 @@ class UserLoginPanel extends Component {
             })
             .then(res => res.json())
             .then(res => {
-                console.warn(res);
+                // console.warn(res);
                 if (res.code == 1) {
                     this._storeTokenData(res.token);
                     this.props.navigation.navigate("mainTab");
