@@ -90,13 +90,4 @@ public class CheckSessionResource {
 		return response;
 	}
 	
-	
-	public static void main(String[] args) throws JsonParseException, JsonMappingException, IOException, ParseException {
-		File file = new File("src/main/resources/foodData/available_tags.json");
-		BufferedReader reader = new BufferedReader(new FileReader(file));
-		String line;
-		while ((line = reader.readLine()) != null) {
-			System.out.println(line);
-		}
-	}
 }

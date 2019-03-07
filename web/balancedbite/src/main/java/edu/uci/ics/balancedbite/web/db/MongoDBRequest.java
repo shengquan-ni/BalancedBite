@@ -19,6 +19,8 @@ import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 
+import edu.uci.ics.balancedbite.web.api.FoodInfo;
+import edu.uci.ics.balancedbite.web.api.Tag;
 import edu.uci.ics.balancedbite.web.api.UserInfo;
 import edu.uci.ics.balancedbite.web.api.UserToken;
 
@@ -71,5 +73,13 @@ public class MongoDBRequest {
 	public MongoCollection<UserToken> getUserTokenCollection(MongoDatabase database) {
 		return database.getCollection("TokenCollection", UserToken.class);
 	}
+	
+	public MongoCollection<Tag> getTagsCollection(MongoDatabase database) {
+		return database.getCollection("Tags", Tag.class);
+	}
 
+	public MongoCollection<FoodInfo> getFoodInfoCollection(MongoDatabase database) {
+		return database.getCollection("FoodInfo", FoodInfo.class);
+	}
+	
 }

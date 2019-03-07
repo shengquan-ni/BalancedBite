@@ -25,7 +25,6 @@ import static com.mongodb.client.model.Filters.*;
 import static com.mongodb.client.model.Updates.*;
 
 @Path("/user")
-@Consumes(MediaType.TEXT_PLAIN)
 @Produces(MediaType.APPLICATION_JSON)
 public class UserDataResource {
 	
@@ -40,6 +39,7 @@ public class UserDataResource {
 	
 	@POST
 	@Path("/fetch-user")
+	@Consumes(MediaType.TEXT_PLAIN)
 	public JsonNode fetchUserInformation(String token) throws JsonParseException, JsonMappingException, IOException {
 		System.out.println("token = " + token);
 		MongoClient client = MongoDBRequest.getInstance().connectToMongoDB(host, port);
@@ -73,16 +73,11 @@ public class UserDataResource {
 	
 	@POST
 	@Path("/update-user")
+	@Consumes(MediaType.APPLICATION_JSON)
 	public JsonNode updateUserInformation(String token) throws JsonParseException, JsonMappingException, IOException {
 		System.out.println("token = " + token);
 
 		return null;
-	}
-	
-	public static void main(String[] args) throws JsonParseException, JsonMappingException, IOException {
-		String userInformation = "{\"username\" : \"henry\"}";
-		UserInfo currentUser = new ObjectMapper().readValue(userInformation, UserInfo.class);
-		System.out.println(new ObjectMapper().writeValueAsString(currentUser));
 	}
 	
 }

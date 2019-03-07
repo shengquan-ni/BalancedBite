@@ -57,8 +57,30 @@ class MainTab extends Component {
         header: null
     }
 
+    checkTokenStatus(UItoken) {
+        fetch(SESSION_URL, {
+            method: "POST",
+            body : UItoken,
+            headers: {
+                "Content-Type" : "text/plain"
+            }
+        })
+        .then(backendRes => backendRes.json())
+        .then(backendRes => {
+            if (backendRes.code == 0) {
+                this.props.navigation.navigate("loginPanel");
+            } else {
+                // change token in redux storage
+                this.props.changeCurrentToken(UItoken);
+            }
+        })
+        .catch(error => {
+            throw error;
+        });
+    }
+
     handleUserSessionCall() {
-        // fetch user data
+        // fetch user data from async storage in react-native
         const fetchAsyncTokenData = async () => {
             let token = 'none';
             try {
@@ -74,30 +96,8 @@ class MainTab extends Component {
             if (UItoken == 'none'){
                 this.props.navigation.navigate("loginPanel");
             } else {
-                // check token exist in db
-                fetch(SESSION_URL, {
-                    method: "POST",
-                    body : UItoken,
-                    headers: {
-                        "Content-Type" : "text/plain"
-                    }
-                })
-                .then(backendRes => backendRes.json())
-                .then(backendRes => {
-                    if (backendRes.code == 0) {
-                        this.props.navigation.navigate("loginPanel");
-                    } else {
-                        // console.warn("Request sent");
-                        // // // contains username, 
-                        // console.warn(res.token);
-                        // this.props.changeCurrentUser(res.token.username);
-
-                        this.props.changeCurrentToken(UItoken);
-                    }
-                })
-                .catch(error => {
-                    throw error;
-                });
+                // check if token is valid in db
+                this.checkTokenStatus(UItoken);
             }
         });
     }

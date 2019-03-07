@@ -42,26 +42,35 @@ class UserInformationComponent extends Component {
             if (res.code == 0) {
                 console.warn("Error in getting user info");
             } else {
-                console.warn("Get user");
+                // console.warn("Get user");
                 console.warn(res);
             }
         })
     }
 
-    testFunc() {
-        // this.props.changeCurrentUser("Henry");
+    testUpdate() {
+        fetch(UPDATE_URL, {
+            method : "POST",
+            body: JSON.stringify({"token": "testToken" , "Test" : "SUSHI"}),
+            headers : {
+                "Content-Type": "application/json"
+            }
+        })
+        .then(res => res.json())
+        .then(res => {
+            console.warn(res);
+        })
     }
 
     render() {
         return (
             <View style={styles.container}>
                 <Text>UserInformationComponent panel</Text>
-                <Text>a {this.props.currentToken} a</Text>
+                <Text>{this.props.currentToken}</Text>
                 <Button
-                    title="test"
-                    onPress={() => this.testFunc()}
-                >
-                </Button>
+                    title="Check update"
+                    onPress={() => this.testUpdate()}
+                ></Button>
             </View>
         );
     }
