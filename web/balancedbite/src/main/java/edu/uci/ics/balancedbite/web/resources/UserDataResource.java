@@ -41,6 +41,12 @@ public class UserDataResource {
 	@Path("/fetch-user")
 	@Consumes(MediaType.TEXT_PLAIN)
 	public JsonNode fetchUserInformation(String token) throws JsonParseException, JsonMappingException, IOException {
+		
+		// TODO: the request should contain distance walked and step count (per day)
+		// 
+		// https://www.livestrong.com/article/238020-how-to-convert-pedometer-steps-to-calories/
+		//	How to include pedometer step count into calculating weights
+		
 		System.out.println("token = " + token);
 		MongoClient client = MongoDBRequest.getInstance().connectToMongoDB(host, port);
 		MongoDatabase database = MongoDBRequest.getInstance().getMongoDatabase(client);

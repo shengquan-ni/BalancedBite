@@ -15,6 +15,9 @@ public class UserInfo {
 	private Integer weight = null; 
 	private Integer height = null;
 	private Integer age = null;
+	private Integer caloriesNeeded = null;
+	private double BMI;
+	
 	
 	private String sexes = "Male";
 	private Integer bodyFat = null;
@@ -58,6 +61,16 @@ public class UserInfo {
 	@JsonProperty
 	public Integer getAge() {
 		return age;
+	}
+	
+	@JsonProperty
+	public Integer getCaloriesNeeded() {
+		return caloriesNeeded;
+	}
+	
+	@JsonProperty
+	public double getBMI () {
+		return BMI;
 	}
 	
 	@JsonProperty
@@ -132,6 +145,16 @@ public class UserInfo {
 	@JsonProperty
 	public void setAge(Integer age) {
 		this.age = age;
+	}
+	
+	@JsonProperty
+	public void setCaloriesNeeded(Integer caloriesNeeded) {
+		this.caloriesNeeded = caloriesNeeded;
+	}
+	
+	@JsonProperty
+	public void setBMI(double BMI) {
+		this.BMI = BMI;
 	}
 	
 	@JsonProperty

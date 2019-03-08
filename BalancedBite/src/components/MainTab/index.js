@@ -58,6 +58,7 @@ class MainTab extends Component {
     }
 
     checkTokenStatus(UItoken) {
+        console.warn("Current UItoken = " + UItoken);
         fetch(SESSION_URL, {
             method: "POST",
             body : UItoken,
@@ -68,6 +69,7 @@ class MainTab extends Component {
         .then(backendRes => backendRes.json())
         .then(backendRes => {
             if (backendRes.code == 0) {
+                console.warn("backendRes code = 0");
                 this.props.navigation.navigate("loginPanel");
             } else {
                 // change token in redux storage
@@ -94,6 +96,7 @@ class MainTab extends Component {
 
         fetchAsyncTokenData().then(UItoken => {
             if (UItoken == 'none'){
+                console.warn("UI token = none");
                 this.props.navigation.navigate("loginPanel");
             } else {
                 // check if token is valid in db

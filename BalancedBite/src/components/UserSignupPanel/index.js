@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { View, StyleSheet, ScrollView, Picker, Alert } from "react-native";
+import { View, StyleSheet, ScrollView, Picker, Alert, AsyncStorage } from "react-native";
 
 import { Button, CheckBox, Input, Text } from "react-native-elements";
 
@@ -42,17 +42,26 @@ class UserSignupPanel extends Component {
         }
     }
 
+    // save user data in frontend storage
+    _storeTokenData = async(token) => {
+        try {
+            await AsyncStorage.setItem('token', token);
+        } catch (error) {
+            // Error saving data
+        }
+    }
+
     onSubmitSignUpForm() {
         let noErrorEncountered = true;
 
-        if (this.state.username.trim().length < 8) {
+        if (this.state.username.trim().length < 1) {
             this.setState({usernameError : "Username must be at least 8 characters"});
             noErrorEncountered = false;
         } else {
             this.setState({usernameError: ""});
         }
 
-        if (this.state.password.trim().length < 8) {
+        if (this.state.password.trim().length < 1) {
             this.setState({passwordError: "Password must be at least 8 characters"});
             noErrorEncountered = false;
         } else {
@@ -86,15 +95,15 @@ class UserSignupPanel extends Component {
         let currentState = {
             username : this.state.username,
             password : this.state.password,
-            weight: this.weight,
-            height: this.height,
-            age: this.age,
-            sexes: this.sexes,
-            bodyFat: this.bodyFat,
-            foodRestriction: this.foodRestriction,
-            workoutBoolean: this.workoutBoolean,
-            workoutFrequency: this.workoutFrequency,
-            workoutType: this.workoutType,            
+            weight: this.state.weight,
+            height: this.state.height,
+            age: this.state.age,
+            sexes: this.state.sexes,
+            bodyFat: this.state.bodyFat,
+            foodRestriction: this.state.foodRestriction,
+            workoutBoolean: this.state.workoutBoolean,
+            workoutFrequency: this.state.workoutFrequency,
+            workoutType: this.state.workoutType,            
             allergies: this.state.allergies.split(",").filter(element => element.trim().length > 0),
             dislikeFoods: this.state.dislikeFoods.split(",").filter(element => element.trim().length > 0),
             healthProblems: this.state.healthProblems.split(",").filter(element => element.trim().length > 0)
@@ -111,7 +120,14 @@ class UserSignupPanel extends Component {
         .then(res => res.json())
         .then(res => {
             if (res.code == 1) {
-                this.props.navigation.navigate("mainTab");
+                this._storeTokenData(res.token).then(
+                    () => {
+                        this.props.navigation.navigate("mainTab");
+                    }
+                );
+
+                
+                
             } else {
                 Alert.alert("Error", "User was not added successfully", [{
                     text: "Okay"
