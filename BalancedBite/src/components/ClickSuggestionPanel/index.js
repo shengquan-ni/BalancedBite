@@ -1,21 +1,34 @@
 import React, { Component } from "react";
-import { View, Text } from "react-native";
 
+import { View, Text, Button, Input, StyleSheet } from "react-native";
 
-class ClickSuggestionPanel extends Component {
+import { connect } from "react-redux";
 
-    static navigationOptions = {
-        title: "ClickSuggestion"
+const mapStateToProps = (state) => {
+    return {
+        currentToken: state.currentToken
     }
-    
+}
+
+class ClickSuggestionComponent extends Component {
+
     render() {
         return (
-            <View>
-                <Text>Suggestion panel</Text>
+            <View style={styles.container}>
+                <Text>ClickSuggestionComponent panel</Text>
+                <Text>{this.props.currentToken}</Text>
             </View>
         );
     }
 }
 
+export default connect(mapStateToProps)(ClickSuggestionComponent);
 
-export default ClickSuggestionPanel;
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center'
+    }
+})

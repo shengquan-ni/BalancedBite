@@ -1,13 +1,19 @@
 package edu.uci.ics.balancedbite.web.resources;
 
 import java.io.IOException;
+import java.util.Calendar;
+import java.util.UUID;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+
+import java.text.SimpleDateFormat;
 
 import org.bson.Document;
 
@@ -27,6 +33,7 @@ import static com.mongodb.client.model.Filters.*;
 import static com.mongodb.client.model.Updates.*;
 
 import edu.uci.ics.balancedbite.web.api.UserInfo;
+import edu.uci.ics.balancedbite.web.api.UserToken;
 import edu.uci.ics.balancedbite.web.db.MongoDBRequest;
 
 @Path("/sign-in")
@@ -44,10 +51,8 @@ public class SignInResource {
 	
 	@POST
 	@Timed
-	public JsonNode checkLoginInformationExist(String userInformationJson) throws JsonParseException, JsonMappingException, IOException {
-		
-		System.out.println("show user information string");
-		System.out.println(userInformationJson);
+	public JsonNode checkLoginInformationExist(String userInformationJson) 
+			throws JsonParseException, JsonMappingException, IOException {
 		
 		// parse json string
 		UserInfo userInfo = new ObjectMapper().readValue(userInformationJson, UserInfo.class);
@@ -64,20 +69,26 @@ public class SignInResource {
 		// check if the user exists in the database
 		UserInfo currUserInfo = collection.find(and(eq("username", username), eq("password", password))).first();
 		
-		client.close();
-		
 		// return json object
 		ObjectNode response = new ObjectMapper().createObjectNode();
 
 		// if the user does not exist, then return a code 0
 		if (currUserInfo == null) {
 			response.put("code", 0);
-			client.close();
-
-			return response;
+		} else {
+			String randomID = UUID.randomUUID().toString();
+			String currentTime = new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime());
+			UserToken newToken = new UserToken(randomID, username, currentTime);
+			MongoCollection<UserToken> tokenCollection = MongoDBRequest.getInstance().getUserTokenCollection(database);
+			tokenCollection.insertOne(newToken);
+			
+			
+			response.put("code", 1);
+			response.put("token", randomID);
+			
+			System.out.println("Finish");			
 		}
 		
-		response.put("code", 1);
 		client.close();
 		return response;
 	}
@@ -92,15 +103,19 @@ public class SignInResource {
 //		System.out.println(t2.getUsername());
 //		System.out.println(t2.getPassword());
 //		
-//		MongoClient client = MongoDBRequest.getInstance().connectToMongoDB("localhost", 27017);
-//		MongoDatabase database = MongoDBRequest.getInstance().getMongoDatabase(client);
-//		MongoCollection<UserInfo> collection = MongoDBRequest.getInstance().getUserInfoCollection(database);
+		MongoClient client = MongoDBRequest.getInstance().connectToMongoDB("localhost", 27017);
+		MongoDatabase database = MongoDBRequest.getInstance().getMongoDatabase(client);
+		MongoCollection<UserInfo> collection = MongoDBRequest.getInstance().getUserInfoCollection(database);
 //		
 ////		UserLoginInfo user1 = new UserLoginInfo("sampleUser", "samplePassword");
 ////		collection.insertOne(user1);
 //		
-//		UserInfo t = collection.find(and(eq("username", "sampleUser"), eq("password", "samplePassword"))).first();
+//		UserInfo t = collection.find(and(eq("username", "henrychen02200"), eq("password", "henrychen0220"))).first();
 //		System.out.println(new ObjectMapper().writeValueAsString(t));
+//		
+//		UserToken newToken = new UserToken("random");
+//		MongoCollection<UserToken> tokenCollection = MongoDBRequest.getInstance().getUserTokenCollection(database);
+//		tokenCollection.insertOne(newToken);
 //		
 //		FindIterable<UserInfo> a = collection.find(and(eq("username", "sampleUser"), eq("password", "samplePassword")));
 //		for (UserInfo userInfo : a) {

@@ -3,6 +3,8 @@ package edu.uci.ics.balancedbite.web.api;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bson.types.ObjectId;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class UserInfo {
@@ -13,6 +15,9 @@ public class UserInfo {
 	private Integer weight = null; 
 	private Integer height = null;
 	private Integer age = null;
+	private Integer caloriesNeeded = null;
+	private double BMI;
+	
 	
 	private String sexes = "Male";
 	private Integer bodyFat = null;
@@ -31,6 +36,7 @@ public class UserInfo {
 		this.username = username;
 		this.password = password;
 	}
+	
 	
 	@JsonProperty
 	public String getUsername() {
@@ -55,6 +61,16 @@ public class UserInfo {
 	@JsonProperty
 	public Integer getAge() {
 		return age;
+	}
+	
+	@JsonProperty
+	public Integer getCaloriesNeeded() {
+		return caloriesNeeded;
+	}
+	
+	@JsonProperty
+	public double getBMI () {
+		return BMI;
 	}
 	
 	@JsonProperty
@@ -105,8 +121,7 @@ public class UserInfo {
 	
 	
 	// serialize
-	
-	
+
 	@JsonProperty
 	public void setUsername(String username) {
 		this.username = username;
@@ -130,6 +145,16 @@ public class UserInfo {
 	@JsonProperty
 	public void setAge(Integer age) {
 		this.age = age;
+	}
+	
+	@JsonProperty
+	public void setCaloriesNeeded(Integer caloriesNeeded) {
+		this.caloriesNeeded = caloriesNeeded;
+	}
+	
+	@JsonProperty
+	public void setBMI(double BMI) {
+		this.BMI = BMI;
 	}
 	
 	@JsonProperty

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import {
   StyleSheet, Text, View, TextInput, TouchableOpacity, 
-  Alert, TouchableWithoutFeedback, Keyboard
+  Alert, TouchableWithoutFeedback, Keyboard, AsyncStorage
 } from 'react-native';
 
 import { Input } from "react-native-elements";
@@ -24,8 +24,18 @@ class UserLoginPanel extends Component {
         header: null
     }
 
+    // save user data in frontend storage
+    _storeTokenData = async(token) => {
+        try {
+            await AsyncStorage.setItem('token', token);
+        } catch (error) {
+            // Error saving data
+        }
+    }
+
     onClickLogin() {
         Keyboard.dismiss();
+
         const { username, password } = this.state;
         if (username.length == 0 || password.length == 0) {
             Alert.alert("Error", "Username or Password is empty", [{
@@ -41,8 +51,10 @@ class UserLoginPanel extends Component {
             })
             .then(res => res.json())
             .then(res => {
+                // console.warn(res);
                 if (res.code == 1) {
-                    this.props.navigation.navigate("clickSuggestionPanel");
+                    this._storeTokenData(res.token);
+                    this.props.navigation.navigate("mainTab");
                 } else {
                     Alert.alert("Error", "Username or Password does not match", [{
                         text : "Okay"

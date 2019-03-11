@@ -1,8 +1,12 @@
 package edu.uci.ics.balancedbite.web;
 
+import org.eclipse.jetty.server.session.SessionHandler;
+
 import edu.uci.ics.balancedbite.web.health.SampleHealthCheck;
+import edu.uci.ics.balancedbite.web.resources.CheckSessionResource;
 import edu.uci.ics.balancedbite.web.resources.SignInResource;
 import edu.uci.ics.balancedbite.web.resources.SignUpResource;
+import edu.uci.ics.balancedbite.web.resources.UserDataResource;
 import edu.uci.ics.balancedbite.web.resources.testResource;
 import io.dropwizard.Application;
 import io.dropwizard.setup.Bootstrap;
@@ -27,6 +31,7 @@ public class balancedbiteApplication extends Application<balancedbiteConfigurati
     @Override
     public void run(final balancedbiteConfiguration configuration,
                     final Environment environment) {
+
         // resources
     	
     	final SignInResource signInResource = new SignInResource(
@@ -39,14 +44,25 @@ public class balancedbiteApplication extends Application<balancedbiteConfigurati
     				configuration.getDatabaseConfiguration().getPort()
     			);
     	
+    	final CheckSessionResource checkSessionResource = new CheckSessionResource(
+    				configuration.getDatabaseConfiguration().getHost(),
+    				configuration.getDatabaseConfiguration().getPort()
+    			);
     	
+    	final UserDataResource userDataResource = new UserDataResource(
+    				configuration.getDatabaseConfiguration().getHost(),
+    				configuration.getDatabaseConfiguration().getPort()
+    			);
+
     	environment.jersey().register(signInResource);
     	environment.jersey().register(signUpResource);
-    	
+    	environment.jersey().register(checkSessionResource);
+    	environment.jersey().register(userDataResource);
     	
     	// health checks
     	final SampleHealthCheck sampleHealthCheck = new SampleHealthCheck();
-    	environment.healthChecks().register("sampleHealthCheck", sampleHealthCheck);
+    	environment.healthChecks().register("sampleHealthCheck", sampleHealthCheck);    	
+    	
     }
 
 }
