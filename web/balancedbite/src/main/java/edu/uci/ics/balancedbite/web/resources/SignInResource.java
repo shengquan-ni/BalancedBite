@@ -35,6 +35,7 @@ import com.mongodb.client.MongoDatabase;
 import static com.mongodb.client.model.Filters.*;
 import static com.mongodb.client.model.Updates.*;
 
+import edu.uci.ics.balancedbite.web.api.TimeManager;
 import edu.uci.ics.balancedbite.web.api.UserInfo;
 import edu.uci.ics.balancedbite.web.api.UserToken;
 import edu.uci.ics.balancedbite.web.db.MongoDBRequest;
@@ -80,7 +81,7 @@ public class SignInResource {
 			response.put("code", 0);
 		} else {
 			String randomID = UUID.randomUUID().toString();
-			String currentTime = new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime());
+			String currentTime = TimeManager.getInstance().getDateFormat().format(Calendar.getInstance().getTime());
 			UserToken newToken = new UserToken(randomID, username, currentTime);
 			MongoCollection<UserToken> tokenCollection = MongoDBRequest.getInstance().getUserTokenCollection(database);
 			tokenCollection.insertOne(newToken);
@@ -89,7 +90,7 @@ public class SignInResource {
 			response.put("code", 1);
 			response.put("token", randomID);
 			
-			System.out.println("Finish");			
+//			System.out.println("Finish");			
 		}
 		
 		client.close();
@@ -116,14 +117,16 @@ public class SignInResource {
 //	    System.out.println("Time in days: " + days + " days."); 
 //		Date diff2 = new Date(d2.getTime() - d1.getTime());
 //		
-//		Calendar calendar = Calendar.getInstance();
-//		calendar.setTime(diff2);
-//		int hours = calendar.get(Calendar.HOUR_OF_DAY);
-//		int minutes = calendar.get(Calendar.MINUTE);
-//		int seconds = calendar.get(Calendar.SECOND);
-//		System.out.println(hours);
-//		System.out.println(minutes);
-//		System.out.println(seconds);
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(new Date());
+		int hours = calendar.get(Calendar.HOUR_OF_DAY);
+		int minutes = calendar.get(Calendar.MINUTE);
+		int seconds = calendar.get(Calendar.SECOND);
+		int day = calendar.get(Calendar.DATE);
+		System.out.println(hours);
+		System.out.println(minutes);
+		System.out.println(seconds);
+		System.out.println(day);
 //		System.out.println("Hello world");
 //		UserInfo test = new UserInfo("herny", "henry123");
 //		String t1 = new ObjectMapper().writeValueAsString(test);

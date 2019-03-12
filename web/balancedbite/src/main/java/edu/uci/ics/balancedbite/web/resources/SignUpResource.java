@@ -28,6 +28,7 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.InsertOneOptions;
 
+import edu.uci.ics.balancedbite.web.api.TimeManager;
 import edu.uci.ics.balancedbite.web.api.UserInfo;
 import edu.uci.ics.balancedbite.web.api.UserToken;
 import edu.uci.ics.balancedbite.web.db.MongoDBRequest;
@@ -143,7 +144,7 @@ public class SignUpResource {
 			// if the user does not exist, insert the user into the database
 			collection.insertOne(userInfo);
 			String randomID = UUID.randomUUID().toString();
-			String currentTime = new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime());
+			String currentTime = TimeManager.getInstance().getDateFormat().format(Calendar.getInstance().getTime());
 			UserToken newToken = new UserToken(randomID, username, currentTime);
 			MongoCollection<UserToken> tokenCollection = MongoDBRequest.getInstance().getUserTokenCollection(database);
 			tokenCollection.insertOne(newToken);

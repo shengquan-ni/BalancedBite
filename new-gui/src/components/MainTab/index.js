@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { View, Text, StyleSheet, SafeAreaView, AsyncStorage, Button, Platform } from "react-native";
+import { StyleSheet, SafeAreaView, AsyncStorage, Platform } from "react-native";
 
 import { createMaterialTopTabNavigator, createAppContainer, withNavigation } from "react-navigation";
 
@@ -11,6 +11,7 @@ import UserInformationComponent from "../UserInformationPanel";
 import ClickSuggestionComponent from "../ClickSuggestionPanel";
 
 import { connect } from "react-redux";
+import { mapDispatchToProps, mapStateToProps } from "../../commons/redux";
 
 const SESSION_URL = SERVER_URL + "/check-session";
 
@@ -135,18 +136,6 @@ class MainTab extends Component {
                 <AppTabContainer></AppTabContainer>
             </SafeAreaView>
         );
-    }
-}
-
-const mapStateToProps = (state) => {
-    return {
-        currentToken: state.currentToken
-    }
-}
-
-const mapDispatchToProps = (dispatch) => {
-    return {
-        changeCurrentToken: (token) => dispatch({type : 'CHANGE_TOKEN', token: token})
     }
 }
 

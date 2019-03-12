@@ -1,14 +1,10 @@
 import React, { Component } from "react";
 
-import { View, Text, Button, Input, StyleSheet } from "react-native";
+import { View, Text, StyleSheet } from "react-native";
 
 import { connect } from "react-redux";
 
-const mapStateToProps = (state) => {
-    return {
-        currentToken: state.currentToken
-    }
-}
+import { mapStateToProps } from "../../commons/redux";
 
 class ClickSuggestionComponent extends Component {
 
