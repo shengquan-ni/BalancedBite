@@ -84,6 +84,7 @@ class UserLoginPanel extends Component {
                             onChangeText = {(text) => this.setState({username: text})}
                             containerStyle={styles.inputBox}
                             inputContainerStyle={styles.inputBoxContainer}
+                            autoCapitalize="none"
                         ></Input>
                         <Input
                             placeholder="Password"
