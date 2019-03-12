@@ -70,13 +70,22 @@ public class CheckSessionResource {
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd_HHmmss");
 		Date currentTime = Calendar.getInstance().getTime();
 		Date tokenCreateTime = dateFormat.parse(foundToken.getTime());
+				
+	    long diff = currentTime.getTime() - tokenCreateTime.getTime();
+//	    long diffSeconds = diff / 1000 % 60;  
+//	    long diffMinutes = diff / (60 * 1000) % 60; 
+//	    long diffHours = diff / (60 * 60 * 1000) % 60;
+	    long days = diff / (24 * 60 * 60 * 1000);
+//	    System.out.println("Time in seconds: " + diffSeconds + " seconds.");         
+//	    System.out.println("Time in minutes: " + diffMinutes + " minutes.");         
+//	    System.out.println("Time in hours: " + diffHours + " hours."); 
+	    System.out.println("Time in days: " + days + " days."); 
+//		long timeDifferenceInMinutes = (currentTime.getTime() - tokenCreateTime.getTime()) / (1000 * 60) % 60;
+	    
+		System.out.println("Time diff = " + days + " days");
 		
-		long timeDifferenceInMinutes = (currentTime.getTime() - tokenCreateTime.getTime()) / (1000 * 60) % 60;
-		
-		System.out.println("Time diff = " + timeDifferenceInMinutes);
-		
-		// if token is 30 minutes old:
-		if (timeDifferenceInMinutes >= 30) {
+		// if token is 1 day old:
+		if (days >= 1) {
 			tokenCollection.deleteOne(eq("token", currToken));
 			response.put("code", 0);
 			client.close();

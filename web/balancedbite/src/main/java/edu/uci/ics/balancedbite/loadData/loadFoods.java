@@ -17,7 +17,7 @@ import com.mongodb.client.MongoDatabase;
 import edu.uci.ics.balancedbite.web.api.FoodInfo;
 import edu.uci.ics.balancedbite.web.db.MongoDBRequest;
 
-// mvn exec:java -Dexec.mainClass="com.vineetmanohar.module.Main"  
+// mvn exec:java -Dexec.mainClass="edu.uci.ics.balancedbite.loadData.loadFoods"  
 public class loadFoods {
 	public static List<FoodInfo> readAllFoods(String fileName) throws JsonParseException, JsonMappingException, IOException {
 		String filePath = "src/main/resources/foodData/" + fileName + ".json";
