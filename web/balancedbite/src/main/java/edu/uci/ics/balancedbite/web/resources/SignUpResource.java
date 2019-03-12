@@ -55,10 +55,14 @@ public class SignUpResource {
 	 * Adult male: 66 + (6.3 x body weight in lbs.) + (12.9 x height in inches) - (6.8 x age in years) = BMR 
 	 * Adult female: 655 + (4.3 x weight in lbs.) + (4.7 x height in inches) - (4.7 x age in years) = BMR
 	 * 
-	 * kg -> 1 : 2.20462 -> lb
-	 * cm -> 1 : 0.393701 -> inches
+	 * kg = 1 : 2.20462 = lb
+	 * cm = 1 : 0.393701 = inches
 	 * 
-	 * @return
+	 * @param sexes user sex
+	 * @param weight user weight
+	 * @param height user height
+	 * @param age user age
+	 * @return user calculated BMR
 	 */
 	public static double calculateBMR(String sexes, int weight, int height, int age) {
 		double weightInlbs = weight * 2.20462;
@@ -76,15 +80,17 @@ public class SignUpResource {
 	 * http://www.checkyourhealth.org/eat-healthy/cal_calculator.php
 	 * 
 	 * If you are sedentary (little or no exercise) : Calorie-Calculation = BMR x 1.2
-	If you are lightly active (light exercise/sports 1-3 days/week) : Calorie-Calculation = BMR x 1.375
-	If you are moderately active (moderate exercise/sports 3-5 days/week) : Calorie-Calculation = BMR x 1.55
-	If you are very active (hard exercise/sports 6-7 days a week) : Calorie-Calculation = BMR x 1.725
-	If you are extra active (very hard exercise/sports & physical job or 2x training) : Calorie-Calculation = BMR x 1.9
+	 * If you are lightly active (light exercise/sports 1-3 days/week) : Calorie-Calculation = BMR x 1.375
+	 * If you are moderately active (moderate exercise/sports 3-5 days/week) : Calorie-Calculation = BMR x 1.55
+	 * If you are very active (hard exercise/sports 6-7 days a week) : Calorie-Calculation = BMR x 1.725
+	 * Otherwise: BMR x 1.9
 	 * 
-	 * 
-	 * 
-	 * 
-	 * @return
+	 * @param sexes user sex
+	 * @param weight user weight
+	 * @param height user height
+	 * @param age user age
+	 * @param workoutFreq user workout frequency
+	 * @return user calories needed daily
 	 */
 	public static int calculateCalories(String sexes, int weight, int height, int age, int workoutFreq) {
 		double BMR = calculateBMR(sexes, weight, height, age);
