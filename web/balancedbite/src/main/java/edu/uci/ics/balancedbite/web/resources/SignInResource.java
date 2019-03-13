@@ -2,7 +2,9 @@ package edu.uci.ics.balancedbite.web.resources;
 
 import java.io.IOException;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
@@ -13,6 +15,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 import org.bson.Document;
@@ -32,6 +35,7 @@ import com.mongodb.client.MongoDatabase;
 import static com.mongodb.client.model.Filters.*;
 import static com.mongodb.client.model.Updates.*;
 
+import edu.uci.ics.balancedbite.web.api.TimeManager;
 import edu.uci.ics.balancedbite.web.api.UserInfo;
 import edu.uci.ics.balancedbite.web.api.UserToken;
 import edu.uci.ics.balancedbite.web.db.MongoDBRequest;
@@ -77,7 +81,7 @@ public class SignInResource {
 			response.put("code", 0);
 		} else {
 			String randomID = UUID.randomUUID().toString();
-			String currentTime = new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime());
+			String currentTime = TimeManager.getInstance().getDateFormat().format(Calendar.getInstance().getTime());
 			UserToken newToken = new UserToken(randomID, username, currentTime);
 			MongoCollection<UserToken> tokenCollection = MongoDBRequest.getInstance().getUserTokenCollection(database);
 			tokenCollection.insertOne(newToken);
@@ -86,7 +90,7 @@ public class SignInResource {
 			response.put("code", 1);
 			response.put("token", randomID);
 			
-			System.out.println("Finish");			
+//			System.out.println("Finish");			
 		}
 		
 		client.close();
@@ -94,7 +98,35 @@ public class SignInResource {
 	}
 	
 	
-	public static void main(String[] args) throws IOException {
+	public static void main(String[] args) throws IOException, InterruptedException, ParseException {
+//		SimpleDateFormat format = new SimpleDateFormat("yy/MM/dd HH:mm:ss");  
+//		String dateStart = "11/03/14 09:29:58";
+//		String dateStop = "11/03/15 09:33:43";
+//		Date d1 = null;
+//		Date d2 = null;
+//	    d1 = format.parse(dateStart);
+//	    d2 = format.parse(dateStop);
+//	    long diff = d2.getTime() - d1.getTime();
+//	    long diffSeconds = diff / 1000 % 60;  
+//	    long diffMinutes = diff / (60 * 1000) % 60; 
+//	    long diffHours = diff / (60 * 60 * 1000) % 60;
+//	    long days = diff / (24 * 60 * 60 * 1000);
+//	    System.out.println("Time in seconds: " + diffSeconds + " seconds.");         
+//	    System.out.println("Time in minutes: " + diffMinutes + " minutes.");         
+//	    System.out.println("Time in hours: " + diffHours + " hours."); 
+//	    System.out.println("Time in days: " + days + " days."); 
+//		Date diff2 = new Date(d2.getTime() - d1.getTime());
+//		
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(new Date());
+		int hours = calendar.get(Calendar.HOUR_OF_DAY);
+		int minutes = calendar.get(Calendar.MINUTE);
+		int seconds = calendar.get(Calendar.SECOND);
+		int day = calendar.get(Calendar.DATE);
+		System.out.println(hours);
+		System.out.println(minutes);
+		System.out.println(seconds);
+		System.out.println(day);
 //		System.out.println("Hello world");
 //		UserInfo test = new UserInfo("herny", "henry123");
 //		String t1 = new ObjectMapper().writeValueAsString(test);
@@ -103,9 +135,11 @@ public class SignInResource {
 //		System.out.println(t2.getUsername());
 //		System.out.println(t2.getPassword());
 //		
-		MongoClient client = MongoDBRequest.getInstance().connectToMongoDB("localhost", 27017);
-		MongoDatabase database = MongoDBRequest.getInstance().getMongoDatabase(client);
-		MongoCollection<UserInfo> collection = MongoDBRequest.getInstance().getUserInfoCollection(database);
+//		MongoClient client = MongoDBRequest.getInstance().connectToMongoDB("localhost", 27017);
+//		MongoDatabase database = MongoDBRequest.getInstance().getMongoDatabase(client);
+//		MongoCollection<UserInfo> collection = MongoDBRequest.getInstance().getUserInfoCollection(database);
+//		UserInfo t = collection.find().first();
+//		System.out.println(new ObjectMapper().writeValueAsString(t));
 //		
 ////		UserLoginInfo user1 = new UserLoginInfo("sampleUser", "samplePassword");
 ////		collection.insertOne(user1);

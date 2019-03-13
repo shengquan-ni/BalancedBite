@@ -3,14 +3,14 @@ package edu.uci.ics.balancedbite.web.api;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.bson.types.ObjectId;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class UserInfo {
 	
 	private String username;	
 	private String password;
+	private Integer caloriesTakenCurrently = 0;
+	private List<String> foodsEatenCurrently = new ArrayList<> ();
 	
 	private Integer weight = null; 
 	private Integer height = null;
@@ -46,6 +46,16 @@ public class UserInfo {
 	@JsonProperty
 	public String getPassword() {
 		return password;
+	}
+	
+	@JsonProperty
+	public Integer getCaloriesTakenCurrently() {
+		return caloriesTakenCurrently;
+	}
+	
+	@JsonProperty
+	public List<String> getFoodsEatenCurrently() {
+		return foodsEatenCurrently;
 	}
 
 	@JsonProperty
@@ -130,6 +140,16 @@ public class UserInfo {
 	@JsonProperty
 	public void setPassword(String password) {
 		this.password = password;
+	}
+	
+	@JsonProperty
+	public void setCaloriesTakenCurrently(Integer caloriesTakenCurrently) {
+		this.caloriesTakenCurrently = caloriesTakenCurrently;
+	}
+	
+	@JsonProperty
+	public void setFoodsEatenCurrently(List<String> foodsEatenCurrently) {
+		this.foodsEatenCurrently = foodsEatenCurrently;
 	}
 	
 	@JsonProperty
