@@ -1,2 +1,2 @@
-const HOST = "54.185.18.57";
+const HOST = "192.168.1.8";
 export const SERVER_URL = "http://" + HOST + ":8080";

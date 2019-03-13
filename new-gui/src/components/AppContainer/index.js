@@ -2,15 +2,17 @@ import { createStackNavigator, createAppContainer } from "react-navigation";
 
 import UserLoginPanel from "../UserLoginPanel";
 import UserSignupPanel from "../UserSignupPanel";
-import MainTab from "../MainTab";
+import ClickSuggestionPanel from "../ClickSuggestionPanel";
+import UserInformationPanel from "../UserInformationPanel";
 
 const AppStackNavigator = createStackNavigator(
     {
         loginPanel : UserLoginPanel,
         userSignupPanel: UserSignupPanel,
-        mainTab: MainTab
+        clickSuggestionPanel: ClickSuggestionPanel,
+        userInformationPanel: UserInformationPanel
     },{
-        initialRouteName: 'mainTab'
+        initialRouteName: 'clickSuggestionPanel'
     }
 )
 

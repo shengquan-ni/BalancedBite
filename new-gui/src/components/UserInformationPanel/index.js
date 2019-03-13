@@ -12,11 +12,51 @@ const UPDATE_URL = SERVER_URL + "/user/update-user";
 
 class UserInformationComponent extends Component {
 
-    componentWillReceiveProps(nextProps) {
-        console.warn("netProp token = " + nextProps.currentToken);
+    // componentWillReceiveProps(nextProps) {
+
+    //     console.warn("componentWillReceiveProps");
+    //     console.warn("netProp token = " + nextProps.currentToken);
+    //     fetch(FETCH_URL, {
+    //         method: "POST",
+    //         body: JSON.stringify({token: nextProps.currentToken, stepCount: 0.42, distanceTraveled: 1055}),
+    //         headers : {
+    //             "Content-Type" : "application/json"
+    //         }
+    //     })
+    //     .then(res => res.json())
+    //     .then(res => {
+    //         console.warn(res);
+    //         if (res.code == 0) {
+    //             console.warn("Error in getting user info");
+    //         } else {
+    //             // console.warn("Get user");
+    //             console.warn(res);
+    //         }
+    //     })
+    //     .catch(
+    //         error => console.warn(error)
+    //     )
+    // }
+
+    testUpdate() {
+        fetch(UPDATE_URL, {
+            method : "POST",
+            body: JSON.stringify({token: "testToken" , Test : "SUSHI"}),
+            headers : {
+                "Content-Type": "application/json"
+            }
+        })
+        .then(res => res.json())
+        .then(res => {
+            console.warn(res);
+        })
+    }
+
+    componentDidMount(){
+        console.warn("this.props token = " + this.props.currentToken);
         fetch(FETCH_URL, {
             method: "POST",
-            body: JSON.stringify({token: nextProps.currentToken, stepCount: 0.42, distanceTraveled: 1055}),
+            body: JSON.stringify({token: this.props.currentToken, stepCount: 0.42, distanceTraveled: 1055}),
             headers : {
                 "Content-Type" : "application/json"
             }
@@ -34,20 +74,6 @@ class UserInformationComponent extends Component {
         .catch(
             error => console.warn(error)
         )
-    }
-
-    testUpdate() {
-        fetch(UPDATE_URL, {
-            method : "POST",
-            body: JSON.stringify({token: "testToken" , Test : "SUSHI"}),
-            headers : {
-                "Content-Type": "application/json"
-            }
-        })
-        .then(res => res.json())
-        .then(res => {
-            console.warn(res);
-        })
     }
 
     render() {

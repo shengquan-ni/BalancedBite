@@ -122,12 +122,9 @@ class UserSignupPanel extends Component {
             if (res.code == 1) {
                 this._storeTokenData(res.token).then(
                     () => {
-                        this.props.navigation.navigate("mainTab");
+                        this.props.navigation.navigate("clickSuggestionPanel");
                     }
-                );
-
-                
-                
+                );  
             } else {
                 Alert.alert("Error", "User was not added successfully", [{
                     text: "Okay"

@@ -51,10 +51,10 @@ class UserLoginPanel extends Component {
             })
             .then(res => res.json())
             .then(res => {
-                // console.warn(res);
+                console.warn(res);
                 if (res.code == 1) {
                     this._storeTokenData(res.token);
-                    this.props.navigation.navigate("mainTab");
+                    this.props.navigation.navigate("clickSuggestionPanel");
                 } else {
                     Alert.alert("Error", "Username or Password does not match", [{
                         text : "Okay"
@@ -94,6 +94,7 @@ class UserLoginPanel extends Component {
                             containerStyle={styles.inputBox}
                             inputContainerStyle={styles.inputBoxContainer}
                             secureTextEntry={true}
+                            autoCapitalize="none"
                         ></Input>
 
                         <TouchableOpacity style={styles.button} onPress={() => this.onClickLogin()}>
