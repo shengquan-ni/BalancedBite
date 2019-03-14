@@ -1,9 +1,10 @@
 {
   "expoServerNgrokUrl": "https://rp-cnx.anonymous.new-gui.exp.direct",
   "packagerNgrokUrl": "https://packager.rp-cnx.anonymous.new-gui.exp.direct",
-  "ngrokPid": 20080,
+  "ngrokPid": 20288,
   "packagerPort": 19001,
-  "packagerPid": 10632,
+  "packagerPid": 17456,
   "devToolsPort": 19002,
-  "expoServerPort": 19000
+  "expoServerPort": 19000,
+  "webpackServerPort": null
 }
