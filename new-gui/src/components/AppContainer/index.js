@@ -4,15 +4,17 @@ import UserLoginPanel from "../UserLoginPanel";
 import UserSignupPanel from "../UserSignupPanel";
 import ClickSuggestionPanel from "../ClickSuggestionPanel";
 import UserInformationPanel from "../UserInformationPanel";
+import ConfirmFoodPanel from "../ConfirmFoodPanel";
 
 const AppStackNavigator = createStackNavigator(
     {
         loginPanel : UserLoginPanel,
         userSignupPanel: UserSignupPanel,
         clickSuggestionPanel: ClickSuggestionPanel,
-        userInformationPanel: UserInformationPanel
+        userInformationPanel: UserInformationPanel,
+        confirmFoodPanel: ConfirmFoodPanel
     },{
-        initialRouteName: 'clickSuggestionPanel'
+        initialRouteName: 'confirmFoodPanel'
     }
 )
 
