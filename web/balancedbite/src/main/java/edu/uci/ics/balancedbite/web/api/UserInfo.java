@@ -16,7 +16,7 @@ public class UserInfo {
 	private Integer height = null;
 	private Integer age = null;
 	private Integer caloriesNeeded = null;
-	private double BMI;
+	private double BMI=0.0;
 	
 	
 	private String sexes = "Male";
@@ -26,7 +26,7 @@ public class UserInfo {
 	private List<String> dislikeFoods = new ArrayList<> ();
 	private List<String> healthProblems = new ArrayList<> ();
 	private boolean workoutBoolean = false;
-	private Integer workoutFrequency = null;
+	private Integer workoutFrequency = 0;
 	private String workoutType = "None";
 
 	
@@ -183,43 +183,43 @@ public class UserInfo {
 	}
 	
 	@JsonProperty
-	public void getBodyFat(Integer bodyFat) {
+	public void setBodyFat(Integer bodyFat) {
 		this.bodyFat = bodyFat;
 	}
 	
 	
 	@JsonProperty
-	public void getFoodRestriction (String foodRestriction) {
+	public void setFoodRestriction (String foodRestriction) {
 		this.foodRestriction = foodRestriction;
 	}
 	
 	@JsonProperty
-	public void getAllergies(List<String> allergies) {
+	public void setAllergies(List<String> allergies) {
 		this.allergies = allergies;
 	}
 	
 	@JsonProperty
-	public void getDislikeFoods(List<String> dislikeFoods) {
+	public void setDislikeFoods(List<String> dislikeFoods) {
 		this.dislikeFoods =  dislikeFoods;
 	}
 	
 	@JsonProperty
-	public void getHealthProblems(List<String> healthProblems) {
+	public void setHealthProblems(List<String> healthProblems) {
 		this.healthProblems = healthProblems;
 	}
 	
 	@JsonProperty
-	public void getWorkoutBoolean(boolean workoutBoolean) {
+	public void setWorkoutBoolean(boolean workoutBoolean) {
 		this.workoutBoolean = workoutBoolean;
 	}
 	
 	@JsonProperty
-	public void getWorkoutFrequency(Integer workoutFrequency) {
+	public void setWorkoutFrequency(Integer workoutFrequency) {
 		this.workoutFrequency = workoutFrequency;
 	}
 	
 	@JsonProperty
-	public void getWorkoutType(String workoutType) {
+	public void setWorkoutType(String workoutType) {
 		this.workoutType = workoutType;
 	}
 	

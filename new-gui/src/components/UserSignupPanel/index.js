@@ -126,7 +126,7 @@ class UserSignupPanel extends Component {
                     }
                 );  
             } else {
-                Alert.alert("Error", "User was not added successfully", [{
+                Alert.alert("Error", "User already exists", [{
                     text: "Okay"
                 }])
             }

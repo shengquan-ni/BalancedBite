@@ -135,7 +135,7 @@ public class SignUpResource {
 		MongoCollection<UserInfo> collection = MongoDBRequest.getInstance().getUserInfoCollection(database);
 		
 		// check if the user exists in the database
-		UserInfo currUserInfo = collection.find(and(eq("username", username), eq("password", password))).first();
+		UserInfo currUserInfo = collection.find(eq("username", username)).first();
 		
 		// generate response
 		ObjectNode response = new ObjectMapper().createObjectNode();
@@ -148,7 +148,6 @@ public class SignUpResource {
 			UserToken newToken = new UserToken(randomID, username, currentTime);
 			MongoCollection<UserToken> tokenCollection = MongoDBRequest.getInstance().getUserTokenCollection(database);
 			tokenCollection.insertOne(newToken);
-
 			response.put("code", 1);
 			response.put("token", randomID);
 		} else {

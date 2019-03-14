@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class UserInformationRequest {
 	private String token;
 	private Integer stepCount;
-	private Integer distanceTraveled;
 	
 	@JsonProperty
 	public String getToken() {
@@ -15,11 +14,6 @@ public class UserInformationRequest {
 	@JsonProperty
 	public Integer getStepCount() {
 		return stepCount;
-	}
-	
-	@JsonProperty
-	public Integer getDistanceTraveled() {
-		return distanceTraveled;
 	}
 	
 	// deserialize
@@ -32,11 +26,6 @@ public class UserInformationRequest {
 	@JsonProperty
 	public void setStepCount(Integer stepCount) {
 		this.stepCount = stepCount;
-	}
-	
-	@JsonProperty
-	public void setDistanceTraveled(Integer distanceTraveled) {
-		this.distanceTraveled = distanceTraveled;
 	}
 	
 }

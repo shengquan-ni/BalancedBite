@@ -1,11 +1,12 @@
 import { mapDispatchToProps, mapStateToProps } from "../../commons/redux";
 import React, { Component } from "react";
-import { Platform,StatusBar,View,SafeAreaView, Text, Button, SectionList, StyleSheet, TouchableHighlight,Image,TextInput,Dimensions,ImageBackground } from "react-native";
+import { Platform,StatusBar,View,SafeAreaView, Text,Alert, Button, SectionList, StyleSheet, TouchableHighlight,Image,TextInput,Dimensions,ImageBackground } from "react-native";
 import { connect } from "react-redux";
 import { withNavigation } from "react-navigation";
 import { Ionicons } from '@expo/vector-icons';
 import { SERVER_URL } from "../../commons/serverRequest";
-
+import Expo from "expo";
+import { Pedometer } from "expo";
 import Svg from 'react-native-svg';
 import { CheckBox,Input } from "react-native-elements";
 
@@ -22,33 +23,55 @@ class EditableLabel extends Component{
 
     renderInput()
     {
-        if(typeof this.state.myText === "string" || typeof this.state.myText === "number")
+        if(this.props.type === "number" || this.props.type === "string")
         {
             return (<TextInput 
                         ref={component => this._input = component}
                         textAlign="right"
+                        keyboardType={this.props.type==="number"?"numeric":"default"}
                         style={styles.infoText}
                         onChangeText={(text) =>{this.setState({myText:text})}}
                         editable = {this.state.editable}
                         multiline = {false}
-                        onEndEditing={()=>{this.setState({editable:false}); this.props.receiver(this.props.fieldName,this.state.myText);}}
-                        value={this.state.myText.toString()}
+                        onEndEditing={()=>{
+                            this.setState({editable:false});
+                            if(this.props.checker==null || this.props.checker(this.state.myText))
+                                this.props.receiver(this.props.fieldName,this.props.type==="number"?parseInt(this.state.myText):this.state.myText);
+                            else{
+                                this.state.myText=this.props.value;
+                                Alert.alert("Error", this.props.errorMessage, [{
+                                    text: "Okay"
+                                }]);
+                            }
+                            }}
+                        value={this.state.myText}
                     />);
         }
-        else if(typeof this.state.myText === "boolean")
+        else if(this.props.type === "boolean")
         {
             return (<View style={{width:"40%"}}>
                     <CheckBox
                         ref={component => this._input = component}
                         right={true}
                         iconRight
-                        onPress={() => this.setState({myText: !this.state.myText,editable:false})}
+                        onPress={()=>{
+                            const val=!this.state.myText;
+                            this.setState({editable:false,myText:!this.state.myText});
+                            if(this.props.checker==null || this.props.checker(val))
+                                this.props.receiver(this.props.fieldName,val);
+                            else{
+                                this.state.myText=this.props.value;
+                                Alert.alert("Error", this.props.errorMessage, [{
+                                    text: "Okay"
+                                }]);
+                            }
+                            }}
                         checked={this.state.myText}
                         disabled={!this.state.editable}
                     /></View>
             );
         }
-        else if(Array.isArray(this.state.myText))
+        else if(this.props.type === "list")
         {
             return(<TextInput 
                         ref={component => this._input = component}
@@ -57,7 +80,17 @@ class EditableLabel extends Component{
                         onChangeText={(text) =>{this.setState({myText:text})}}
                         editable = {this.state.editable}
                         multiline = {false}
-                        onEndEditing={()=>{this.setState({editable:false}); console.warn(this.state.myText);this.props.receiver(this.props.fieldName,this.state.myText.split(",").filter(element => element.trim().length > 0));}}
+                        onEndEditing={()=>{
+                            this.setState({editable:false});
+                            if(this.props.checker==null || this.props.checker(this.state.myText))
+                                this.props.receiver(this.props.fieldName,this.state.myText.split(",").filter(element => element.trim().length > 0));
+                            else{
+                                this.state.myText=this.props.value;
+                                Alert.alert("Error", this.props.errorMessage, [{
+                                    text: "Okay"
+                                }]);
+                            }
+                            }}
                         value={this.state.myText}
                     />);
         }
@@ -85,26 +118,29 @@ class EditableLabel extends Component{
 
 class UserInformationComponent extends Component {
 
-    
-    updateInformation(fieldName,fieldValue){
-        fetch(UPDATE_URL, {
-            method : "POST",
-            body: JSON.stringify({token: this.props.currentToken, fieldName: fieldValue}),
-            headers : {
-                "Content-Type": "application/json"
-            }
-        })
-        .then(res => res.json())
-        .then(res => {
-            console.warn(res);
-            this.setState({userInfo:res},()=>{this.forceUpdate();});
-        })
+
+    fetchStepCountThenGetInformation(){
+        const now = new Date();
+        const todayMidnight = new Date();
+        todayMidnight.setHours(0,0,0,0);
+        Pedometer.getStepCountAsync(todayMidnight,now).then(
+            result => {
+                this.setState({ pastStepCount: result.steps });
+                this.getInformation(result.steps);
+              },
+              error => {
+                this.setState({ pastStepCount: "N/A"});
+                this.getInformation(0);
+              }
+            );
     }
 
-    componentDidMount(){
+
+
+    getInformation(stepCount){
         fetch(FETCH_URL, {
             method: "POST",
-            body: JSON.stringify({token: this.props.currentToken, distanceTraveled: 0.42, stepCount: 1055}),
+            body: JSON.stringify({token: this.props.currentToken, stepCount: stepCount}),
             headers : {
                 "Content-Type" : "application/json"
             }
@@ -123,17 +159,45 @@ class UserInformationComponent extends Component {
         )
     }
 
+    updateInformation(fieldName,fieldValue){
+        fetch(UPDATE_URL, {
+            method : "POST",
+            body: JSON.stringify({token: this.props.currentToken,fieldName:fieldName,fieldValue:fieldValue}),
+            headers : {
+                "Content-Type": "application/json"
+            }
+        })
+        .then(res => res.json())
+        .then(res => {
+            if(res.code==0){
+                console.warn("Fail to update");
+            }else{
+                this.fetchStepCountThenGetInformation();
+            }
+        })
+    }
+
+    componentWillMount(){
+        Pedometer.isAvailableAsync();
+        this.fetchStepCountThenGetInformation();
+    }
+
+    isNormalInteger(str) {
+        return /^\+?(0|[1-9]\d*)$/.test(str);
+    }
+
+
     render() {
-        if(this.state)
+        if(this.state && this.state.userInfo)
         return (
             <SafeAreaView style={styles.container}>
                 <Svg alignSelf="center" width={300*scaleAvatar} height={486*scaleAvatar}>
                 <Svg.Rect
                     scale={scaleAvatar}
                     x={0}
-                    y={2000/4200*486}
+                    y={(this.state.userInfo.caloriesNeeded-this.state.userInfo.caloriesTakenCurrently)/this.state.userInfo.caloriesNeeded*486}
                     width={300}
-                    height={2200/4200*486}
+                    height={this.state.userInfo.caloriesTakenCurrently/this.state.userInfo.caloriesNeeded*486}
                     strokeWidth={0}
                     fill="#3CB371"
                 />
@@ -144,27 +208,46 @@ class UserInformationComponent extends Component {
                     stickySectionHeadersEnabled={true}
                     renderItem={({item, index, section}) => {
                     if(section.title==="Health Infomation")
-                    return (<View><View style={styles.sectionListItem}><Text style={{width:"40%"}} key={index}>{item[0]+": "}</Text><Text style={{width:"50%", textAlign:"right"}}>{item[1]+" "+item[2]}</Text></View><View style={styles.sectionPadding}></View></View>);
+                    return (<View>
+                                <View style={styles.sectionListItem}>
+                                <Text style={{width:"40%"}} key={index}>{item[0]+": "}</Text>
+                                <Text style={{width:"50%", textAlign:"right"}}>{item[1]+" "+item[2]}</Text>
+                                </View>
+                                <View style={styles.sectionPadding}></View>
+                            </View>);
                     else
-                    return (<View><EditableLabel title={item[0]} value={item[1]} unit={item[2]} fieldName={item[3]} receiver={(k,v)=>this.updateInformation(k,v)}></EditableLabel><View style={styles.sectionPadding}></View></View>);
+                    return (<View>
+                            <EditableLabel 
+                                title={item[0]} 
+                                value={item[1]} 
+                                unit={item[2]} 
+                                fieldName={item[3]} 
+                                checker={item[4]}
+                                errorMessage={item[5]}
+                                type={item[6]}
+                                receiver={(k,v)=>this.updateInformation(k,v)}>
+                            </EditableLabel>
+                            <View style={styles.sectionPadding}></View>
+                        </View>);
                 }}
                     renderSectionHeader={({section: {title}}) => (
                         <Text style={styles.sectionHeader}>{title}</Text>
                     )}
                     sections={[
-                        {title: 'Health Infomation', data: [["BMI",this.state.userInfo.bmi.toFixed(2),""],
-                                                         ["Calories Needed",4200,"Cal"],
-                                                         ["Step Count",999,""],
-                                                         ["Distance Traveled",1253,"m"]]},
-                        {title: 'User Infomation', data: [['Age',this.state.userInfo.age,'','age'],
-                                                        ['Weight',this.state.userInfo.weight,'kg','weight'],
-                                                        ['Height',this.state.userInfo.height,'cm','height'],
-                                                        ['HealthProblems',this.state.userInfo.healthProblems.join(),"","healthProblems"],
-                                                        ['DislikeFoods',this.state.userInfo.dislikeFoods.join(),"","dislikeFoods"],
-                                                        ['Allergies',this.state.userInfo.allergies.join(),"","alleriges"],
-                                                        ['Workout',this.state.userInfo.workoutBoolean,"","workoutBoolean"],
-                                                        ['WorkoutFrequency',this.state.userInfo.workoutFrequency,"","workoutFrequency"],
-                                                        ['WorkoutType',this.state.userInfo.workoutType,"","workoutType"]]},
+                        {title: 'Health Infomation', data: [["BMI",this.state.userInfo.bmi?this.state.userInfo.bmi.toFixed(2):0,""],
+                                                         ["Calories Needed",this.state.userInfo.caloriesNeeded,"Cal(s)"],
+                                                         ["Calories Taken",this.state.userInfo.caloriesTakenCurrently,"Cal(s)"],
+                                                         ["Foods Eaten",this.state.userInfo.foodsEatenCurrently.join(),""],
+                                                         ["Step Count",this.state.pastStepCount,""]]},
+                        {title: 'User Infomation', data: [['Age',this.state.userInfo.age.toString(),'','age',(x)=>this.isNormalInteger(x) && parseInt(x)<150,"Age is not valid(1-150)!","number"],
+                                                        ['Weight',this.state.userInfo.weight.toString(),'kg','weight',(x)=>this.isNormalInteger(x) && parseInt(x)<1000,"Weight is not valid(1-1000)!","number"],
+                                                        ['Height',this.state.userInfo.height.toString(),'cm','height',(x)=>this.isNormalInteger(x) && parseInt(x)<1000,"Height is not valid(1-1000)!","number"],
+                                                        ['HealthProblems',this.state.userInfo.healthProblems.join(),"","healthProblems",null,null,"list"],
+                                                        ['DislikeFoods',this.state.userInfo.dislikeFoods.join(),"","dislikeFoods",null,null,"list"],
+                                                        ['Allergies',this.state.userInfo.allergies.join(),"","alleriges",null,null,"list"],
+                                                        ['Workout',this.state.userInfo.workoutBoolean,"","workoutBoolean",null,null,"boolean"],
+                                                        ['WorkoutFrequency',this.state.userInfo.workoutFrequency.toString(),"","workoutFrequency",(x)=>this.isNormalInteger(x) && parseInt(x)<=7,"Workout Frequency should be an integer between 0 and 7!","number"],
+                                                        ['WorkoutType',this.state.userInfo.workoutType,"","workoutType",null,null,"string"]]},
                     ]}
                     keyExtractor={(item, index) => item + index}
                 />
