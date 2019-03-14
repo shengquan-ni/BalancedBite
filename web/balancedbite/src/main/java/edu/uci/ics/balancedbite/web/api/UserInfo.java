@@ -12,15 +12,15 @@ public class UserInfo {
 	private Integer caloriesTakenCurrently = 0;
 	private List<String> foodsEatenCurrently = new ArrayList<> ();
 	
-	private Integer weight = null; 
-	private Integer height = null;
-	private Integer age = null;
-	private Integer caloriesNeeded = null;
+	private Integer weight = 0; 
+	private Integer height = 0;
+	private Integer age = 0;
+	private Integer caloriesNeeded = 0;
 	private double BMI=0.0;
 	
 	
 	private String sexes = "Male";
-	private Integer bodyFat = null;
+	private Integer bodyFat = 0;
 	private String foodRestriction = "None";
 	private List<String> allergies = new ArrayList<> ();
 	private List<String> dislikeFoods = new ArrayList<> ();

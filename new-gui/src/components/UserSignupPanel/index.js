@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { View, StyleSheet, ScrollView, Picker, Alert, AsyncStorage } from "react-native";
+import { View, StyleSheet, ScrollView, Picker, Alert, AsyncStorage,KeyboardAvoidingView } from "react-native";
 
 import { Button, CheckBox, Input, Text } from "react-native-elements";
 
@@ -137,6 +137,7 @@ class UserSignupPanel extends Component {
 
     render() {
         return (
+            <KeyboardAvoidingView style={{flex:1}} behavior="position">
             <ScrollView style={styles.scrollViewContainer}>
                 <View style={styles.sectionView}>
                     <Text h4
@@ -317,7 +318,7 @@ class UserSignupPanel extends Component {
                     onPress={() => this.onSubmitSignUpForm()}
                 ></Button>
             </ScrollView>
-
+            </KeyboardAvoidingView>
         );
     }
 }

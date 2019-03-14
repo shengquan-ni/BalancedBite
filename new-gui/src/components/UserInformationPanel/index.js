@@ -1,11 +1,11 @@
 import { mapDispatchToProps, mapStateToProps } from "../../commons/redux";
 import React, { Component } from "react";
-import { Platform,StatusBar,View,SafeAreaView, Text,Alert, Button, SectionList, StyleSheet, TouchableHighlight,Image,TextInput,Dimensions,ImageBackground } from "react-native";
+import { KeyboardAvoidingView,Platform,StatusBar,View,SafeAreaView, Text,Alert, Button,
+     SectionList, StyleSheet, TouchableHighlight,Image,TextInput,Dimensions,ImageBackground } from "react-native";
 import { connect } from "react-redux";
 import { withNavigation } from "react-navigation";
 import { Ionicons } from '@expo/vector-icons';
 import { SERVER_URL } from "../../commons/serverRequest";
-import Expo from "expo";
 import { Pedometer } from "expo";
 import Svg from 'react-native-svg';
 import { CheckBox,Input } from "react-native-elements";
@@ -13,7 +13,7 @@ import { CheckBox,Input } from "react-native-elements";
 const FETCH_URL  = SERVER_URL + "/user/fetch-user";
 const UPDATE_URL = SERVER_URL + "/user/update-user";
 
-const scaleAvatar=0.4
+const scaleAvatar=0.3
 
 class EditableLabel extends Component{
 
@@ -35,9 +35,10 @@ class EditableLabel extends Component{
                         multiline = {false}
                         onEndEditing={()=>{
                             this.setState({editable:false});
-                            if(this.props.checker==null || this.props.checker(this.state.myText))
-                                this.props.receiver(this.props.fieldName,this.props.type==="number"?parseInt(this.state.myText):this.state.myText);
-                            else{
+                            if(this.props.checker==null || this.props.checker(this.state.myText)){
+                                if(this.props.value!=this.state.myText)
+                                    this.props.receiver(this.props.fieldName,this.props.type==="number"?parseInt(this.state.myText):this.state.myText);
+                            }else{
                                 this.state.myText=this.props.value;
                                 Alert.alert("Error", this.props.errorMessage, [{
                                     text: "Okay"
@@ -57,9 +58,9 @@ class EditableLabel extends Component{
                         onPress={()=>{
                             const val=!this.state.myText;
                             this.setState({editable:false,myText:!this.state.myText});
-                            if(this.props.checker==null || this.props.checker(val))
+                            if(this.props.checker==null || this.props.checker(val)){
                                 this.props.receiver(this.props.fieldName,val);
-                            else{
+                            }else{
                                 this.state.myText=this.props.value;
                                 Alert.alert("Error", this.props.errorMessage, [{
                                     text: "Okay"
@@ -82,9 +83,10 @@ class EditableLabel extends Component{
                         multiline = {false}
                         onEndEditing={()=>{
                             this.setState({editable:false});
-                            if(this.props.checker==null || this.props.checker(this.state.myText))
-                                this.props.receiver(this.props.fieldName,this.state.myText.split(",").filter(element => element.trim().length > 0));
-                            else{
+                            if(this.props.checker==null || this.props.checker(this.state.myText)){
+                                if(this.props.value!=this.state.myText)
+                                    this.props.receiver(this.props.fieldName,this.state.myText.split(",").filter(element => element.trim().length > 0));
+                            }else{
                                 this.state.myText=this.props.value;
                                 Alert.alert("Error", this.props.errorMessage, [{
                                     text: "Okay"
@@ -117,7 +119,6 @@ class EditableLabel extends Component{
 
 
 class UserInformationComponent extends Component {
-
 
     fetchStepCountThenGetInformation(){
         const now = new Date();
@@ -186,11 +187,10 @@ class UserInformationComponent extends Component {
         return /^\+?(0|[1-9]\d*)$/.test(str);
     }
 
-
     render() {
         if(this.state && this.state.userInfo)
         return (
-            <SafeAreaView style={styles.container}>
+            <View style={styles.container}>
                 <Svg alignSelf="center" width={300*scaleAvatar} height={486*scaleAvatar}>
                 <Svg.Rect
                     scale={scaleAvatar}
@@ -204,6 +204,7 @@ class UserInformationComponent extends Component {
                 <Image style={styles.avatarImage}  source={require('../../images/person.png')}></Image>
                 </Svg>
                 <Text style={styles.userName}>{this.state.userInfo.username}</Text>
+                <KeyboardAvoidingView style={{flex:1}} behavior = 'position' enabled>
                 <SectionList
                     stickySectionHeadersEnabled={true}
                     renderItem={({item, index, section}) => {
@@ -234,11 +235,12 @@ class UserInformationComponent extends Component {
                         <Text style={styles.sectionHeader}>{title}</Text>
                     )}
                     sections={[
-                        {title: 'Health Infomation', data: [["BMI",this.state.userInfo.bmi?this.state.userInfo.bmi.toFixed(2):0,""],
+                        {title: 'Health Infomation', data: [["BMI",this.state.userInfo.bmi.toFixed(2),""],
                                                          ["Calories Needed",this.state.userInfo.caloriesNeeded,"Cal(s)"],
                                                          ["Calories Taken",this.state.userInfo.caloriesTakenCurrently,"Cal(s)"],
                                                          ["Foods Eaten",this.state.userInfo.foodsEatenCurrently.join(),""],
-                                                         ["Step Count",this.state.pastStepCount,""]]},
+                                                         ["Step Count",this.state.pastStepCount,""],
+                                                         ["Gender",this.state.userInfo.sexes,""]]},
                         {title: 'User Infomation', data: [['Age',this.state.userInfo.age.toString(),'','age',(x)=>this.isNormalInteger(x) && parseInt(x)<150,"Age is not valid(1-150)!","number"],
                                                         ['Weight',this.state.userInfo.weight.toString(),'kg','weight',(x)=>this.isNormalInteger(x) && parseInt(x)<1000,"Weight is not valid(1-1000)!","number"],
                                                         ['Height',this.state.userInfo.height.toString(),'cm','height',(x)=>this.isNormalInteger(x) && parseInt(x)<1000,"Height is not valid(1-1000)!","number"],
@@ -251,7 +253,8 @@ class UserInformationComponent extends Component {
                     ]}
                     keyExtractor={(item, index) => item + index}
                 />
-            </SafeAreaView>
+                </KeyboardAvoidingView>
+            </View>
         );
         else
         return (
