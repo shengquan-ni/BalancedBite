@@ -15,11 +15,13 @@ class ConfirmFoodPanel extends Component {
         this.state = {
             title: "Chocolate-Peanut Butter Protein Shake",
             fetched: false,
-            food: null
+            food: null,
+            confirmed: false
         }
     }
 
     componentDidMount() {
+        // TODO: get token and food name from previous clickSuggestionPanel
         fetch(FETCH_FOOD_URL, {
             method: "POST",
             body: JSON.stringify({token : "1", name: this.state.title}),
@@ -59,6 +61,43 @@ class ConfirmFoodPanel extends Component {
                 </View>
                 )
         })
+    }
+
+    confirmFood() {
+        // TODO: send request to backend to confirm food and add food, calories to user
+
+        this.setState({confirmed: true});
+    }
+
+    getButtons() {
+        if (this.state.confirmed == false) {
+            return (
+                <Button 
+                    title="Confirm"
+                    buttonStyle={styles.confirmButton}
+                    titleStyle={styles.buttonTitleStyle}
+                    onPress={()=> this.confirmFood()}
+                >
+                </Button>
+            )
+        } else {
+            return (
+                <View style={styles.confirmedButtonsView}>
+                    <Button
+                        title="Recipe"
+                        buttonStyle={styles.recipeButton}
+                        titleStyle={styles.buttonTitleStyle}
+                    >
+                    </Button>
+                    <Button
+                        title="Location"
+                        buttonStyle={styles.mapButton}
+                        titleStyle={styles.buttonTitleStyle}
+                    >
+                    </Button>
+                </View>
+            );
+        }
     }
 
     getLayOut() {
@@ -110,13 +149,7 @@ class ConfirmFoodPanel extends Component {
                     <View style={styles.foodCommentsView}>
                         {this.getComments(this.state.food.comments)}
                     </View>
-                    <Button 
-                        title="Confirm"
-                        buttonStyle={styles.confirmButton}
-                        titleStyle={styles.buttonTitleStyle}
-                    >
-                    </Button>
-
+                    {this.getButtons()}
                 </View>
             );
         }
@@ -181,7 +214,7 @@ const styles = StyleSheet.create({
         flex: 1,
         flexDirection: 'row',
         flexWrap: 'wrap',
-        justifyContent: 'center'
+        justifyContent: 'space-between'
     },
     ingredientView: {
         width: Dimensions.get('screen').width / 2 - paddingValue - 10,
@@ -190,25 +223,35 @@ const styles = StyleSheet.create({
         padding: 1
     },
     foodCommentsView: {
-        flex: 1,
-        flexDirection: 'row',
-        flexWrap: 'wrap',
-        justifyContent: 'center'
+
     },
     commentView: {
-        width: Dimensions.get('screen').width / 2 - paddingValue - 10,
-        backgroundColor: '#B7A2F3',
-        borderRadius: 10,
-        margin: 1,
-        padding: 2
+        borderBottomWidth: 1,
+        borderBottomColor: 'black'
     },
     confirmButton: {
         borderRadius: 20,
         backgroundColor: '#65C043',
         marginVertical: 5
     },
+    recipeButton: {
+        borderRadius: 20,
+        backgroundColor: '#F25B3B',
+        marginVertical: 5
+    },
+    mapButton: {
+        borderRadius: 20,
+        backgroundColor: '#359436',
+        marginVertical: 5
+    },
     buttonTitleStyle: {
         fontSize: 22,
         fontWeight: 'bold'
+    },
+    confirmedButtonsView: {
+        flex: 1,
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        justifyContent: 'space-evenly'
     }
 })
