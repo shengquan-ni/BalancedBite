@@ -1,6 +1,7 @@
 package edu.uci.ics.balancedbite.web.resources;
 
 import java.io.IOException;
+import java.util.Calendar;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
@@ -16,9 +17,13 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.model.Filters;
+import com.mongodb.client.model.Updates;
 
 import edu.uci.ics.balancedbite.web.api.FoodDetailRequest;
 import edu.uci.ics.balancedbite.web.api.FoodInfo;
+import edu.uci.ics.balancedbite.web.api.TimeManager;
+import edu.uci.ics.balancedbite.web.api.UserToken;
 import edu.uci.ics.balancedbite.web.db.MongoDBRequest;
 
 import static com.mongodb.client.model.Filters.*;
@@ -41,19 +46,34 @@ public class LoadFoodDetailResource {
 		System.out.println(request);
 		FoodDetailRequest foodRequest = new ObjectMapper().readValue(request, FoodDetailRequest.class);
 		System.out.println(new ObjectMapper().writeValueAsString(foodRequest));
-		
-		ObjectNode response = new ObjectMapper().createObjectNode();
-
-		// TODO: check token
-		
-		// TODO: update token  time
-		
-		// fetch food info
-		
+				
 		MongoClient client = MongoDBRequest.getInstance().connectToMongoDB(host, port);
 		MongoDatabase database = MongoDBRequest.getInstance().getMongoDatabase(client);
 		MongoCollection<FoodInfo> foodCollection = MongoDBRequest.getInstance().getFoodInfoCollection(database);
+		MongoCollection<UserToken> tokenCollection = MongoDBRequest.getInstance().getUserTokenCollection(database); 
+		
+		ObjectNode response = new ObjectMapper().createObjectNode();
+
+		// check token
+		String token = foodRequest.getToken();
+		UserToken userToken = tokenCollection.find(eq("token", token)).first();
+		if (userToken == null) {
+			response.put("code", 0);
+			client.close();
+			return response;
+		}
+		
+		// update token time
+		tokenCollection.updateOne(Filters.eq("token", token), Updates.set("time", 
+				TimeManager.getInstance().getDateFormat().format(Calendar.getInstance().getTime())));
+		
+		// fetch food info
 		FoodInfo foundFood = foodCollection.find(eq("title", foodRequest.getName())).first();
+		if (foundFood == null) {
+			response.put("code", 0);
+			client.close();
+			return response;
+		}
 		
 		response.put("code", 1);
 		response.set("food", new ObjectMapper().valueToTree(foundFood));

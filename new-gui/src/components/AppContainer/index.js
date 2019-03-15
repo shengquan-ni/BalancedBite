@@ -14,7 +14,7 @@ const AppStackNavigator = createStackNavigator(
         userInformationPanel: UserInformationPanel,
         confirmFoodPanel: ConfirmFoodPanel
     },{
-        initialRouteName: 'confirmFoodPanel'
+        initialRouteName: 'clickSuggestionPanel'
     }
 )
 

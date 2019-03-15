@@ -13,18 +13,17 @@ class ConfirmFoodPanel extends Component {
     constructor(props){
         super(props);
         this.state = {
-            title: "Chocolate-Peanut Butter Protein Shake",
             fetched: false,
             food: null,
             confirmed: false
         }
     }
 
-    componentDidMount() {
+    loadFoodInfo(foodName) {
         // TODO: get token and food name from previous clickSuggestionPanel
         fetch(FETCH_FOOD_URL, {
             method: "POST",
-            body: JSON.stringify({token : "1", name: this.state.title}),
+            body: JSON.stringify({token : this.props.currentToken, name: foodName}),
             headers: {
                 "Content-Type": "application/json"
             }
@@ -119,7 +118,11 @@ class ConfirmFoodPanel extends Component {
 
     getLayOut() {
         if (this.state.fetched == false) {
-            return <Text>Fetching {this.state.title} Info</Text>;
+            return (
+                <View style={styles.placeHolderContainer}>
+                    <Text>Loading Dish Detail</Text>
+                </View>
+            );
         } else {
             return (
                 <View>
@@ -172,6 +175,11 @@ class ConfirmFoodPanel extends Component {
         }
     }
     
+    componentDidMount() {
+        const { navigation } = this.props;
+        const foodName = navigation.getParam("food");
+        this.loadFoodInfo(foodName);
+    }
 
     render() {
         return (
@@ -190,6 +198,11 @@ const paddingValue = 4;
 const styles = StyleSheet.create({
     scrollContainer: {
         flex: 1
+    },
+    placeHolderContainer: {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center'
     },
     container: {
         paddingRight: paddingValue,

@@ -90,6 +90,12 @@ class ClickSuggestionComponent extends Component {
         }
     }
 
+    navigateToFoodConfirm() {
+        this.props.navigation.navigate("confirmFoodPanel", {
+            food: "Chocolate-Peanut Butter Protein Shake"
+        })
+    }
+
     render() {
         return (
             <View style={styles.container}>
@@ -100,6 +106,11 @@ class ClickSuggestionComponent extends Component {
                     icon={this.getUserInformationIcon()}
                     onPress={()=>{this.navigateToUserInformation()}}
                 ></Button>
+                <Button
+                    title="go to food"
+                    onPress={()=>{this.navigateToFoodConfirm()}}
+                >
+                </Button>
             </View>
         );
     }
