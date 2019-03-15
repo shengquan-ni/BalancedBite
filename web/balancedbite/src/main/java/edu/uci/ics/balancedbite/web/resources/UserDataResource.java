@@ -3,7 +3,10 @@ package edu.uci.ics.balancedbite.web.resources;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Map;
+import java.lang.reflect.Field;
 
+import javax.lang.model.util.ElementScanner6;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -47,17 +50,17 @@ public class UserDataResource {
 	 * https://www.livestrong.com/article/238020-how-to-convert-pedometer-steps-to-calories/
 	 * 
 	 * @param weight weights in kg
-	 * @param distanceWalked distance in miles
 	 * @param stepCount step count currently
 	 * @return calories burned currently
 	 */
-	public static int calculateCaloriesBurned(int weight, int distanceWalked, int stepCount) {
-		if (distanceWalked == 0 || stepCount == 0) {
+	public static int calculateCaloriesBurned(int weight, int stepCount) {
+		if (stepCount == 0) {
 			return 0;
 		}
 		double weightInlbs = weight * 2.20462;
 		double caloriesPerMile = 0.57 * weightInlbs;
-		double stepsPerMile = (1 / distanceWalked) * stepCount;
+		// double stepsPerMile = (1 / distanceWalked) * stepCount; : cannot get expo distance travel, bad API
+		double stepsPerMile = 2300.0; // default
 		double caloriesPerStep = caloriesPerMile / stepsPerMile;
 		return (int)(caloriesPerStep * stepCount);
 	}
@@ -76,7 +79,6 @@ public class UserDataResource {
 
 		UserInformationRequest currentRequest = new ObjectMapper().readValue(userRequest, UserInformationRequest.class);
 		String token = currentRequest.getToken();
-//		System.out.println("token = " + token);
 		System.out.println(new ObjectMapper().writeValueAsString(currentRequest));
 		MongoClient client = MongoDBRequest.getInstance().connectToMongoDB(host, port);
 		MongoDatabase database = MongoDBRequest.getInstance().getMongoDatabase(client);
@@ -102,9 +104,9 @@ public class UserDataResource {
 			client.close();
 			return response;
 		}
-		
+
 		int caloriesBurnedCurrenlty = calculateCaloriesBurned(currentUserInfo.getWeight(), 
-				currentRequest.getStepCount(), currentRequest.getDistanceTraveled());
+				currentRequest.getStepCount());
 		currentUserInfo.setCaloriesNeeded(currentUserInfo.getCaloriesNeeded() + caloriesBurnedCurrenlty);
 		
 		ObjectNode userObject = new ObjectMapper().valueToTree(currentUserInfo);
@@ -118,10 +120,45 @@ public class UserDataResource {
 	@POST
 	@Path("/update-user")
 	@Consumes(MediaType.APPLICATION_JSON)
-	public JsonNode updateUserInformation(String token) throws JsonParseException, JsonMappingException, IOException {
-		System.out.println("token = " + token);
+	public JsonNode updateUserInformation(String token) throws JsonParseException, JsonMappingException, IOException, NoSuchFieldException,IllegalAccessException {
+		//System.out.println("token = " + token);
+		Map<String,Object> map = new ObjectMapper().readValue(token, Map.class);
+		MongoClient client = MongoDBRequest.getInstance().connectToMongoDB(host, port);
+		MongoDatabase database = MongoDBRequest.getInstance().getMongoDatabase(client);
+		MongoCollection<UserToken> tokenCollection = MongoDBRequest.getInstance().getUserTokenCollection(database); 
+		MongoCollection<UserInfo> userCollection = MongoDBRequest.getInstance().getUserInfoCollection(database); 
+		
+		UserToken userToken = tokenCollection.find(eq("token", map.get("token").toString())).first();
+		ObjectNode response = new ObjectMapper().createObjectNode();
+		if (userToken == null) {
+			response.put("code", 0);
+			client.close();
+			return response;
+		}
+		String currentUser = userToken.getUsername();
+		UserInfo currentUserInfo = userCollection.find(eq("username", currentUser)).first();
+		if (currentUserInfo == null) {
+			response.put("code", 0);
+			client.close();
+			return response;
+		}
+		String field=map.get("fieldName").toString();
+		Object value=map.get("fieldValue");
+		if(field=="age")
+			currentUserInfo.setAge((Integer)value);
+		else if(field=="weight")
+			currentUserInfo.setWeight((Integer)value);
+		else if(field=="height")
+			currentUserInfo.setHeight((Integer)value);
+		else if(field=="workoutFrequency")
+			currentUserInfo.setWorkoutFrequency((Integer)value);
+		double userBMI = SignUpResource.calculateBMI(currentUserInfo.getWeight(), currentUserInfo.getHeight());
+		int userCaloricIntake = SignUpResource.calculateCalories(currentUserInfo.getSexes(), currentUserInfo.getWeight(), currentUserInfo.getHeight(), 
+			currentUserInfo.getAge(), currentUserInfo.getWorkoutFrequency());
+		userCollection.updateOne(Filters.eq("username", currentUser),Updates.combine(Updates.set(field,value),Updates.set("bMI",userBMI),Updates.set("caloriesNeeded",userCaloricIntake)));
 
-		return null;
+		response.put("code", 1);
+		return response;
 	}
 	
 }

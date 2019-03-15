@@ -97,10 +97,7 @@ public class CheckSessionResource {
 		
 		// update token time to current time
 		tokenCollection.updateOne(Filters.eq("token", currToken), Updates.set("time", dateFormat.format(currentTime)));
-		
 		response.put("code", 1);
-		
-		client.close();
 		return response;
 	}
 	

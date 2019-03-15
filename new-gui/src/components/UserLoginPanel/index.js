@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import {
   StyleSheet, Text, View, TextInput, TouchableOpacity, 
-  Alert, TouchableWithoutFeedback, Keyboard, AsyncStorage
+  Alert, TouchableWithoutFeedback, Keyboard, AsyncStorage,
+  KeyboardAvoidingView
 } from 'react-native';
 
 import { Input } from "react-native-elements";
@@ -75,6 +76,7 @@ class UserLoginPanel extends Component {
 		return(
             <TouchableWithoutFeedback onPress={()=> Keyboard.dismiss()}>
                 <View style={styles.container}>
+                <KeyboardAvoidingView style={{flex:1}} behavior="padding" enabled>
                     <Logo/>
                     <View style={styles.formContainer}>
                         <Input
@@ -108,7 +110,8 @@ class UserLoginPanel extends Component {
                             <Text style={styles.signupButton}>Signup</Text>
                         </TouchableOpacity>
                     </View>
-                </View>
+                    </KeyboardAvoidingView>
+                </View>       
             </TouchableWithoutFeedback>
 		);
 	}

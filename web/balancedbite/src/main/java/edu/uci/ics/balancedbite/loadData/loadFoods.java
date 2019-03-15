@@ -36,13 +36,6 @@ public class loadFoods {
 	}
 	
 	public static void main(String[] args) throws JsonParseException, JsonMappingException, IOException, ParseException {		
-		List<String> foodFilesName = new ArrayList<String> ();
-		foodFilesName.add("breakfast");
-		foodFilesName.add("lunch");
-		foodFilesName.add("dinner");
-		foodFilesName.add("other");
-		for (String fileName : foodFilesName) {
-			insertFoodsToDB(readAllFoods(fileName));
-		}
+		insertFoodsToDB(readAllFoods("all"));
 	}
 }
