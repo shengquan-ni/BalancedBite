@@ -69,6 +69,21 @@ class ConfirmFoodPanel extends Component {
         this.setState({confirmed: true});
     }
 
+    navigateToRecipes() {
+        console.warn("go to recipe");
+        // TODO: navigate to recipe
+        // https://reactnavigation.org/docs/en/params.html
+        //
+        // this.props.navigation.navigate("recipePanelName", {
+        //     food: this.state.food
+        // })
+    }
+
+    navigateToMap() {
+        console.warn("go to map");
+        // TODO: this.props.navigation.navigate("mapPanelName");
+    }
+
     getButtons() {
         if (this.state.confirmed == false) {
             return (
@@ -87,12 +102,14 @@ class ConfirmFoodPanel extends Component {
                         title="Recipe"
                         buttonStyle={styles.recipeButton}
                         titleStyle={styles.buttonTitleStyle}
+                        onPress={()=>this.navigateToRecipes()}
                     >
                     </Button>
                     <Button
                         title="Location"
                         buttonStyle={styles.mapButton}
                         titleStyle={styles.buttonTitleStyle}
+                        onPress={()=>this.navigateToMap()}
                     >
                     </Button>
                 </View>

@@ -24,6 +24,7 @@ public class FoodInfo {
 	private String source;
 	private List<String> instructions = new ArrayList<String>();
 	private String image_url;
+	private String meal_type="other";
 
 	
 	public FoodInfo() {	}
@@ -112,6 +113,11 @@ public class FoodInfo {
 	public String getImage_url() {
 		return image_url;
 	}
+
+	@JsonProperty
+	public String getMeal_type() {
+		return meal_type;
+	}
 	
 	// deserialize
 	
@@ -198,6 +204,11 @@ public class FoodInfo {
 	@JsonProperty
 	public void setImage_url(String image_url) {
 		this.image_url = image_url;
+	}
+
+	@JsonProperty
+	public void setMeal_type(String meal_type) {
+		this.meal_type = meal_type;
 	}
 	
 	
