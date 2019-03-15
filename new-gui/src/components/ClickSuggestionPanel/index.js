@@ -1,20 +1,42 @@
 import React, { Component } from "react";
 
-import { View, StyleSheet, AsyncStorage, Platform } from "react-native";
+import { View, StyleSheet, AsyncStorage, Platform, 
+    StatusBar, Dimensions, Animated, Image, PanResponder } from "react-native";
 import { SERVER_URL } from "../../commons/serverRequest";
 import { Button, Text } from "react-native-elements";
 
 import { connect } from "react-redux";
-import { withNavigation } from "react-navigation";
+import { withNavigation, SafeAreaView } from "react-navigation";
 import { Ionicons } from '@expo/vector-icons';
 
 const SESSION_URL = SERVER_URL + "/check-session";
 import { mapDispatchToProps, mapStateToProps } from "../../commons/redux";
 
+const Users = [
+    {id : '1', uri: require('../../images/1.jpg')},
+    {id : '2', uri: require('../../images/2.jpg')},
+    {id : '3', uri: require('../../images/3.jpg')}
+]
+
+const SCREEN_HEIGHT = Dimensions.get('screen').height
+const SCREEN_WIDTH = Dimensions.get('screen').width
+
+const SCREEN_STATUS_HEIGHT = Platform.OS == "android" ? StatusBar.currentHeight : 0
+
 class ClickSuggestionComponent extends Component {
     
     static navigationOptions = {
         header: null
+    }
+
+    constructor(props){
+        super(props);
+        this.state = {
+            checkedToken : false,
+            currentIndex: 0
+        }
+
+        this.position = new Animated.ValueXY()
     }
 
 
@@ -35,6 +57,7 @@ class ClickSuggestionComponent extends Component {
             } else {
                 // change token in redux storage
                 this.props.changeCurrentToken(UItoken);
+                this.setState({checkedToken: true})
             }
         })
         .catch(error => {
@@ -90,17 +113,57 @@ class ClickSuggestionComponent extends Component {
         }
     }
 
+
+    componentWillMount() {
+        this.PanResponder = PanResponder.create({
+            onStartShouldSetPanResponder:(evt, gestureState) => true,
+            onPanResponderMove: (evt, gestureState) => {
+                this.position.setValue({x: gestureState.dx, y: gestureState.dy})
+            },
+            onPanResponderRelease:(evt, gestureState) => {
+
+            }
+        });
+    }
+
+    renderUsers() {
+        return Users.map((item, i) => {
+            return (
+                <Animated.View 
+                {...this.PanResponder.panHandlers}
+                key={item.id} style={[{transform: this.position.getTranslateTransform()},
+                    {height: SCREEN_HEIGHT - SCREEN_STATUS_HEIGHT - 100
+                    ,width: SCREEN_WIDTH, padding: 20, position: 'absolute'}]}>
+                    <Image 
+                    style={{flex: 1, height: null, width: null, borderRadius: 20, resizeMode:"cover"}}
+                    source={item.uri}>
+                    </Image>
+
+                </Animated.View>
+            );
+        }).reverse();
+    }
+
     render() {
+        if (!this.state.checkedToken) {
+            return (<Text>Still checking your token</Text>);
+        }
         return (
-            <View style={styles.container}>
-                <Text>ClickSuggestionComponent panel</Text>
-                <Text>{this.props.currentToken}</Text>
+            <SafeAreaView style={styles.outContainer}>
                 <Button
-                    title="go to user information"
+                    title=""
                     icon={this.getUserInformationIcon()}
                     onPress={()=>{this.navigateToUserInformation()}}
                 ></Button>
-            </View>
+                <View style={styles.container}>
+                    <View style={{flex: 1}}>
+                        {this.renderUsers()}
+                    </View>
+                    <View style={{height: 30}}>
+
+                    </View>
+                </View>
+            </SafeAreaView>
         );
     }
 }
@@ -108,9 +171,11 @@ class ClickSuggestionComponent extends Component {
 export default connect(mapStateToProps, mapDispatchToProps)(withNavigation(ClickSuggestionComponent));
 
 const styles = StyleSheet.create({
-    container: {
+    outContainer: {
         flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center'
+        paddingTop: SCREEN_STATUS_HEIGHT
+    },
+    container: {
+        flex: 1
     }
 })
