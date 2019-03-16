@@ -2,8 +2,9 @@
   "expoServerPort": 19000,
   "expoServerNgrokUrl": "https://c8-ats.anonymous.new-gui.exp.direct",
   "packagerNgrokUrl": "https://packager.c8-ats.anonymous.new-gui.exp.direct",
-  "ngrokPid": 13632,
+  "ngrokPid": 9260,
   "devToolsPort": 19002,
-  "packagerPort": 19001,
-  "packagerPid": 15864
+  "packagerPort": null,
+  "packagerPid": null,
+  "webpackServerPort": null
 }
