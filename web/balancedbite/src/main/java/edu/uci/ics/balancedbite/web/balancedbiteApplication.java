@@ -4,6 +4,7 @@ import org.eclipse.jetty.server.session.SessionHandler;
 
 import edu.uci.ics.balancedbite.web.health.SampleHealthCheck;
 import edu.uci.ics.balancedbite.web.resources.CheckSessionResource;
+import edu.uci.ics.balancedbite.web.resources.LoadFoodDetailResource;
 import edu.uci.ics.balancedbite.web.resources.SignInResource;
 import edu.uci.ics.balancedbite.web.resources.SignUpResource;
 import edu.uci.ics.balancedbite.web.resources.UserDataResource;
@@ -53,11 +54,17 @@ public class balancedbiteApplication extends Application<balancedbiteConfigurati
     				configuration.getDatabaseConfiguration().getHost(),
     				configuration.getDatabaseConfiguration().getPort()
     			);
+    	
+    	final LoadFoodDetailResource loadFoodDetailResource = new LoadFoodDetailResource(
+	    			configuration.getDatabaseConfiguration().getHost(),
+	    			configuration.getDatabaseConfiguration().getPort()
+    			);
 
     	environment.jersey().register(signInResource);
     	environment.jersey().register(signUpResource);
     	environment.jersey().register(checkSessionResource);
     	environment.jersey().register(userDataResource);
+    	environment.jersey().register(loadFoodDetailResource);
     	
     	// health checks
     	final SampleHealthCheck sampleHealthCheck = new SampleHealthCheck();

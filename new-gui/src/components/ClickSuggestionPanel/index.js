@@ -89,12 +89,23 @@ class ClickSuggestionComponent extends Component {
         });
     }
 
-    componentDidMount(){
+    componentWillMount(){
         const { navigation } = this.props;
         // listen to navigation focus on this screen
         this.focusListener = navigation.addListener("didFocus", () => {
             this.handleUserSessionCall();
-        })
+        });
+
+
+        this.PanResponder = PanResponder.create({
+            onStartShouldSetPanResponder:(evt, gestureState) => true,
+            onPanResponderMove: (evt, gestureState) => {
+                this.position.setValue({x: gestureState.dx, y: gestureState.dy})
+            },
+            onPanResponderRelease:(evt, gestureState) => {
+
+            }
+        });
     }
 
     componentWillUnmount() {
@@ -111,19 +122,6 @@ class ClickSuggestionComponent extends Component {
         } else {
             return (<Ionicons name="md-person" size={24}></Ionicons>)
         }
-    }
-
-
-    componentWillMount() {
-        this.PanResponder = PanResponder.create({
-            onStartShouldSetPanResponder:(evt, gestureState) => true,
-            onPanResponderMove: (evt, gestureState) => {
-                this.position.setValue({x: gestureState.dx, y: gestureState.dy})
-            },
-            onPanResponderRelease:(evt, gestureState) => {
-
-            }
-        });
     }
 
     renderUsers() {
@@ -144,17 +142,32 @@ class ClickSuggestionComponent extends Component {
         }).reverse();
     }
 
+    navigateToFoodConfirm() {
+        this.props.navigation.navigate("confirmFoodPanel", {
+            food: "Chocolate-Peanut Butter Protein Shake"
+        })
+    }
+
     render() {
         if (!this.state.checkedToken) {
             return (<Text>Still checking your token</Text>);
         }
         return (
             <SafeAreaView style={styles.outContainer}>
-                <Button
-                    title=""
-                    icon={this.getUserInformationIcon()}
-                    onPress={()=>{this.navigateToUserInformation()}}
-                ></Button>
+                <View style={styles.topButtonView}>
+                    <Button
+                        title="go to user"
+                        icon={this.getUserInformationIcon()}
+                        onPress={()=>{this.navigateToUserInformation()}}
+                        containerStyle={styles.topButton}
+                    ></Button>
+                    <Button
+                        title="go to food"
+                        containerStyle={styles.topButton}
+                        onPress={()=>{this.navigateToFoodConfirm()}}
+                    >
+                    </Button>
+                </View>
                 <View style={styles.container}>
                     <View style={{flex: 1}}>
                         {this.renderUsers()}
@@ -177,5 +190,13 @@ const styles = StyleSheet.create({
     },
     container: {
         flex: 1
+    },
+    topButtonView: {
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        justifyContent: 'space-between'
+    },
+    topButton: {
+        width: 100
     }
 })

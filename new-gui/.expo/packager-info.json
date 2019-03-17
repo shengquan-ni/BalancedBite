@@ -1,10 +1,9 @@
 {
-  "expoServerNgrokUrl": "https://c8-ats.anonymous.new-gui.exp.direct",
-  "packagerNgrokUrl": "https://packager.c8-ats.anonymous.new-gui.exp.direct",
-  "ngrokPid": 12032,
-  "packagerPort": null,
-  "packagerPid": null,
   "devToolsPort": 19002,
   "expoServerPort": 19000,
-  "webpackServerPort": null
+  "packagerPort": 19001,
+  "packagerPid": 8172,
+  "expoServerNgrokUrl": "https://mg-3p3.anonymous.new-gui.exp.direct",
+  "packagerNgrokUrl": "https://packager.mg-3p3.anonymous.new-gui.exp.direct",
+  "ngrokPid": 7916
 }
