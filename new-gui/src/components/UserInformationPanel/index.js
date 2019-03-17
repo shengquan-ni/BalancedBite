@@ -1,14 +1,14 @@
 import { mapDispatchToProps, mapStateToProps } from "../../commons/redux";
 import React, { Component } from "react";
-import { KeyboardAvoidingView,Platform,StatusBar,View,SafeAreaView, Text,Alert, Button,
-     SectionList, StyleSheet, TouchableHighlight,Image,TextInput,Dimensions,ImageBackground } from "react-native";
+import { KeyboardAvoidingView,Platform,StatusBar,View,SafeAreaView, Text,Alert,
+     SectionList, StyleSheet, TouchableOpacity,Image,TextInput,Dimensions,ImageBackground } from "react-native";
 import { connect } from "react-redux";
 import { withNavigation } from "react-navigation";
 import { Ionicons } from '@expo/vector-icons';
 import { SERVER_URL } from "../../commons/serverRequest";
 import { Pedometer } from "expo";
 import Svg from 'react-native-svg';
-import { CheckBox,Input } from "react-native-elements";
+import { CheckBox,Input, Button } from "react-native-elements";
 
 const FETCH_URL  = SERVER_URL + "/user/fetch-user";
 const UPDATE_URL = SERVER_URL + "/user/update-user";
@@ -106,9 +106,9 @@ class EditableLabel extends Component{
             <TextInput style={{width:"40%"}} textAlign="left" editable={false} value={this.props.title+": "}></TextInput>
             {this.renderInput()}
             <TextInput style={{width:"10%"}} textAlign="right" editable={false} value={this.props.unit+" "}></TextInput>
-            <TouchableHighlight style={{width:"10%",alignSelf:"center"}} onPress={()=>{this.setState({editable:true});this._input.focus?this._input.focus():null;}}>
+            <TouchableOpacity style={{width:"10%",alignSelf:"center"}} onPress={()=>{this.setState({editable:true});this._input.focus?this._input.focus():null;}}>
                 <Ionicons style={{alignSelf:"center"}} name="md-create" color='#333333' size={24}></Ionicons>
-            </TouchableHighlight>
+            </TouchableOpacity>
             </View>
         );
         //else
@@ -187,6 +187,46 @@ class UserInformationComponent extends Component {
         return /^\+?(0|[1-9]\d*)$/.test(str);
     }
 
+    generateLabel(item,index)
+    {
+        if(Array.isArray(item[1]))
+        {
+            return (
+            <View>
+                <View style={styles.sectionListItem}>
+                    <Text style={{alignSelf:"center",width:"40%"}} key={index}>{item[0]+": "}</Text>
+                    <View style={{width:"50%",flexDirection: 'column'}}>
+                        {item[1].map((x,idx)=><Button key={idx} 
+                                                    type="outline" 
+                                                    buttonStyle={styles.foodEatenButton} 
+                                                    containerStyle={{padding:4}} 
+                                                    title={x} 
+                                                    titleProps={{adjustsFontSizeToFit:true,numberOfLines:2}}
+                                                    titleStyle={{fontSize:12}}
+                                                    onPress={()=>{this.props.navigation.navigate("confirmFoodPanel", {
+                                                        food: x
+                                                    })}}>
+                                                    </Button>)}
+                    </View>
+                </View>
+                <View style={styles.sectionPadding}></View>
+            </View>);
+        }
+        else
+        {
+            return (
+            <View>
+                <View style={styles.sectionListItem}>
+                <Text style={{width:"40%"}} key={index}>{item[0]+": "}</Text>
+                <Text style={{width:"50%", textAlign:"right"}}>{item[1]+" "+item[2]}</Text>
+                </View>
+                <View style={styles.sectionPadding}></View>
+            </View>);
+        }
+    }
+
+
+
     render() {
         if(this.state && this.state.userInfo)
         return (
@@ -209,13 +249,7 @@ class UserInformationComponent extends Component {
                     stickySectionHeadersEnabled={true}
                     renderItem={({item, index, section}) => {
                     if(section.title==="Health Infomation")
-                    return (<View>
-                                <View style={styles.sectionListItem}>
-                                <Text style={{width:"40%"}} key={index}>{item[0]+": "}</Text>
-                                <Text style={{width:"50%", textAlign:"right"}}>{item[1]+" "+item[2]}</Text>
-                                </View>
-                                <View style={styles.sectionPadding}></View>
-                            </View>);
+                    return (this.generateLabel(item,index));
                     else
                     return (<View>
                             <EditableLabel 
@@ -238,7 +272,7 @@ class UserInformationComponent extends Component {
                         {title: 'Health Infomation', data: [["BMI",this.state.userInfo.bmi.toFixed(2),""],
                                                          ["Calories Needed",this.state.userInfo.caloriesNeeded,"Cal(s)"],
                                                          ["Calories Taken",this.state.userInfo.caloriesTakenCurrently,"Cal(s)"],
-                                                         ["Foods Eaten",this.state.userInfo.foodsEatenCurrently.join(),""],
+                                                         ["Foods Eaten",this.state.userInfo.foodsEatenCurrently,""],
                                                          ["Step Count",this.state.pastStepCount,""],
                                                          ["Gender",this.state.userInfo.sexes,""]]},
                         {title: 'User Infomation', data: [['Age',this.state.userInfo.age.toString(),'','age',(x)=>this.isNormalInteger(x) && parseInt(x)<150,"Age is not valid(1-150)!","number"],
@@ -320,5 +354,9 @@ const styles = StyleSheet.create({
     sectionPadding:{
         height:1,
         backgroundColor:'#00000088'
+    },
+    foodEatenButton:{
+        borderRadius: 20,
+        height:30,
     }
 })
