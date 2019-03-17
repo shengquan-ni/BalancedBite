@@ -2,8 +2,9 @@ import React, { Component } from "react";
 import { Permissions, Location, MapView } from 'expo';
 import { mapStateToProps, mapDispatchToProps } from "../../commons/redux";
 import { connect } from "react-redux";
-import { ActivityIndicator, View, StyleSheet, Linking,Text,Image } from "react-native";
+import { ActivityIndicator, View, StyleSheet, Linking, Text, Image, Button } from "react-native";
 import axios from "axios"
+import getDirections from 'react-native-google-maps-directions';
 
 const searchDelta=0.2
 const searchLimit=6;
@@ -40,7 +41,7 @@ class YelpMapPanel extends Component
         const { status } = await Permissions.askAsync(Permissions.LOCATION);
         if (status === 'granted') {
             const location = await Location.getCurrentPositionAsync({
-            enableHighAccuracy: true,
+                enableHighAccuracy: true,
             });
             config.params.l = "g:"+(location.coords.longitude+searchDelta)+","
                                   +(location.coords.latitude+searchDelta)+","
@@ -56,23 +57,23 @@ class YelpMapPanel extends Component
           .then(responseJson => {
             const results=responseJson.data.searchPageProps.searchResultsProps.searchResults;
             const markers=responseJson.data.searchPageProps.searchMapProps.mapState.markers;
-            var combined=[];
-            for(var x in results)
+            let combined=[];
+            for(let x in results)
             {
-                var item=results[x];
+                let item=results[x];
                 if(item.markerKey-1<searchLimit)
                     combined[item.markerKey-1]=item.searchResultBusiness
             }
-            for(var x in markers)
+            for(let x in markers)
             {
-                var item=markers[x];
+                let item=markers[x];
                 if(typeof item.key==="number" && item.key-1<searchLimit)
                 {
                     combined[item.key-1].location=item.location;
                 }
             }
 
-             this.setState({
+            this.setState({
                 isLoading:false,
                 markers: combined,
             });
@@ -82,13 +83,62 @@ class YelpMapPanel extends Component
           });
       }
 
-
-
     componentWillMount(){
         const { navigation } = this.props;
         const foodName = navigation.getParam('foodName', 'milk');
         config.params.find_desc=foodName;
         this.requestLocationPermission();
+    }
+
+    openGoogleMap(destination) {
+        const data = {
+            source: {
+                latitude: this.state.origin.latitude,
+                longitude: this.state.origin.longitude
+            },
+            destination: {
+                latitude: destination.latitude,
+                longitude: destination.longitude
+            },
+            params: [
+                {
+                  key: "travelmode",
+                  value: "driving"        // may be "walking", "bicycling" or "transit" as well
+                },
+                {
+                  key: "dir_action",
+                  value: "navigate"       // this instantly initializes navigation using the given travel mode 
+                }
+            ]
+        }
+
+        getDirections(data);
+    }
+
+    getMapMarkers() {
+        if (this.state.isLoading) {
+            return null;
+        }
+
+        return this.state.markers.map((marker, idx) => {
+            if (!marker) return null;
+            const coords = {
+                latitude: marker.location.latitude,
+                longitude: marker.location.longitude
+            };
+            const nameOfMarker = `${marker.name}(${marker.rating}⭐)`;
+            const addressOfMarker = `${marker.formattedAddress}`;
+            return (
+                <MapView.Marker
+                    key = {idx}
+                    coordinate={coords}
+                    title={nameOfMarker}
+                    description={addressOfMarker}
+                    onCalloutPress={() => this.openGoogleMap(coords)}
+                >
+                </MapView.Marker>
+            )
+        });
     }
 
     render(){
@@ -102,37 +152,20 @@ class YelpMapPanel extends Component
             else    
                 return (
                 <MapView
-                style={{ flex: 1 }}
-                provider="google"
-                region={{
-                latitude: this.state.origin.latitude,
-                longitude: this.state.origin.longitude,
-                latitudeDelta: searchDelta,
-                longitudeDelta: searchDelta,
+                    style={{ flex: 1 }}
+                    provider="google"
+                    region={{
+                    latitude: this.state.origin.latitude,
+                    longitude: this.state.origin.longitude,
+                    latitudeDelta: searchDelta,
+                    longitudeDelta: searchDelta,
                 }}
                 >
-                {this.state.isLoading?null:this.state.markers.map((marker,idx) => {
-                    if(!marker)return null;
-                const coords = {
-                    latitude: marker.location.latitude,
-                    longitude: marker.location.longitude,
-                    };
-                    const nameOfMarker = `${marker.name}(${marker.rating}⭐)`;
-                    const addressOfMarker = `${marker.formattedAddress}`;
-                return (
-                    <MapView.Marker
-                    key={idx}
-                    coordinate={coords}
-                    title={nameOfMarker}
-                    description={addressOfMarker}
-                    >
+                    {this.getMapMarkers()}
+                    <MapView.Marker coordinate={this.state.origin}>
+                        <Image source={require('../../images/icon_man.png')}>
+                        </Image>
                     </MapView.Marker>
-                );
-                })}
-                <MapView.Marker coordinate={this.state.origin}>
-                <Image source={require('../../images/icon_man.png')}>
-                </Image>
-                </MapView.Marker>
                 </MapView>
                 );
         }

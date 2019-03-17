@@ -66,7 +66,7 @@ class ClickSuggestionComponent extends Component {
         });
     }
 
-    componentDidMount(){
+    componentWillMount(){
         const { navigation } = this.props;
         // listen to navigation focus on this screen
         this.focusListener = navigation.addListener("didFocus", () => {
