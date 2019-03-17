@@ -1,8 +1,8 @@
 {
-  "expoServerPort": 19000,
-  "expoServerNgrokUrl": "https://c8-ats.anonymous.new-gui.exp.direct",
-  "packagerNgrokUrl": "https://packager.c8-ats.anonymous.new-gui.exp.direct",
-  "ngrokPid": 9260,
+  "expoServerPort": null,
+  "expoServerNgrokUrl": null,
+  "packagerNgrokUrl": null,
+  "ngrokPid": null,
   "devToolsPort": 19002,
   "packagerPort": null,
   "packagerPid": null,

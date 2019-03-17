@@ -11,7 +11,7 @@ class RecipePanel extends Component
     {
         const { navigation } = this.props;
         const food = navigation.getParam('food', null);
-        this.setState({"food":food},()=>this.forceUpdate());
+        this.setState({"food":food});
     }
 
     getIngredients(ingredients) {

@@ -6,6 +6,7 @@ import ClickSuggestionPanel from "../ClickSuggestionPanel";
 import UserInformationPanel from "../UserInformationPanel";
 import RecipePanel from "../RecipePanel";
 import ConfirmFoodPanel from "../ConfirmFoodPanel";
+import YelpMapPanel from "../YelpMapPanel";
 
 const AppStackNavigator = createStackNavigator(
     {
@@ -14,7 +15,8 @@ const AppStackNavigator = createStackNavigator(
         clickSuggestionPanel: ClickSuggestionPanel,
         userInformationPanel: UserInformationPanel,
         confirmFoodPanel: ConfirmFoodPanel,
-        recipePanel:RecipePanel
+        recipePanel:RecipePanel,
+        yelpMapPanel:YelpMapPanel
     },{
         initialRouteName: 'clickSuggestionPanel'
     }

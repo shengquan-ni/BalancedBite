@@ -71,7 +71,7 @@ class ConfirmFoodPanel extends Component {
 
     navigateToRecipes() {
         // console.warn("go to recipe");
-        // TODO: navigate to recipe
+        // navigate to recipe
         // https://reactnavigation.org/docs/en/params.html
         //
         this.props.navigation.navigate("recipePanel", {
@@ -80,8 +80,10 @@ class ConfirmFoodPanel extends Component {
     }
 
     navigateToMap() {
-        console.warn("go to map");
-        // TODO: this.props.navigation.navigate("mapPanelName");
+        // console.warn("go to map");
+        this.props.navigation.navigate("yelpMapPanel",{
+            foodName:this.state.food.title
+        });
     }
 
     getButtons() {
