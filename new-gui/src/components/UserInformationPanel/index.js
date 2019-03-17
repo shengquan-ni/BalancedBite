@@ -152,7 +152,7 @@ class UserInformationComponent extends Component {
                 console.warn("Error in getting user info");
             } else {
                 console.warn(res);
-                this.setState({userInfo:res},()=>{this.forceUpdate();});
+                this.setState({userInfo:res});
             }
         })
         .catch(

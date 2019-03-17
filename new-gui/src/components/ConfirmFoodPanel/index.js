@@ -30,6 +30,7 @@ class ConfirmFoodPanel extends Component {
         })
         .then(res => res.json())
         .then(res => {
+            console.warn(res);
             if (res.code == 1) {
                 this.setState({food: res.food, fetched: true});
             } else {
@@ -69,18 +70,20 @@ class ConfirmFoodPanel extends Component {
     }
 
     navigateToRecipes() {
-        console.warn("go to recipe");
-        // TODO: navigate to recipe
+        // console.warn("go to recipe");
+        // navigate to recipe
         // https://reactnavigation.org/docs/en/params.html
         //
-        // this.props.navigation.navigate("recipePanelName", {
-        //     food: this.state.food
-        // })
+        this.props.navigation.navigate("recipePanel", {
+            food: this.state.food
+        })
     }
 
     navigateToMap() {
-        console.warn("go to map");
-        // TODO: this.props.navigation.navigate("mapPanelName");
+        // console.warn("go to map");
+        this.props.navigation.navigate("yelpMapPanel",{
+            foodName:this.state.food.title
+        });
     }
 
     getButtons() {
@@ -140,10 +143,6 @@ class ConfirmFoodPanel extends Component {
                     </View>
                     <View><Text style={styles.foodDescription}>{this.state.food.summary}</Text></View>
                     <View style={styles.descriptionView}>
-                        <Text style={styles.descriptionTitle}>Servings</Text>
-                    </View>
-                    <View><Text style={styles.foodDescription}>{this.state.food.servings}</Text></View>
-                    <View style={styles.descriptionView}>
                         <Text style={styles.descriptionTitle}>Cals</Text>
                     </View>
                     <View><Text style={styles.foodDescription}>{this.state.food.cals}</Text></View>
@@ -155,12 +154,11 @@ class ConfirmFoodPanel extends Component {
                         <Text style={styles.descriptionTitle}>Total Time:</Text>
                     </View>
                     <View><Text style={styles.foodDescription}>{this.state.food.total_time}</Text></View>
-
                     <View style={styles.descriptionView}>
-                        <Text style={styles.descriptionTitle}>Ingredients:</Text>
+                        <Text style={styles.descriptionTitle}>Tags:</Text>
                     </View>
                     <View style={styles.foodIngredientsView}>
-                        {this.getIngredients(this.state.food.ingredients)}
+                        {this.getIngredients(this.state.food.tags)}
                     </View>
 
                     <View style={styles.descriptionView}>
