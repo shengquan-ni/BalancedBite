@@ -176,6 +176,8 @@ class ConfirmFoodPanel extends Component {
     componentDidMount() {
         const { navigation } = this.props;
         const foodName = navigation.getParam("food");
+        const showConfirm = navigation.getParam("confirmed");
+        this.setState({confirmed: showConfirm});
         this.loadFoodInfo(foodName);
     }
 

@@ -113,7 +113,7 @@ class ClickSuggestionComponent extends Component {
         .then(res => res.json())
         .then(res => {
             if (res.code == 1) {
-                this.setState({recommendations: res.recommendations, recommendationsCount: res.recommendationsCount});
+                this.setState({checkedToken: true, recommendations: res.recommendations, recommendationsCount: res.recommendationsCount});
             } else {
                 console.warn("error in request");
             }
@@ -140,7 +140,6 @@ class ClickSuggestionComponent extends Component {
                 // change token in redux storage
                 this.props.changeCurrentToken(UItoken);
                 this.fetchRecommendations();
-                this.setState({checkedToken: true})
             }
         })
         .catch(error => {
@@ -189,18 +188,33 @@ class ClickSuggestionComponent extends Component {
                         friction: 5
                     }).start();
                 } else if (gestureState.dx < -120) {
-                    Animated.spring(this.position, {
-                        toValue: {x: -SCREEN_WIDTH - 100, y: gestureState.dy}
-                    }).start(() => {
-                        this.setState({currentIndex: this.state.currentIndex + 1}, ()=> {
-                            this.position.setValue({x: 0, y:0});
-                            if (this.state.currentIndex == this.state.recommendationsCount) {
-                                this.setState({offset: this.state.offset + 1, currentIndex: 0}, () => {
-                                    this.fetchRecommendations();
-                                });
-                            }
-                        })
-                    })
+                    this.position.setValue({x: 0, y:0});
+                    this.setState({currentIndex: this.state.currentIndex + 1}, ()=> {
+                        if (this.state.currentIndex == this.state.recommendationsCount) {
+                            this.setState({offset: this.state.offset + 1, currentIndex: 0}, () => {
+                                this.fetchRecommendations();
+                            });
+                        }
+                    });
+
+                    // Slow animation, about 2 seconds delay every time
+
+                    // console.warn("release");
+                    // Animated.spring(this.position, {
+                    //     toValue: {x: -SCREEN_WIDTH - 100, y: gestureState.dy}
+                    // }).start(() => {
+                    //     console.warn("animated");
+                    //     this.position.setValue({x: 0, y:0});
+                    //     console.warn("set");
+                    //     this.setState({currentIndex: this.state.currentIndex + 1}, ()=> {
+                    //         if (this.state.currentIndex == this.state.recommendationsCount) {
+                    //             this.setState({offset: this.state.offset + 1, currentIndex: 0}, () => {
+                    //                 this.fetchRecommendations();
+                    //             });
+                    //         }
+                    //     })
+                    //     console.warn("checked");
+                    // })
                 } else {
                     Animated.spring(this.position, {
                         toValue: {x: 0, y: 0},
@@ -236,7 +250,7 @@ class ClickSuggestionComponent extends Component {
                         {height: SCREEN_HEIGHT - SCREEN_STATUS_HEIGHT - 100
                         ,width: SCREEN_WIDTH, padding: 10, position: 'absolute'}]}>
                         
-                        <View style={{padding: 2}}>
+                        <View style={styles.imageLabelView}>
                             <Text style={styles.imageLabel}>
                                 {item.title}
                             </Text>
@@ -262,6 +276,29 @@ class ClickSuggestionComponent extends Component {
     
                     </Animated.View>
                 );    
+            } else if (i - 1 == this.state.currentIndex) {
+                return (
+                    <Animated.View 
+                        key={i} style={[
+                        {opacity: this.nextCardOpacity, transform: [{scale: this.nextCardScale}], 
+                            height: SCREEN_HEIGHT - SCREEN_STATUS_HEIGHT - 100,
+                            width: SCREEN_WIDTH, padding: 10, position: 'absolute'}]}>
+                        
+                        <View style={styles.imageLabelView}>
+                            <Text style={styles.imageLabel}>
+                                {item.title}
+                            </Text>
+                        </View>
+
+                        <Image 
+                            style={styles.recommendationImage}
+                            source={{ uri: item.image_url}}
+                            resizeMode="cover"
+                        >
+                        </Image>
+    
+                    </Animated.View>
+                );
             } else {
                 return (
                     <Animated.View 
@@ -285,7 +322,8 @@ class ClickSuggestionComponent extends Component {
 
     navigateToFoodConfirm(foodName) {
         this.props.navigation.navigate("confirmFoodPanel", {
-            food: foodName
+            food: foodName,
+            confirmed: false
         })
     }
 
@@ -364,11 +402,16 @@ const styles = StyleSheet.create({
         fontWeight:'800', 
         padding: 10
     },
+    imageLabelView: {
+        padding: 2,
+        position: 'absolute', 
+        top: 40, 
+        left: 40, 
+        zIndex: 1000, 
+        width: 330, 
+        backgroundColor: 'rgba(164, 166, 164, 0.6)'
+    },
     imageLabel: {
-        // position: 'absolute', 
-        // top: 50, 
-        // left: 20, 
-        // zIndex: 1000, 
         fontWeight: 'bold', 
         fontSize: 28
     }
