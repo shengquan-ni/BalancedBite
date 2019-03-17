@@ -1,10 +1,11 @@
 import { mapStateToProps, mapDispatchToProps } from "../../commons/redux";
 import { SERVER_URL } from "../../commons/serverRequest";
 import { connect } from "react-redux";
-
+import { withNavigation } from "react-navigation";
 import React, { Component } from "react";
 import { Button, CheckBox, Input, Text, Image } from "react-native-elements";
-import { View, ScrollView, StyleSheet, Dimensions } from "react-native";
+import { View, ScrollView, StyleSheet, Dimensions, TouchableHighlight } from "react-native";
+import { Ionicons,AntDesign } from '@expo/vector-icons';
 
 const FETCH_FOOD_URL = SERVER_URL + "/food-detail";
 
@@ -84,6 +85,11 @@ class ConfirmFoodPanel extends Component {
         this.props.navigation.navigate("yelpMapPanel",{
             foodName:this.state.food.title
         });
+    }
+
+    navigateToUserInformation()
+    {
+        this.props.navigation.navigate("userInformationPanel")
     }
 
     getButtons() {
@@ -189,7 +195,7 @@ class ConfirmFoodPanel extends Component {
 }
 
 
-export default connect(mapStateToProps, mapDispatchToProps)(ConfirmFoodPanel);
+export default connect(mapStateToProps, mapDispatchToProps)(withNavigation(ConfirmFoodPanel));
 
 const paddingValue = 4;
 
