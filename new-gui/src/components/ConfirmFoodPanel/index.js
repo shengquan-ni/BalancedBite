@@ -3,7 +3,7 @@ import { SERVER_URL } from "../../commons/serverRequest";
 import { connect } from "react-redux";
 
 import React, { Component } from "react";
-import { Button, CheckBox, Input, Text, Image } from "react-native-elements";
+import { Button, Text, Image } from "react-native-elements";
 import { View, ScrollView, StyleSheet, Dimensions } from "react-native";
 
 const FETCH_FOOD_URL = SERVER_URL + "/food-detail";
@@ -30,7 +30,7 @@ class ConfirmFoodPanel extends Component {
         })
         .then(res => res.json())
         .then(res => {
-            console.warn(res);
+            // console.warn(res);
             if (res.code == 1) {
                 this.setState({food: res.food, fetched: true});
             } else {
