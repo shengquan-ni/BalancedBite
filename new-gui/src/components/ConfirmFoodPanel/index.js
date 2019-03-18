@@ -1,12 +1,13 @@
 import { mapStateToProps, mapDispatchToProps } from "../../commons/redux";
 import { SERVER_URL } from "../../commons/serverRequest";
 import { connect } from "react-redux";
-
+import { withNavigation } from "react-navigation";
 import React, { Component } from "react";
 import { Button, Text, Image } from "react-native-elements";
 import { View, ScrollView, StyleSheet, Dimensions } from "react-native";
 
-const FETCH_FOOD_URL = SERVER_URL + "/food-detail";
+const FETCH_FOOD_URL = SERVER_URL + "/food-detail/fetch";
+const CONFIRM_FOOD_URL = SERVER_URL + "/food-detail/confirm";
 
 class ConfirmFoodPanel extends Component {
 
@@ -65,8 +66,23 @@ class ConfirmFoodPanel extends Component {
 
     confirmFood() {
         // TODO: send request to backend to confirm food and add food, calories to user
-
-        this.setState({confirmed: true});
+        fetch(CONFIRM_FOOD_URL, {
+            method: "POST",
+            body: JSON.stringify({token : this.props.currentToken, name: this.state.food.title, cals: this.state.food.cals}),
+            headers: {
+                "Content-Type": "application/json"
+            }
+        })
+        .then(res => res.json())
+        .then(res => {
+            // console.warn(res);
+            if (res.code == 1) {                
+                this.setState({confirmed: true});
+            } else {
+                console.warn("code == 0 from db");
+            }
+        })
+        .catch(error => console.warn(error));
     }
 
     navigateToRecipes() {
@@ -84,6 +100,11 @@ class ConfirmFoodPanel extends Component {
         this.props.navigation.navigate("yelpMapPanel",{
             foodName:this.state.food.title
         });
+    }
+
+    navigateToUserInformation()
+    {
+        this.props.navigation.navigate("userInformationPanel")
     }
 
     getButtons() {
@@ -191,7 +212,7 @@ class ConfirmFoodPanel extends Component {
 }
 
 
-export default connect(mapStateToProps, mapDispatchToProps)(ConfirmFoodPanel);
+export default connect(mapStateToProps, mapDispatchToProps)(withNavigation(ConfirmFoodPanel));
 
 const paddingValue = 4;
 

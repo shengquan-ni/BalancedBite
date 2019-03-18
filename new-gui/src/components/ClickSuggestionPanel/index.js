@@ -6,7 +6,7 @@ import { SERVER_URL } from "../../commons/serverRequest";
 import { Button, Text } from "react-native-elements";
 
 import { connect } from "react-redux";
-import { SafeAreaView } from "react-navigation";
+import { SafeAreaView, withNavigation } from "react-navigation";
 import { Ionicons } from '@expo/vector-icons';
 
 import { mapDispatchToProps, mapStateToProps } from "../../commons/redux";
@@ -113,7 +113,8 @@ class ClickSuggestionComponent extends Component {
         .then(res => res.json())
         .then(res => {
             if (res.code == 1) {
-                this.setState({checkedToken: true, recommendations: res.recommendations, recommendationsCount: res.recommendationsCount});
+                this.setState({currentIndex: 0, checkedToken: true, 
+                    recommendations: res.recommendations, recommendationsCount: res.recommendationsCount});
             } else {
                 console.warn("error in request");
             }
@@ -172,8 +173,12 @@ class ClickSuggestionComponent extends Component {
     }
 
     componentWillMount(){
+        const { navigation } = this.props;
+        // listen to navigation focus on this screen
+        this.focusListener = navigation.addListener("didFocus", () => {
+            this.handleUserSessionCall();
+        })
 
-        this.handleUserSessionCall();
 
         this.PanResponder = PanResponder.create({
             onStartShouldSetPanResponder:(evt, gestureState) => true,
@@ -327,6 +332,10 @@ class ClickSuggestionComponent extends Component {
         })
     }
 
+    componentWillUnmount() {
+        this.focusListener.remove();
+    }
+
     render() {
         if (!this.state.checkedToken) {
             return (<Text>Still checking your token</Text>);
@@ -353,7 +362,7 @@ class ClickSuggestionComponent extends Component {
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(ClickSuggestionComponent);
+export default connect(mapStateToProps, mapDispatchToProps)(withNavigation(ClickSuggestionComponent));
 
 const outPadding = 10;
 const styles = StyleSheet.create({

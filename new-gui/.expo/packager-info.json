@@ -1,9 +1,9 @@
 {
-  "devToolsPort": 19002,
   "expoServerPort": 19000,
-  "packagerPort": 19001,
-  "packagerPid": 19424,
   "expoServerNgrokUrl": "https://mg-3p3.anonymous.new-gui.exp.direct",
   "packagerNgrokUrl": "https://packager.mg-3p3.anonymous.new-gui.exp.direct",
-  "ngrokPid": 6904
+  "ngrokPid": 10028,
+  "devToolsPort": 19002,
+  "packagerPort": 19001,
+  "packagerPid": 16372
 }

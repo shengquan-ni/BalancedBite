@@ -6,7 +6,6 @@ import {
 } from 'react-native';
 
 import { Input } from "react-native-elements";
-
 import { SERVER_URL } from "../../commons/serverRequest";
 
 import Logo from "../BalancedBiteLogo";
