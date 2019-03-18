@@ -2,6 +2,8 @@ package edu.uci.ics.balancedbite.web.resources;
 
 import java.io.IOException;
 import java.util.Calendar;
+import java.util.List;
+import java.util.Map;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
@@ -23,6 +25,7 @@ import com.mongodb.client.model.Updates;
 import edu.uci.ics.balancedbite.web.api.FoodDetailRequest;
 import edu.uci.ics.balancedbite.web.api.FoodInfo;
 import edu.uci.ics.balancedbite.web.api.TimeManager;
+import edu.uci.ics.balancedbite.web.api.UserInfo;
 import edu.uci.ics.balancedbite.web.api.UserToken;
 import edu.uci.ics.balancedbite.web.db.MongoDBRequest;
 
@@ -42,6 +45,7 @@ public class LoadFoodDetailResource {
 	}
 	
 	@POST
+	@Path("/fetch")
 	public JsonNode fetchFoodDetail(String request) throws JsonParseException, JsonMappingException, IOException {
 		System.out.println(request);
 		FoodDetailRequest foodRequest = new ObjectMapper().readValue(request, FoodDetailRequest.class);
@@ -77,6 +81,57 @@ public class LoadFoodDetailResource {
 		
 		response.put("code", 1);
 		response.set("food", new ObjectMapper().valueToTree(foundFood));
+		
+		client.close();
+		return response;
+	}
+	
+	@POST
+	@Path("/confirm")
+	public JsonNode confirmFoodSelected(String request) throws JsonParseException, JsonMappingException, IOException {
+		System.out.println(request);
+		Map<String, Object> map = new ObjectMapper().readValue(request, Map.class);
+		String token = (String) map.get("token");
+		String foodName = (String) map.get("name");
+		int cals = (int) map.get("cals");
+		
+		System.out.println("cals = " + cals);
+		
+		MongoClient client = MongoDBRequest.getInstance().connectToMongoDB(host, port);
+		MongoDatabase database = MongoDBRequest.getInstance().getMongoDatabase(client);
+		MongoCollection<UserToken> tokenCollection = MongoDBRequest.getInstance().getUserTokenCollection(database); 
+		MongoCollection<UserInfo> userCollection = MongoDBRequest.getInstance().getUserInfoCollection(database);
+		
+		ObjectNode response = new ObjectMapper().createObjectNode();
+
+		// check token
+		UserToken userToken = tokenCollection.find(eq("token", token)).first();
+		if (userToken == null) {
+			response.put("code", 0);
+			client.close();
+			return response;
+		}
+		
+		// update token time
+		tokenCollection.updateOne(Filters.eq("token", token), Updates.set("time", 
+				TimeManager.getInstance().getDateFormat().format(Calendar.getInstance().getTime())));
+		
+		// get user info
+		UserInfo currentUser = userCollection.find(Filters.eq("username",userToken.getUsername())).first();
+		int currentCals = currentUser.getCaloriesTakenCurrently();
+		List<String> currentFoods = currentUser.getFoodsEatenCurrently(); 
+		
+		// update user info
+		
+		currentCals += cals;
+		currentFoods.add(foodName);
+		
+		// put it back to db
+		
+		userCollection.updateOne(Filters.eq("username", userToken.getUsername()), 
+				Updates.combine(Updates.set("caloriesTakenCurrently", currentCals), Updates.set("foodsEatenCurrently", currentFoods)));
+		
+		response.put("code", 1);
 		
 		client.close();
 		return response;

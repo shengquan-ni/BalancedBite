@@ -90,9 +90,7 @@ public class CheckSessionResource {
 			// not the same day
 			MongoCollection<UserInfo> userCollection = MongoDBRequest.getInstance().getUserInfoCollection(database);
 			userCollection.updateOne(Filters.eq("username", foundToken.getUsername())
-					, Updates.set("caloriesTakenCurrently", 0));
-			userCollection.updateOne(Filters.eq("username", foundToken.getUsername())
-					, Updates.set("foodsEatenCurrently", new ArrayList<>()));
+					, Updates.combine( Updates.set("caloriesTakenCurrently", 0), Updates.set("foodsEatenCurrently", new ArrayList<>())));
 		}
 		
 		// update token time to current time

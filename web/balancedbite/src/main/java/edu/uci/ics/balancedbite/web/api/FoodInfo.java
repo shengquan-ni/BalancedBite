@@ -13,7 +13,7 @@ public class FoodInfo {
 	private List<FoodComment> comments = new ArrayList<FoodComment>();
 	private List<String> related = new ArrayList<String>();
 	private String tips;
-	private double cals;
+	private int cals;
 	private String total_time;
 	private String prep_time;
 	private String servings;
@@ -60,7 +60,7 @@ public class FoodInfo {
 	}
 	
 	@JsonProperty
-	public double getCals() {
+	public int getCals() {
 		return cals;
 	}
 	
@@ -152,7 +152,7 @@ public class FoodInfo {
 	}
 	
 	@JsonProperty
-	public void setCals(double cals) {
+	public void setCals(int cals) {
 		this.cals = cals;
 	}
 	

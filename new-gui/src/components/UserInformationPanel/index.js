@@ -204,7 +204,8 @@ class UserInformationComponent extends Component {
                                                     titleProps={{adjustsFontSizeToFit:true,numberOfLines:2}}
                                                     titleStyle={{fontSize:12}}
                                                     onPress={()=>{this.props.navigation.navigate("confirmFoodPanel", {
-                                                        food: x
+                                                        food: x,
+                                                        confirmed: true
                                                     })}}>
                                                     </Button>)}
                     </View>
