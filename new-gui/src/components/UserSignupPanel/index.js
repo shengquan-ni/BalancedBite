@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { View, StyleSheet, ScrollView, Picker, Alert, AsyncStorage,KeyboardAvoidingView } from "react-native";
+import { Keyboard,View, StyleSheet, ScrollView, Picker, Alert, AsyncStorage, Animated } from "react-native";
 
 import { Button, CheckBox, Input, Text } from "react-native-elements";
 
@@ -8,6 +8,37 @@ import { SERVER_URL } from "../../commons/serverRequest";
 const SIGNUP_URL = SERVER_URL + "/sign-up";
 
 class UserSignupPanel extends Component {
+
+    constructor(props){
+        super(props);
+        this.keyboardHeight = new Animated.Value(0);
+    }
+
+    componentWillMount () {
+        this.keyboardDidShowSub = Keyboard.addListener('keyboardDidShow', this.keyboardDidShow);
+        this.keyboardDidHideSub = Keyboard.addListener('keyboardDidHide', this.keyboardDidHide);
+    }
+    
+    componentWillUnmount() {
+        this.keyboardDidShowSub.remove();
+        this.keyboardDidHideSub.remove();
+    }
+
+    keyboardDidShow = (event) => {
+        Animated.timing(this.keyboardHeight, {
+          duration: 0.1,
+          toValue: event.endCoordinates.height,
+        }).start();
+    };
+  
+    keyboardDidHide = (event) => {
+        Animated.timing(this.keyboardHeight, {
+          duration: 0.1,
+          toValue: 0,
+        }).start();
+    };
+
+
 
     state = {
         username : "",
@@ -137,7 +168,7 @@ class UserSignupPanel extends Component {
 
     render() {
         return (
-            <KeyboardAvoidingView style={{flex:1}} behavior="position">
+            <Animated.View style={{paddingBottom: this.keyboardHeight}}>
             <ScrollView style={styles.scrollViewContainer}>
                 <View style={styles.sectionView}>
                     <Text h4
@@ -318,7 +349,7 @@ class UserSignupPanel extends Component {
                     onPress={() => this.onSubmitSignUpForm()}
                 ></Button>
             </ScrollView>
-            </KeyboardAvoidingView>
+            </Animated.View>
         );
     }
 }
