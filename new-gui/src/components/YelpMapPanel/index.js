@@ -37,7 +37,7 @@ class YelpMapPanel extends Component
     }
 
     static navigationOptions = {
-        title: "Nearby Options",
+        title: "Similar Cuisine Nearby",
         headerTitleStyle: {
           fontWeight: 'bold',
         }
