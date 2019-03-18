@@ -338,7 +338,7 @@ class ClickSuggestionComponent extends Component {
 
     render() {
         if (!this.state.checkedToken) {
-            return (<Text>Still checking your token</Text>);
+            return (<View style={{flex: 1,alignItems: 'center',justifyContent:"center"}}><Text>Still checking your token</Text></View>);
         }
         return (
             <SafeAreaView style={styles.outContainer}>

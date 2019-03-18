@@ -21,7 +21,7 @@ class ConfirmFoodPanel extends Component {
     }
 
     static navigationOptions = {
-        title: "Select Cuisine",
+        title: "Cuisine Information",
         headerTitleStyle: {
           fontWeight: 'bold',
         }

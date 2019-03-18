@@ -1,7 +1,8 @@
+
 import { mapDispatchToProps, mapStateToProps } from "../../commons/redux";
 import React, { Component } from "react";
 import { KeyboardAvoidingView,Platform,StatusBar,View,SafeAreaView, Text,Alert,
-     SectionList, StyleSheet, TouchableOpacity,Image,TextInput,Dimensions,ImageBackground,Keyboard,Animated } from "react-native";
+     SectionList, StyleSheet, TouchableOpacity,Image,TextInput,Dimensions,ImageBackground } from "react-native";
 import { connect } from "react-redux";
 import { withNavigation } from "react-navigation";
 import { Ionicons } from '@expo/vector-icons';
@@ -13,41 +14,13 @@ import { CheckBox,Input, Button } from "react-native-elements";
 const FETCH_URL  = SERVER_URL + "/user/fetch-user";
 const UPDATE_URL = SERVER_URL + "/user/update-user";
 
-const scaleAvatar=0.15
+const scaleAvatar=0.2
 
 class EditableLabel extends Component{
 
-    constructor(props){
-        super(props);
-        this.keyboardHeight = new Animated.Value(0);
-    }
-
-
     componentWillMount(){
         this.setState({editable:false,myText:this.props.value});
-        this.keyboardDidShowSub = Keyboard.addListener('keyboardDidShow', this.keyboardDidShow);
-        this.keyboardDidHideSub = Keyboard.addListener('keyboardDidHide', this.keyboardDidHide);
     }
-
-    componentWillUnmount() {
-        this.keyboardDidShowSub.remove();
-        this.keyboardDidHideSub.remove();
-    }
-
-    keyboardDidShow = (event) => {
-        Animated.timing(this.keyboardHeight, {
-          duration: 0.1,
-          toValue: event.endCoordinates.height,
-        }).start();
-    };
-  
-    keyboardDidHide = (event) => {
-        Animated.timing(this.keyboardHeight, {
-          duration: 0.1,
-          toValue: 0,
-        }).start();
-    };
-
 
     renderInput()
     {
@@ -280,6 +253,7 @@ class UserInformationComponent extends Component {
                 <Image style={styles.avatarImage}  source={require('../../images/person.png')}></Image>
                 </Svg>
                 <Text style={styles.userName}>{this.state.userInfo.username}</Text>
+                <KeyboardAvoidingView style={{flex:1}} behavior = 'position' enabled>
                 <SectionList
                     stickySectionHeadersEnabled={true}
                     renderItem={({item, index, section}) => {
@@ -322,6 +296,7 @@ class UserInformationComponent extends Component {
                     ]}
                     keyExtractor={(item, index) => item + index}
                 />
+                </KeyboardAvoidingView>
             </View>
         );
         else
