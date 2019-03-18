@@ -14,6 +14,13 @@ class RecipePanel extends Component
         this.setState({"food":food});
     }
 
+    static navigationOptions = {
+        title: "Recipe",
+        headerTitleStyle: {
+          fontWeight: 'bold',
+        }
+    }
+
     getIngredients(ingredients) {
         return ingredients.map(function(item, i) {
             return (
