@@ -20,6 +20,13 @@ class ConfirmFoodPanel extends Component {
         }
     }
 
+    static navigationOptions = {
+        title: "Select Cuisine",
+        headerTitleStyle: {
+          fontWeight: 'bold',
+        }
+    }
+
     loadFoodInfo(foodName) {
         // TODO: get token and food name from previous clickSuggestionPanel
         fetch(FETCH_FOOD_URL, {

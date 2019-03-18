@@ -119,6 +119,13 @@ class EditableLabel extends Component{
 
 
 class UserInformationComponent extends Component {
+    
+    static navigationOptions = {
+        title: "User Information",
+        headerTitleStyle: {
+          fontWeight: 'bold',
+        }
+    }
 
     fetchStepCountThenGetInformation(){
         const now = new Date();

@@ -36,6 +36,12 @@ class YelpMapPanel extends Component
         };
     }
 
+    static navigationOptions = {
+        title: "Similar Cuisine Nearby",
+        headerTitleStyle: {
+          fontWeight: 'bold',
+        }
+    }
 
     async requestLocationPermission() {
         const { status } = await Permissions.askAsync(Permissions.LOCATION);
