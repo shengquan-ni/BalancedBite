@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import {
   StyleSheet, Text, View, TextInput, TouchableOpacity, 
   Alert, TouchableWithoutFeedback, Keyboard, AsyncStorage,
-  KeyboardAvoidingView
+  KeyboardAvoidingView,Animated
 } from 'react-native';
 
 import { Input } from "react-native-elements";
@@ -23,6 +23,37 @@ class UserLoginPanel extends Component {
     static navigationOptions = {
         header: null
     }
+
+    constructor(props){
+        super(props);
+        this.keyboardHeight = new Animated.Value(0);
+    }
+
+    componentWillMount () {
+        this.keyboardDidShowSub = Keyboard.addListener('keyboardDidShow', this.keyboardDidShow);
+        this.keyboardDidHideSub = Keyboard.addListener('keyboardDidHide', this.keyboardDidHide);
+    }
+    
+    componentWillUnmount() {
+        this.keyboardDidShowSub.remove();
+        this.keyboardDidHideSub.remove();
+    }
+
+    keyboardDidShow = (event) => {
+          Animated.timing(this.keyboardHeight, {
+            duration: 0.1,
+            toValue: event.endCoordinates.height,
+          }).start();
+      };
+    
+      keyboardDidHide = (event) => {
+          Animated.timing(this.keyboardHeight, {
+            duration: 0.1,
+            toValue: 0,
+          }).start();
+      };
+
+
 
     // save user data in frontend storage
     _storeTokenData = async(token) => {
@@ -74,8 +105,7 @@ class UserLoginPanel extends Component {
 	render(){
 		return(
             <TouchableWithoutFeedback onPress={()=> Keyboard.dismiss()}>
-                <View style={styles.container}>
-                <KeyboardAvoidingView style={{flex:1}} behavior="padding" enabled>
+                <Animated.View style={[styles.container,{paddingBottom: this.keyboardHeight}]}>
                     <Logo/>
                     <View style={styles.formContainer}>
                         <Input
@@ -109,8 +139,7 @@ class UserLoginPanel extends Component {
                             <Text style={styles.signupButton}>Signup</Text>
                         </TouchableOpacity>
                     </View>
-                    </KeyboardAvoidingView>
-                </View>       
+                    </Animated.View> 
             </TouchableWithoutFeedback>
 		);
 	}

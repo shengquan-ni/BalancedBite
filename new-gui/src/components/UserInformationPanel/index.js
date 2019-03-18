@@ -1,3 +1,4 @@
+
 import { mapDispatchToProps, mapStateToProps } from "../../commons/redux";
 import React, { Component } from "react";
 import { KeyboardAvoidingView,Platform,StatusBar,View,SafeAreaView, Text,Alert,
@@ -13,7 +14,7 @@ import { CheckBox,Input, Button } from "react-native-elements";
 const FETCH_URL  = SERVER_URL + "/user/fetch-user";
 const UPDATE_URL = SERVER_URL + "/user/update-user";
 
-const scaleAvatar=0.3
+const scaleAvatar=0.2
 
 class EditableLabel extends Component{
 
