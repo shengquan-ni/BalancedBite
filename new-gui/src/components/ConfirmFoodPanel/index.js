@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import { withNavigation } from "react-navigation";
 import React, { Component } from "react";
 import { Button, Text, Image } from "react-native-elements";
-import { View, ScrollView, StyleSheet, Dimensions } from "react-native";
+import { View, ScrollView, StyleSheet, Dimensions, Platform } from "react-native";
 
 const FETCH_FOOD_URL = SERVER_URL + "/food-detail/fetch";
 const CONFIRM_FOOD_URL = SERVER_URL + "/food-detail/confirm";
@@ -250,7 +250,7 @@ const styles = StyleSheet.create({
     },
     foodTitle: {
         fontSize: 24, 
-        fontFamily: 'sans-serif-condensed', 
+        fontFamily: Platform.OS === 'android' ? 'sans-serif-condensed' : 'ArialMT', 
         fontWeight: 'bold',
         textAlign: 'center'
     },
@@ -260,12 +260,12 @@ const styles = StyleSheet.create({
     },
     descriptionTitle: {
         fontSize: 22,
-        fontFamily: 'sans-serif-condensed', 
+        fontFamily: Platform.OS === 'android' ? 'sans-serif-condensed' : 'ArialMT', 
         fontWeight: 'bold',
     },
     foodDescription: {
         fontSize: 20,
-        fontFamily: 'sans-serif-condensed',
+        fontFamily: Platform.OS === 'android' ? 'sans-serif-condensed' : 'ArialMT', 
         padding: 5
     },
     foodIngredientsView: {

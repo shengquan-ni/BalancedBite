@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { Permissions, Location, MapView } from 'expo';
 import { mapStateToProps, mapDispatchToProps } from "../../commons/redux";
 import { connect } from "react-redux";
-import { ActivityIndicator, View, StyleSheet, Linking, Text, Image, Button } from "react-native";
+import { ActivityIndicator, View, StyleSheet, Image, Text, Platform } from "react-native";
 import axios from "axios"
 import getDirections from 'react-native-google-maps-directions';
 
@@ -140,8 +140,14 @@ class YelpMapPanel extends Component
                     coordinate={coords}
                     title={nameOfMarker}
                     description={addressOfMarker}
-                    onCalloutPress={() => this.openGoogleMap(coords)}
+                    onCalloutPress={()=> Platform.OS === 'android' ? this.openGoogleMap(coords) : null}
                 >
+                <MapView.Callout onPress={() => Platform.OS === 'ios' ? this.openGoogleMap(coords) : null}>
+                    <View>
+                        <Text style={{fontSize: 12}}>{nameOfMarker}</Text>
+                        <Text style={{fontSize: 10, color: 'grey'}}>{addressOfMarker}</Text>
+                    </View>
+                </MapView.Callout>
                 </MapView.Marker>
             )
         });
