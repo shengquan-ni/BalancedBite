@@ -417,7 +417,7 @@ const styles = StyleSheet.create({
         top: 40, 
         left: 40, 
         zIndex: 1000, 
-        width: 330, 
+        width: 300, 
         backgroundColor: 'rgba(164, 166, 164, 0.6)'
     },
     imageLabel: {

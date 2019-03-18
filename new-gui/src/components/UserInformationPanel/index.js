@@ -1,15 +1,15 @@
 
 import { mapDispatchToProps, mapStateToProps } from "../../commons/redux";
 import React, { Component } from "react";
-import { KeyboardAvoidingView,Platform,StatusBar,View,SafeAreaView, Text,Alert,
-     SectionList, StyleSheet, TouchableOpacity,Image,TextInput,Dimensions,ImageBackground } from "react-native";
+import { KeyboardAvoidingView,Platform,StatusBar,View, Text,Alert,
+     SectionList, StyleSheet, TouchableOpacity,Image,TextInput } from "react-native";
 import { connect } from "react-redux";
 import { withNavigation } from "react-navigation";
 import { Ionicons } from '@expo/vector-icons';
 import { SERVER_URL } from "../../commons/serverRequest";
 import { Pedometer } from "expo";
 import Svg from 'react-native-svg';
-import { CheckBox,Input, Button } from "react-native-elements";
+import { CheckBox, Button } from "react-native-elements";
 
 const FETCH_URL  = SERVER_URL + "/user/fetch-user";
 const UPDATE_URL = SERVER_URL + "/user/update-user";
@@ -159,7 +159,7 @@ class UserInformationComponent extends Component {
             if (res.code == 0) {
                 console.warn("Error in getting user info");
             } else {
-                console.warn(res);
+                // console.warn(res);
                 this.setState({userInfo:res});
             }
         })

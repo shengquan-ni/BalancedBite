@@ -2,8 +2,8 @@ import { mapStateToProps, mapDispatchToProps } from "../../commons/redux";
 import { connect } from "react-redux";
 
 import React, { Component } from "react";
-import { Button, CheckBox, Input, Text, Image } from "react-native-elements";
-import { View, ScrollView, StyleSheet, Dimensions } from "react-native";
+import { Text, Image } from "react-native-elements";
+import { View, ScrollView, StyleSheet, Dimensions, Platform } from "react-native";
 
 class RecipePanel extends Component
 {
@@ -102,7 +102,7 @@ const styles = StyleSheet.create({
     },
     foodTitle: {
         fontSize: 24, 
-        fontFamily: 'sans-serif-condensed', 
+        fontFamily: Platform.OS === 'android' ? 'sans-serif-condensed' : 'ArialMT', 
         fontWeight: 'bold',
         textAlign: 'center'
     },
@@ -116,12 +116,12 @@ const styles = StyleSheet.create({
     },
     descriptionTitle: {
         fontSize: 22,
-        fontFamily: 'sans-serif-condensed', 
+        fontFamily: Platform.OS === 'android' ? 'sans-serif-condensed' : 'ArialMT', 
         fontWeight: 'bold',
     },
     foodDescription: {
         fontSize: 20,
-        fontFamily: 'sans-serif-condensed',
+        fontFamily: Platform.OS === 'android' ? 'sans-serif-condensed' : 'ArialMT', 
         padding: 5
     },
     foodIngredientsView: {
