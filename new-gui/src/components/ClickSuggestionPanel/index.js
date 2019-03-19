@@ -113,6 +113,7 @@ class ClickSuggestionComponent extends Component {
         .then(res => res.json())
         .then(res => {
             if (res.code == 1) {
+                // console.warn(res);
                 this.setState({currentIndex: 0, checkedToken: true, 
                     recommendations: res.recommendations, recommendationsCount: res.recommendationsCount});
             } else {

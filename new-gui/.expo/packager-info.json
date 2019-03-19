@@ -2,9 +2,9 @@
   "expoServerPort": 19000,
   "expoServerNgrokUrl": "https://mg-3p3.anonymous.new-gui.exp.direct",
   "packagerNgrokUrl": "https://packager.mg-3p3.anonymous.new-gui.exp.direct",
-  "ngrokPid": 10988,
+  "ngrokPid": 1676,
   "devToolsPort": 19002,
-  "packagerPort": 19001,
-  "packagerPid": 27740,
+  "packagerPort": null,
+  "packagerPid": null,
   "webpackServerPort": null
 }

@@ -23,6 +23,7 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Updates;
+import com.mongodb.client.result.UpdateResult;
 
 import edu.uci.ics.balancedbite.web.api.TimeManager;
 import edu.uci.ics.balancedbite.web.api.UserInfo;
@@ -105,9 +106,10 @@ public class UserDataResource {
 			return response;
 		}
 
-		int caloriesBurnedCurrenlty = calculateCaloriesBurned(currentUserInfo.getWeight(), 
+		int caloriesBurnedCurrentlty = calculateCaloriesBurned(currentUserInfo.getWeight(), 
 				currentRequest.getStepCount());
-		currentUserInfo.setCaloriesNeeded(currentUserInfo.getCaloriesNeeded() + caloriesBurnedCurrenlty);
+		System.out.println("cal needed: "+currentUserInfo.getCaloriesNeeded()+" burned :"+caloriesBurnedCurrentlty);
+		currentUserInfo.setCaloriesNeeded(currentUserInfo.getCaloriesNeeded() + caloriesBurnedCurrentlty);
 		
 		ObjectNode userObject = new ObjectMapper().valueToTree(currentUserInfo);
 		response.put("code", 1);
@@ -143,20 +145,30 @@ public class UserDataResource {
 			return response;
 		}
 		String field=map.get("fieldName").toString();
-		Object value=map.get("fieldValue");
-		if(field=="age")
-			currentUserInfo.setAge((Integer)value);
-		else if(field=="weight")
-			currentUserInfo.setWeight((Integer)value);
-		else if(field=="height")
-			currentUserInfo.setHeight((Integer)value);
-		else if(field=="workoutFrequency")
-			currentUserInfo.setWorkoutFrequency((Integer)value);
+		int value=(int)map.get("fieldValue");
+		switch(field)
+		{
+			case "age":
+				currentUserInfo.setAge(value);
+				break;
+			case "weight":
+				currentUserInfo.setWeight(value);
+				break;
+			case "workoutFrequency":
+				currentUserInfo.setWorkoutFrequency(value);
+				break;
+			case "height":
+				currentUserInfo.setHeight(value);
+				break;
+			default:
+				break;
+		}
+		System.out.println(field+": changed weight to: "+currentUserInfo.getWeight());
 		double userBMI = SignUpResource.calculateBMI(currentUserInfo.getWeight(), currentUserInfo.getHeight());
 		int userCaloricIntake = SignUpResource.calculateCalories(currentUserInfo.getSexes(), currentUserInfo.getWeight(), currentUserInfo.getHeight(), 
 			currentUserInfo.getAge(), currentUserInfo.getWorkoutFrequency());
-		userCollection.updateOne(Filters.eq("username", currentUser),Updates.combine(Updates.set(field,value),Updates.set("bMI",userBMI),Updates.set("caloriesNeeded",userCaloricIntake)));
-
+		UpdateResult res=userCollection.updateOne(Filters.eq("username", currentUser),Updates.combine(Updates.set(field,value),Updates.set("bMI",userBMI),Updates.set("caloriesNeeded",userCaloricIntake)));
+		System.out.println("re-calc cal need: "+userCaloricIntake);
 		response.put("code", 1);
 		return response;
 	}

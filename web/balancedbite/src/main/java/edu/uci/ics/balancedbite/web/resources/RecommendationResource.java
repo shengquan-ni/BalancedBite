@@ -3,6 +3,12 @@ package edu.uci.ics.balancedbite.web.resources;
 import java.io.IOException;
 import java.util.Calendar;
 import java.util.Map;
+import java.util.List;
+import java.util.Iterator;
+import java.util.Arrays;
+import java.util.stream.Collectors;
+import java.util.regex.Pattern;
+import java.util.ArrayList;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
@@ -18,20 +24,24 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.mongodb.client.FindIterable;
+import com.mongodb.client.AggregateIterable;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Updates;
 
+import org.bson.conversions.Bson;
+
 import edu.uci.ics.balancedbite.web.api.FoodInfo;
 import edu.uci.ics.balancedbite.web.api.TimeManager;
+import edu.uci.ics.balancedbite.web.api.UserInfo;
 import edu.uci.ics.balancedbite.web.api.UserToken;
 import edu.uci.ics.balancedbite.web.db.MongoDBRequest;
 
 import static com.mongodb.client.model.Filters.*;
 import static com.mongodb.client.model.Updates.*;
-import static com.mongodb.client.model.Projections.*;
+import static com.mongodb.client.model.Aggregates.*;
 
 @Path("/recommendation")
 @Consumes(MediaType.APPLICATION_JSON)
@@ -44,6 +54,10 @@ public class RecommendationResource {
 		this.host = host;
 		this.port = port;
 	}
+
+
+
+
 	
 	@POST
 	public JsonNode getRecommendations(String request) throws JsonParseException, JsonMappingException, IOException {
@@ -60,7 +74,7 @@ public class RecommendationResource {
 		MongoDatabase database = MongoDBRequest.getInstance().getMongoDatabase(client);
 		MongoCollection<FoodInfo> foodCollection = MongoDBRequest.getInstance().getFoodInfoCollection(database);
 		MongoCollection<UserToken> tokenCollection = MongoDBRequest.getInstance().getUserTokenCollection(database); 
-		
+		MongoCollection<UserInfo> userCollection = MongoDBRequest.getInstance().getUserInfoCollection(database); 
 		ObjectNode response = new ObjectMapper().createObjectNode();
 
 		// check token
@@ -75,8 +89,43 @@ public class RecommendationResource {
 		tokenCollection.updateOne(Filters.eq("token", token), Updates.set("time", 
 				TimeManager.getInstance().getDateFormat().format(Calendar.getInstance().getTime())));
 		
+		UserInfo currentUserInfo = userCollection.find(eq("username", userToken.getUsername())).first();
+		if (currentUserInfo == null) {
+			response.put("code", 0);
+			client.close();
+			return response;
+		}
 		// fetch food info
-		FindIterable<FoodInfo> foundFoods = foodCollection.find(eq("meal_type", mealType)).skip(offset).limit(10);
+		double cal_need=currentUserInfo.getCaloriesNeeded();
+		double cal_target=cal_need-currentUserInfo.getCaloriesTakenCurrently();
+		if(mealType=="lunch"){
+			if(cal_target>cal_need*0.4)
+				cal_target=cal_need*0.4;
+		}
+		else if(cal_target>cal_need*0.3)
+			cal_target=cal_need*0.3;
+
+		List<String> disLikeFoods=currentUserInfo.getDislikeFoods();
+
+		List<Bson> filterlist=new ArrayList<Bson>();
+		
+		filterlist.add(gt("cals",cal_target-400));
+		filterlist.add(lt("cals",cal_target+200));
+		filterlist.add(eq("meal_type", mealType));
+		if(disLikeFoods.size()>0)
+			filterlist.add(not(elemMatch("ingredients",or(disLikeFoods.stream()
+			.map(x->regex("ingredients",Pattern.compile("^.*"+x+".*$", Pattern.CASE_INSENSITIVE)))
+			.collect(Collectors.toList())))));
+
+		AggregateIterable<FoodInfo> foundFoods = foodCollection.aggregate(
+			Arrays.asList(
+				match(
+					and(
+						filterlist
+						)
+					),
+				sample(10)
+				));
 		if (foundFoods == null) {
 			response.put("code", 0);
 			client.close();
