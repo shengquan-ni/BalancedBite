@@ -98,8 +98,8 @@ public class RecommendationResource {
 			return response;
 		}
 		// fetch food info
-		double cal_need=currentUserInfo.getCaloriesNeeded();
-		double cal_target=cal_need-currentUserInfo.getCaloriesTakenCurrently();
+		double cal_need=currentUserInfo.getCaloriesNeeded(); // 2000
+		double cal_target=cal_need-currentUserInfo.getCaloriesTakenCurrently(); // 1500
 		if(mealType=="lunch"){
 			if(cal_target>cal_need*0.4)
 				cal_target=cal_need*0.4;
@@ -112,7 +112,7 @@ public class RecommendationResource {
 		List<Bson> filterlist=new ArrayList<Bson>();
 		
 		//filterlist.add(gt("cals",cal_target-400));
-		filterlist.add(lt("cals",cal_target));
+		filterlist.add(lte("cals",cal_target));
 		filterlist.add(eq("meal_type", mealType));
 		if(!currentUserInfo.getFoodRestriction().equals("None"))
 			filterlist.add(eq("tags",currentUserInfo.getFoodRestriction()));
