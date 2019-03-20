@@ -3,7 +3,7 @@ import React, { Component } from "react";
 import { View, StyleSheet, AsyncStorage, Platform, 
     StatusBar, Dimensions, Animated, Image, PanResponder, Alert } from "react-native";
 import { SERVER_URL } from "../../commons/serverRequest";
-import { Button, Text } from "react-native-elements";
+import { Button, Text, AirbnbRating } from "react-native-elements";
 
 import { connect } from "react-redux";
 import { SafeAreaView, withNavigation } from "react-navigation";
@@ -57,13 +57,13 @@ class ClickSuggestionComponent extends Component {
 
         this.likeOpacity = this.position.x.interpolate({
             inputRange: [-SCREEN_WIDTH/2, 0, SCREEN_WIDTH/2],
-            outputRange: [0, 0, 1],
+            outputRange: [0, 0, 0.9],
             extrapolate: 'clamp'
         });
 
         this.dislikeOpacity = this.position.x.interpolate({
             inputRange: [-SCREEN_WIDTH/2, 0, SCREEN_WIDTH/2],
-            outputRange: [1, 0, 0],
+            outputRange: [0.9, 0, 0],
             extrapolate: 'clamp'
         });
 
@@ -269,6 +269,7 @@ class ClickSuggestionComponent extends Component {
                             <Text style={styles.imageLabel}>
                                 {item.title}
                             </Text>
+                            {item.avg_ratings===0?null:<AirbnbRating defaultRating={item.avg_ratings} size={15} showRating={false} isDisabled={true}/>}
                         </View>
 
                         <Animated.View style={{ opacity: this.likeOpacity, transform: [{rotate: '-30deg'}], 
@@ -303,6 +304,7 @@ class ClickSuggestionComponent extends Component {
                             <Text style={styles.imageLabel}>
                                 {item.title}
                             </Text>
+                            {item.avg_ratings===0?null:<AirbnbRating defaultRating={item.avg_ratings} size={15} showRating={false} isDisabled={true}/>}
                         </View>
 
                         <Image 
@@ -453,32 +455,38 @@ const styles = StyleSheet.create({
         resizeMode:"cover"
     },
     likeAnimatedText: {
-        borderWidth: 1, 
-        borderColor: 'green', 
-        color:'green',
+        borderWidth: 2, 
+        borderColor: 'white', 
+        backgroundColor: "lightgreen",
+        color:'white',
         fontSize: 32, 
         fontWeight:'800', 
         padding: 10
     },
     disLikeAnimatedText: {
-        borderWidth: 1, 
-        borderColor: 'red', 
-        color:'red',
+        borderWidth: 2, 
+        borderColor: 'white', 
+        backgroundColor: "crimson",
+        color:'white',
         fontSize: 32, 
         fontWeight:'800', 
         padding: 10
     },
     imageLabelView: {
         padding: 2,
+        flex:1,
+        backgroundColor: 'rgba(164, 166, 164, 0.6)', 
+        alignItems:"center",
+        justifyContent:'center',
         position: 'absolute', 
         top: 40, 
         left: 40, 
         zIndex: 1000, 
-        width: 300, 
-        backgroundColor: 'rgba(164, 166, 164, 0.6)'
+        width: 300
     },
     imageLabel: {
-        fontWeight: 'bold', 
-        fontSize: 28
+        fontWeight: 'bold',
+        fontSize: 28,
+        textAlign:"center"
     }
 })

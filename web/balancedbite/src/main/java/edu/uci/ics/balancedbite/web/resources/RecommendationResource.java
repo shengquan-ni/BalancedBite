@@ -125,7 +125,7 @@ public class RecommendationResource {
 		// filter out all foods that is allergic to user
 		
 		for (String allergy: allergies) {
-			filterlist.add(not(regex("allergies",Pattern.compile("^.*"+ allergy +".*$", Pattern.CASE_INSENSITIVE))));
+			filterlist.add(not(regex("ingredients",Pattern.compile("^.*"+ allergy +".*$", Pattern.CASE_INSENSITIVE))));
 		}
 
 		//System.out.println(and(filterlist).toBsonDocument(BsonDocument.class, com.mongodb.MongoClient.getDefaultCodecRegistry()));
