@@ -145,20 +145,20 @@ public class UserDataResource {
 			return response;
 		}
 		String field=map.get("fieldName").toString();
-		int value=(int)map.get("fieldValue");
+		Object value=map.get("fieldValue");
 		switch(field)
 		{
 			case "age":
-				currentUserInfo.setAge(value);
+				currentUserInfo.setAge((int)value);
 				break;
 			case "weight":
-				currentUserInfo.setWeight(value);
+				currentUserInfo.setWeight((int)value);
 				break;
 			case "workoutFrequency":
-				currentUserInfo.setWorkoutFrequency(value);
+				currentUserInfo.setWorkoutFrequency((int)value);
 				break;
 			case "height":
-				currentUserInfo.setHeight(value);
+				currentUserInfo.setHeight((int)value);
 				break;
 			default:
 				break;

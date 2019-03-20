@@ -32,6 +32,8 @@ import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Updates;
 
 import org.bson.conversions.Bson;
+import org.bson.BsonDocument;
+import com.mongodb.util.JSON;
 
 import edu.uci.ics.balancedbite.web.api.FoodInfo;
 import edu.uci.ics.balancedbite.web.api.TimeManager;
@@ -109,14 +111,15 @@ public class RecommendationResource {
 
 		List<Bson> filterlist=new ArrayList<Bson>();
 		
-		filterlist.add(gt("cals",cal_target-400));
-		filterlist.add(lt("cals",cal_target+200));
+		//filterlist.add(gt("cals",cal_target-400));
+		filterlist.add(lt("cals",cal_target));
 		filterlist.add(eq("meal_type", mealType));
-		if(disLikeFoods.size()>0)
-			filterlist.add(not(elemMatch("ingredients",or(disLikeFoods.stream()
-			.map(x->regex("ingredients",Pattern.compile("^.*"+x+".*$", Pattern.CASE_INSENSITIVE)))
-			.collect(Collectors.toList())))));
-
+		if(disLikeFoods.size()>0){
+			for(String food:disLikeFoods)
+				filterlist.add(not(regex("ingredients",Pattern.compile("^.*"+food+".*$", Pattern.CASE_INSENSITIVE))));
+		};
+		
+		//System.out.println(and(filterlist).toBsonDocument(BsonDocument.class, com.mongodb.MongoClient.getDefaultCodecRegistry()));
 		AggregateIterable<FoodInfo> foundFoods = foodCollection.aggregate(
 			Arrays.asList(
 				match(
