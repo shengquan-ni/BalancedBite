@@ -108,19 +108,25 @@ public class RecommendationResource {
 			cal_target=cal_need*0.3;
 
 		List<String> disLikeFoods=currentUserInfo.getDislikeFoods();
-
+		List<String> allergies = currentUserInfo.getAllergies();
 		List<Bson> filterlist=new ArrayList<Bson>();
 		
-		//filterlist.add(gt("cals",cal_target-400));
+
 		filterlist.add(lte("cals",cal_target));
 		filterlist.add(eq("meal_type", mealType));
 		if(!currentUserInfo.getFoodRestriction().equals("None"))
 			filterlist.add(eq("tags",currentUserInfo.getFoodRestriction()));
 
-		if(disLikeFoods.size()>0){
-			for(String food:disLikeFoods)
-				filterlist.add(not(regex("ingredients",Pattern.compile("^.*"+food+".*$", Pattern.CASE_INSENSITIVE))));
-		};
+		// filter out all foods that is disliked by user
+		for (String food: disLikeFoods) {
+			filterlist.add(not(regex("ingredients",Pattern.compile("^.*"+ food +".*$", Pattern.CASE_INSENSITIVE))));
+		}
+
+		// filter out all foods that is allergic to user
+		
+		for (String allergy: allergies) {
+			filterlist.add(not(regex("allergies",Pattern.compile("^.*"+ allergy +".*$", Pattern.CASE_INSENSITIVE))));
+		}
 
 		//System.out.println(and(filterlist).toBsonDocument(BsonDocument.class, com.mongodb.MongoClient.getDefaultCodecRegistry()));
 		AggregateIterable<FoodInfo> foundFoods = foodCollection.aggregate(

@@ -7,6 +7,7 @@ import edu.uci.ics.balancedbite.web.resources.CheckSessionResource;
 import edu.uci.ics.balancedbite.web.resources.LoadFoodDetailResource;
 import edu.uci.ics.balancedbite.web.resources.RecommendationResource;
 import edu.uci.ics.balancedbite.web.resources.SignInResource;
+import edu.uci.ics.balancedbite.web.resources.SignOutResource;
 import edu.uci.ics.balancedbite.web.resources.SignUpResource;
 import edu.uci.ics.balancedbite.web.resources.UserDataResource;
 import edu.uci.ics.balancedbite.web.resources.testResource;
@@ -65,7 +66,11 @@ public class balancedbiteApplication extends Application<balancedbiteConfigurati
     			configuration.getDatabaseConfiguration().getHost(),
     			configuration.getDatabaseConfiguration().getPort()
 			);
-    			
+    	
+    	final SignOutResource signOutResource = new SignOutResource(
+    			configuration.getDatabaseConfiguration().getHost(),
+    			configuration.getDatabaseConfiguration().getPort()
+    		);
 
     	environment.jersey().register(signInResource);
     	environment.jersey().register(signUpResource);
@@ -73,6 +78,7 @@ public class balancedbiteApplication extends Application<balancedbiteConfigurati
     	environment.jersey().register(userDataResource);
     	environment.jersey().register(loadFoodDetailResource);
     	environment.jersey().register(recommendationResource);
+    	environment.jersey().register(signOutResource);
     	
     	// health checks
     	final SampleHealthCheck sampleHealthCheck = new SampleHealthCheck();

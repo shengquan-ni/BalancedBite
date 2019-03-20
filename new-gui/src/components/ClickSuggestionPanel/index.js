@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 
 import { View, StyleSheet, AsyncStorage, Platform, 
-    StatusBar, Dimensions, Animated, Image, PanResponder } from "react-native";
+    StatusBar, Dimensions, Animated, Image, PanResponder, Alert } from "react-native";
 import { SERVER_URL } from "../../commons/serverRequest";
 import { Button, Text } from "react-native-elements";
 
@@ -14,6 +14,7 @@ import { mapDispatchToProps, mapStateToProps } from "../../commons/redux";
 // used for http request to backend
 const SESSION_URL = SERVER_URL + "/check-session";
 const RECOMMENDATION_URL = SERVER_URL + "/recommendation";
+const SIGNOUT_URL = SERVER_URL + "/sign-out";
 
 // used for animation
 const SCREEN_HEIGHT = Dimensions.get('screen').height;
@@ -243,6 +244,14 @@ class ClickSuggestionComponent extends Component {
         }
     }
 
+    getUserLogoutIcon() {
+        if (Platform.OS === 'ios') {
+            return (<Ionicons name="ios-log-out" size={24}></Ionicons>)
+        } else {
+            return (<Ionicons name="md-log-out" size={24}></Ionicons>)
+        }
+    }
+
     renderRecommendations() {
         return this.state.recommendations.map((item, i) => {
             if (i < this.state.currentIndex) {
@@ -333,6 +342,37 @@ class ClickSuggestionComponent extends Component {
         })
     }
 
+    executeLogoutRequest() {
+        fetch(SIGNOUT_URL, {
+            method: "POST",
+            body: this.props.currentToken,
+            headers: {
+                "Content-Type": "text/plain"
+            }
+        })
+        .then(res => res.json())
+        .then(res => {
+            if (res.code == 0) {
+                console.warn("error when logging out");
+            } else {
+                this.props.navigation.navigate("loginPanel");
+            }
+        })
+        .catch(error => console.warn(error));
+    }
+
+    displayLogoutAlert() {
+
+        Alert.alert(
+            'Warning',
+            'This action will logout from the current user',
+            [
+              {text: 'Cancel'},
+              {text: 'Confirm', onPress: () => this.executeLogoutRequest()},
+            ]
+        );
+    }
+
     componentWillUnmount() {
         this.focusListener.remove();
     }
@@ -350,7 +390,16 @@ class ClickSuggestionComponent extends Component {
                         onPress={()=>{this.navigateToUserInformation()}}
                         containerStyle={styles.topButton}
                         titleStyle={styles.topButtonTitle}
-                        buttonStyle={styles.topButtonStyle}
+                        buttonStyle={styles.userInfoButtonStyle}
+                    ></Button>
+                    <View style={{flex: 1}}></View>
+                    <Button
+                        title=""
+                        icon={this.getUserLogoutIcon()}
+                        onPress={()=>{this.displayLogoutAlert()}}
+                        containerStyle={styles.topButton}
+                        titleStyle={styles.topButtonTitle}
+                        buttonStyle={styles.logOutButtonStyle}
                     ></Button>
                 </View>
                 <View style={styles.container}>
@@ -377,14 +426,21 @@ const styles = StyleSheet.create({
     topButtonView: {
         paddingTop: outPadding,
         paddingLeft: outPadding,
-        paddingRight: outPadding
+        paddingRight: outPadding,
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        justifyContent: 'space-evenly'
     },
     topButton: {
-        width: 50
+        width: 50,
     },
-    topButtonStyle: {
+    userInfoButtonStyle: {
         borderRadius: 10,
         backgroundColor: '#52C854'
+    },
+    logOutButtonStyle: {
+        borderRadius: 10,
+        backgroundColor: '#FF2727'
     },
     topButtonTitle: {
         fontSize: 16
