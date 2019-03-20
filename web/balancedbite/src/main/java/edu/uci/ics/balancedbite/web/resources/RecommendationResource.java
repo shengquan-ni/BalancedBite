@@ -114,11 +114,14 @@ public class RecommendationResource {
 		//filterlist.add(gt("cals",cal_target-400));
 		filterlist.add(lt("cals",cal_target));
 		filterlist.add(eq("meal_type", mealType));
+		if(!currentUserInfo.getFoodRestriction().equals("None"))
+			filterlist.add(eq("tags",currentUserInfo.getFoodRestriction()));
+
 		if(disLikeFoods.size()>0){
 			for(String food:disLikeFoods)
 				filterlist.add(not(regex("ingredients",Pattern.compile("^.*"+food+".*$", Pattern.CASE_INSENSITIVE))));
 		};
-		
+
 		//System.out.println(and(filterlist).toBsonDocument(BsonDocument.class, com.mongodb.MongoClient.getDefaultCodecRegistry()));
 		AggregateIterable<FoodInfo> foundFoods = foodCollection.aggregate(
 			Arrays.asList(

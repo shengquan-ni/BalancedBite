@@ -2,7 +2,7 @@
 import { mapDispatchToProps, mapStateToProps } from "../../commons/redux";
 import React, { Component } from "react";
 import { KeyboardAvoidingView,Platform,StatusBar,View, Text,Alert,
-     SectionList, StyleSheet, TouchableOpacity,Image,TextInput } from "react-native";
+     SectionList, StyleSheet, TouchableOpacity,Image,TextInput,Picker } from "react-native";
 import { connect } from "react-redux";
 import { withNavigation } from "react-navigation";
 import { Ionicons } from '@expo/vector-icons';
@@ -19,7 +19,7 @@ const scaleAvatar=0.2
 class EditableLabel extends Component{
 
     componentWillMount(){
-        this.setState({editable:false,myText:this.props.value});
+        this.setState({editable:false,myText:this.props.value,oldValue:this.props.value});
     }
 
     renderInput()
@@ -37,8 +37,11 @@ class EditableLabel extends Component{
                         onEndEditing={()=>{
                             this.setState({editable:false});
                             if(this.props.checker==null || this.props.checker(this.state.myText)){
-                                if(this.props.value!=this.state.myText)
+                                if(this.state.oldValue!=this.state.myText)
+                                {
+                                    this.setState({oldValue:this.state.myText});
                                     this.props.receiver(this.props.fieldName,this.props.type==="number"?parseInt(this.state.myText):this.state.myText);
+                                }
                             }else{
                                 this.state.myText=this.props.value;
                                 Alert.alert("Error", this.props.errorMessage, [{
@@ -85,8 +88,10 @@ class EditableLabel extends Component{
                         onEndEditing={()=>{
                             this.setState({editable:false});
                             if(this.props.checker==null || this.props.checker(this.state.myText)){
-                                if(this.props.value!=this.state.myText)
+                                if(this.state.oldValue!=this.state.myText){
+                                    this.setState({oldValue:this.state.myText});
                                     this.props.receiver(this.props.fieldName,this.state.myText.split(",").filter(element => element.trim().length > 0));
+                                }
                             }else{
                                 this.state.myText=this.props.value;
                                 Alert.alert("Error", this.props.errorMessage, [{
@@ -96,6 +101,27 @@ class EditableLabel extends Component{
                             }}
                         value={this.state.myText}
                     />);
+        }
+        else if(this.props.type === "picker")
+        {
+            return(<Picker
+                        ref={component => this._input = component}
+                        selectedValue={this.state.myText}
+                        enabled = {this.state.editable}
+                        onPress ={()=>this.setState({editable:false})}
+                        onValueChange={(itemValue, itemIndex) => {
+                            this.setState({editable:false, myText:itemValue},()=>{
+                                if(this.state.oldValue!=this.state.myText){
+                                    this.setState({oldValue:this.state.myText});
+                                    this.props.receiver(this.props.fieldName,this.state.myText);   
+                                }
+                            });
+                        }}
+                        style = {styles.infoPicker}
+                    >
+                        {this.props.pickerlist.map((x,i)=>{return <Picker.Item key={i} label={x} value={x}></Picker.Item>})}
+                    </Picker>
+            );
         }
         return null;
     }
@@ -269,6 +295,7 @@ class UserInformationComponent extends Component {
                                 checker={item[4]}
                                 errorMessage={item[5]}
                                 type={item[6]}
+                                pickerlist={item[7]}
                                 receiver={(k,v)=>this.updateInformation(k,v)}>
                             </EditableLabel>
                             <View style={styles.sectionPadding}></View>
@@ -284,15 +311,16 @@ class UserInformationComponent extends Component {
                                                          ["Foods Eaten",this.state.userInfo.foodsEatenCurrently,""],
                                                          ["Step Count",this.state.pastStepCount,""],
                                                          ["Gender",this.state.userInfo.sexes,""]]},
-                        {title: 'User Infomation', data: [['Age',this.state.userInfo.age.toString(),'','age',(x)=>this.isNormalInteger(x) && parseInt(x)<150,"Age is not valid(1-150)!","number"],
-                                                        ['Weight',this.state.userInfo.weight.toString(),'kg','weight',(x)=>this.isNormalInteger(x) && parseInt(x)<1000,"Weight is not valid(1-1000)!","number"],
-                                                        ['Height',this.state.userInfo.height.toString(),'cm','height',(x)=>this.isNormalInteger(x) && parseInt(x)<1000,"Height is not valid(1-1000)!","number"],
-                                                        ['HealthProblems',this.state.userInfo.healthProblems.join(),"","healthProblems",null,null,"list"],
-                                                        ['DislikeFoods',this.state.userInfo.dislikeFoods.join(),"","dislikeFoods",null,null,"list"],
-                                                        ['Allergies',this.state.userInfo.allergies.join(),"","alleriges",null,null,"list"],
-                                                        ['Workout',this.state.userInfo.workoutBoolean,"","workoutBoolean",null,null,"boolean"],
-                                                        ['WorkoutFrequency',this.state.userInfo.workoutFrequency.toString(),"","workoutFrequency",(x)=>this.isNormalInteger(x) && parseInt(x)<=7,"Workout Frequency should be an integer between 0 and 7!","number"],
-                                                        ['WorkoutType',this.state.userInfo.workoutType,"","workoutType",null,null,"string"]]},
+                        {title: 'User Infomation', data: [['Age',this.state.userInfo.age.toString(),'','age',(x)=>this.isNormalInteger(x) && parseInt(x)<150,"Age is not valid(1-150)!","number",null],
+                                                        ['Weight',this.state.userInfo.weight.toString(),'kg','weight',(x)=>this.isNormalInteger(x) && parseInt(x)<1000,"Weight is not valid(1-1000)!","number",null],
+                                                        ['Height',this.state.userInfo.height.toString(),'cm','height',(x)=>this.isNormalInteger(x) && parseInt(x)<1000,"Height is not valid(1-1000)!","number",null],
+                                                        ['HealthProblems',this.state.userInfo.healthProblems.join(),"","healthProblems",null,null,"list",null],
+                                                        ['DislikeFoods',this.state.userInfo.dislikeFoods.join(),"","dislikeFoods",null,null,"list",null],
+                                                        ['Allergies',this.state.userInfo.allergies.join(),"","alleriges",null,null,"list",null],
+                                                        ['Food Restriction',this.state.userInfo.foodRestriction,"","foodRestriction",null,null,"picker",["None","Vegan","Vegetarian"]],
+                                                        ['Workout',this.state.userInfo.workoutBoolean,"","workoutBoolean",null,null,"boolean",null],
+                                                        ['WorkoutFrequency',this.state.userInfo.workoutFrequency.toString(),"","workoutFrequency",(x)=>this.isNormalInteger(x) && parseInt(x)<=7,"Workout Frequency should be an integer between 0 and 7!","number",null],
+                                                        ['WorkoutType',this.state.userInfo.workoutType,"","workoutType",null,null,"string",null]]},
                     ]}
                     keyExtractor={(item, index) => item + index}
                 />
@@ -337,6 +365,10 @@ const styles = StyleSheet.create({
     infoText:{
         alignSelf: 'center',
         fontSize: 15,
+        width:"40%"
+    },
+    infoPicker:{
+        alignSelf: 'center',
         width:"40%"
     },
     avatarImage:{
