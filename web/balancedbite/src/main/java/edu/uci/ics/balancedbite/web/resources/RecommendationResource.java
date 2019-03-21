@@ -109,6 +109,7 @@ public class RecommendationResource {
 
 		List<String> disLikeFoods=currentUserInfo.getDislikeFoods();
 		List<String> allergies = currentUserInfo.getAllergies();
+		List<String> foodEatenToday = currentUserInfo.getFoodsEatenCurrently();
 		List<Bson> filterlist=new ArrayList<Bson>();
 		
 
@@ -126,6 +127,11 @@ public class RecommendationResource {
 		
 		for (String allergy: allergies) {
 			filterlist.add(not(regex("ingredients",Pattern.compile("^.*"+ allergy +".*$", Pattern.CASE_INSENSITIVE))));
+		}
+		
+		// filter out all foods that is eaten by the user today
+		for (String food: foodEatenToday) {
+			filterlist.add(not(eq("title", food)));
 		}
 
 		//System.out.println(and(filterlist).toBsonDocument(BsonDocument.class, com.mongodb.MongoClient.getDefaultCodecRegistry()));

@@ -1,10 +1,10 @@
 {
-  "expoServerPort": null,
-  "expoServerNgrokUrl": null,
-  "packagerNgrokUrl": null,
-  "ngrokPid": null,
+  "expoServerPort": 19000,
+  "expoServerNgrokUrl": "https://as-km5.anonymous.new-gui.exp.direct",
+  "packagerNgrokUrl": "https://packager.as-km5.anonymous.new-gui.exp.direct",
+  "ngrokPid": 15688,
   "devToolsPort": 19002,
-  "packagerPort": null,
-  "packagerPid": null,
+  "packagerPort": 19001,
+  "packagerPid": 13356,
   "webpackServerPort": null
 }
