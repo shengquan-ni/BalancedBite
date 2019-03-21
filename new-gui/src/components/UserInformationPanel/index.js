@@ -272,7 +272,9 @@ class UserInformationComponent extends Component {
                     x={0}
                     y={(this.state.userInfo.caloriesNeeded-this.state.userInfo.caloriesTakenCurrently)/this.state.userInfo.caloriesNeeded*486}
                     width={300}
-                    height={this.state.userInfo.caloriesTakenCurrently/this.state.userInfo.caloriesNeeded*486}
+                    height={this.state.userInfo.caloriesTakenCurrently > 0 ? 
+                        this.state.userInfo.caloriesTakenCurrently/this.state.userInfo.caloriesNeeded*486 : 
+                        1 /this.state.userInfo.caloriesNeeded*486}
                     strokeWidth={0}
                     fill="#3CB371"
                 />
