@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { StyleSheet, Text, View, Dimensions, Image, Animated, PanResponder, Linking  } from 'react-native';
+import { AsyncStorage, Platform, StyleSheet, Text, View, Dimensions, Image, Animated, PanResponder, Linking  } from 'react-native';
 import { SERVER_URL } from "../../commons/serverRequest";
 import { Button } from "react-native-elements";
 
@@ -21,10 +21,11 @@ const SESSION_URL = SERVER_URL + "/check-session";
 import { mapDispatchToProps, mapStateToProps } from "../../commons/redux";
 
 class ClickSuggestionComponent extends Component {
-     constructor(props) {
-    super(props);
-    this.renderFoods = this.renderFoods.bind(this);
-
+     constructor() {
+    super();
+    
+    
+    
 
 
     this.position = new Animated.ValueXY()
@@ -70,6 +71,8 @@ class ClickSuggestionComponent extends Component {
        outputRange:[1, 0.8, 1],
        extrapolate:'clamp'
     })
+
+    
   
   }
     static navigationOptions = {
@@ -136,47 +139,51 @@ class ClickSuggestionComponent extends Component {
     componentWillUnmount() {
         this.focusListener.remove();
 
-        this.PanResponder = PanResponder.create({
+        
+    }
 
-      onStartShouldSetPanResponder: (evt, gestureState) => true,
-      onPanResponderMove: (evt, gestureState) => {
+    componentWillMount(){
+      this.PanResponder = PanResponder.create({
 
-        this.position.setValue({ x: gestureState.dx, y: gestureState.dy })
-      },
-      onPanResponderRelease: (evt, gestureState) => {
-        if(gestureState.dx>150){
-          Animated.spring(this.position, {
-            toValue:{x:SCREEN_WIDTH+100,y:gestureState.dy }
-          }).start(()=>Linking.openURL('google.navigation:q=100+101')
-             //{
-
-            // this.setState({currentIndex:this.state.currentIndex+1}, ()=>{
-            //   this.position.setValue({x:0, y:0})
-
-            //})
-          //}
-        )
-          
-
-        }//yelp!!
-        else if(gestureState.dx<-150){
-          Animated.spring(this.position, {
-            toValue:{x:-SCREEN_WIDTH-100,y:gestureState.dy }
-          }).start(()=>{
-            this.setState({currentIndex:this.state.currentIndex+1}, ()=>{
-              this.position.setValue({x:0, y:0})
+        onStartShouldSetPanResponder: (evt, gestureState) => true,
+        onPanResponderMove: (evt, gestureState) => {
+  
+          this.position.setValue({ x: gestureState.dx, y: gestureState.dy })
+        },
+        onPanResponderRelease: (evt, gestureState) => {
+          if(gestureState.dx>150){
+            Animated.spring(this.position, {
+              toValue:{x:SCREEN_WIDTH+100,y:gestureState.dy }
+            }).start(()=>Linking.openURL('google.navigation:q=100+101')
+               //{
+  
+              // this.setState({currentIndex:this.state.currentIndex+1}, ()=>{
+              //   this.position.setValue({x:0, y:0})
+  
+              //})
+            //}
+          )
+            
+  
+          }//yelp!!
+          else if(gestureState.dx<-150){
+            Animated.spring(this.position, {
+              toValue:{x:-SCREEN_WIDTH-100,y:gestureState.dy }
+            }).start(()=>{
+              this.setState({currentIndex:this.state.currentIndex+1}, ()=>{
+                this.position.setValue({x:0, y:0})
+              })
             })
-          })
-
-        }//next!!
-        else{
-          Animated.spring(this.position, {
-            toValue:{x:0, y:0},
-            friction:4
-          }).start()
+  
+          }//next!!
+          else{
+            Animated.spring(this.position, {
+              toValue:{x:0, y:0},
+              friction:4
+            }).start()
+          }
         }
-      }
-    })
+      })
     }
 
     navigateToUserInformation() {
@@ -244,7 +251,22 @@ class ClickSuggestionComponent extends Component {
 
    render() {
     return (
+        
       <View style={{ flex: 1 }}>
+      <Text>ClickSuggestionComponent panel</Text>
+
+                <Text>{this.props.currentToken}</Text>
+
+                <Button
+
+                    title="go to user information"
+
+                    icon={this.getUserInformationIcon()}
+
+                    onPress={()=>{this.navigateToUserInformation()}}
+
+                ></Button>
+      
         <View style={{ height: 60 }}>
 
         </View>
